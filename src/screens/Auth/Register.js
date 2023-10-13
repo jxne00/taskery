@@ -12,13 +12,40 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+import { auth } from '../../../utils/lib/firebase';
+
 const Register = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleRegister = () => {
-    navigation.navigate('Onboarding');
+    if (!email || !password) {
+      Alert.alert(
+        'Oops',
+        'Looks like you missed something.\nPlease fill in all fields and try again.',
+      );
+      return;
+    }
+
+    setIsLoading(true);
+
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then(setIsLoading(false))
+      .then(() => {
+        navigation.navigate('Onboarding');
+
+        // clear all input fields
+        setEmail('');
+        setPassword('');
+      })
+      .catch((error) => {
+        // check for existing email error
+        if (error.code === 'auth/email-already-in-use')
+          alert('Email is already is use.');
+        else alert(error.message);
+      });
   };
 
   const handleBackPress = () => {

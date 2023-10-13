@@ -8,15 +8,64 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
+import { auth } from '../../../utils/lib/firebase';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // password visibility
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = () => {
-    navigation.navigate('Home');
+    setIsLoading(true);
+
+    // check for empty fields
+    if (!email || !password) {
+      Alert.alert(
+        'Oops',
+        'Looks like you missed something.\nPlease fill in all fields and try again.',
+      );
+      setIsLoading(false);
+      return;
+    }
+
+    // sign in using firebase auth
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then((userCredentials) => {
+        const user = userCredentials.user;
+
+        if (user) {
+          console.log('User ', user.email, ' logged in successfully.');
+          // clear input fields
+          setEmail('');
+          setPassword('');
+          setShowPassword(false);
+          // navigate to main screens
+          navigation.navigate('HomeTabs');
+
+          setIsLoading(false);
+        }
+      })
+      .catch((error) => {
+        const code = error.code;
+        // show alert if login details are invalid.
+        if (code === 'auth/invalid-email' || code === 'auth/user-not-found')
+          Alert.alert(
+            'Try again',
+            'User does not exist. Please enter a valid email and password.',
+          );
+        else if (code === 'auth/wrong-password')
+          Alert.alert(
+            'Try again',
+            'Incorrect password. Please enter a valid email and password.',
+          );
+        else alert(error.message);
+
+        setIsLoading(false);
+      });
   };
 
   return (
