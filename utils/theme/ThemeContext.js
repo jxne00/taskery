@@ -28,6 +28,7 @@ const ThemeProvider = ({ children }) => {
       }
     };
 
+    // listen for changes to system appearance
     const subscription = Appearance.addChangeListener(({ colorScheme }) => {
       if (themeMode === 'system') {
         updateTheme(colorScheme);
@@ -46,6 +47,6 @@ const ThemeProvider = ({ children }) => {
   );
 };
 
-export const useTheme = () => useContext(ThemeContext);
+const useTheme = () => useContext(ThemeContext);
 
-export default ThemeProvider;
+export { ThemeProvider, useTheme };

@@ -10,7 +10,8 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { auth } from '../../../utils/lib/firebase';
+import { Ionicons } from '@expo/vector-icons';
+import { auth } from '../../../utils/config/firebase';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -49,6 +50,7 @@ const Login = ({ navigation }) => {
           setIsLoading(false);
         }
       })
+      // catch errors and show alert
       .catch((error) => {
         const code = error.code;
         // show alert if login details are invalid.
@@ -95,17 +97,26 @@ const Login = ({ navigation }) => {
 
           {/* password input */}
           <Text style={styles.inputLabel}>Password:</Text>
-          <TextInput
-            value={password}
-            style={styles.textInput}
-            placeholder="Enter your password"
-            placeholderTextColor={'#a9a9a9'}
-            secureTextEntry
-            autoCapitalize="none"
-            autoCompleteType="off"
-            autoCorrect={false}
-            onChangeText={(text) => setPassword(text)}
-          />
+          <View style={styles.inputBox}>
+            <TextInput
+              value={password}
+              style={styles.textInput}
+              placeholder="Enter your password"
+              placeholderTextColor={'#a9a9a9'}
+              secureTextEntry={!showPassword}
+              autoCapitalize="none"
+              autoCompleteType="off"
+              autoCorrect={false}
+              onChangeText={(text) => setPassword(text)}
+            />
+
+            <Ionicons
+              name={showPassword ? 'eye' : 'eye-off'}
+              size={24}
+              color="#a9a9a9"
+              onPress={() => setShowPassword(!showPassword)}
+            />
+          </View>
         </View>
 
         <TouchableOpacity
@@ -165,6 +176,17 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     color: '#FDF3EC',
   },
+  inputBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#FDF3EC',
+    borderRadius: 5,
+    backgroundColor: '#FDF3EC',
+    height: 40,
+    paddingRight: 40,
+  },
   textInput: {
     borderWidth: 1,
     borderColor: '#FDF3EC',
@@ -173,6 +195,7 @@ const styles = StyleSheet.create({
     height: 40,
     paddingHorizontal: 12,
     fontSize: 18,
+    width: '100%',
   },
   loginBtn: {
     backgroundColor: '#1d1d1d',

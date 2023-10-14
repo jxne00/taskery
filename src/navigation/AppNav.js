@@ -64,7 +64,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="AuthStack"
+        initialRouteName="HomeTabs"
         screenOptions={{
           headerShown: false,
         }}>

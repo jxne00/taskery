@@ -1,59 +1,42 @@
-import { StatusBar } from 'expo-status-bar';
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import { auth } from '../../../utils/lib/firebase';
+import { useTheme } from '../../../utils/theme/ThemeContext';
+import useGlobalStyles from '../../../utils/hooks/globalStyles';
+import CustomStatusBar from '../../components/StatusBar';
 
 const Profile = ({ navigation }) => {
-  // signout user
-  const handleSignout = () => {
-    auth
-      .signOut()
-      .then(() => navigation.navigate('Login'))
-      .catch((error) => {
-        console.log('Error signing out: ', error);
-      });
-  };
+  const { theme } = useTheme();
+  const global = useGlobalStyles();
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <Text>This is the profile screen</Text>
+    <SafeAreaView style={global.container}>
+      <View style={[global.container, styles.container]}>
+        <Text style={global.text}>This is the profile screen</Text>
+
         <Ionicons
           name="settings"
-          size={24}
-          color="black"
+          size={28}
+          style={styles.settingsIcon}
+          color={theme.textLight}
           onPress={() => navigation.navigate('Settings')}
         />
 
-        <TouchableOpacity
-          style={{ marginTop: 20, backgroundColor: '#b1a7f9' }}
-          onPress={handleSignout}>
-          <Text>Sign Out</Text>
-        </TouchableOpacity>
-
-        <StatusBar style="auto" />
+        <CustomStatusBar />
       </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  settingsIcon: {
+    position: 'absolute',
+    top: 10,
+    right: 20,
   },
 });
 

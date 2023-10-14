@@ -9,47 +9,49 @@
  * - sort tasks
  */
 
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 
+import CustomStatusBar from '../../components/StatusBar';
+import { useTheme } from '../../../utils/theme/ThemeContext';
+import useGlobalStyles from '../../../utils/hooks/globalStyles';
+
 const Home = ({ navigation }) => {
+  const { theme } = useTheme();
+  const global = useGlobalStyles();
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
+    <SafeAreaView style={global.container}>
+      <View style={[global.container, styles.container]}>
         {/* Header */}
         <View style={styles.row}>
-          <MaterialIcons name="add-task" size={28} color="#0137ac" />
-          <Text style={styles.appName}>Taskery</Text>
-          <FontAwesome
-            name="moon-o"
-            size={28}
-            color="#282828"
-            style={{ marginLeft: 'auto' }}
+          <MaterialIcons name="add-task" size={28} color={theme.appName} />
+
+          <Text style={[styles.appName, { color: theme.appName }]}>
+            Taskery
+          </Text>
+
+          <MaterialIcons
+            name="today"
+            size={30}
+            color={theme.text}
+            style={styles.calendarIcon}
           />
         </View>
 
         {/* Task section */}
-        <View style={styles.row}>
-          <MaterialIcons name="today" size={28} color="#282828" />
-          <Text style={styles.tasksTitle}>Tasklist</Text>
-        </View>
-        <Text>task list here</Text>
+        <Text style={[global.text, styles.tasksTitle]}>Tasklist</Text>
 
-        <StatusBar style="auto" />
+        <Text style={global.text}>task list here</Text>
+
+        <CustomStatusBar />
       </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
   },
   row: {
@@ -62,15 +64,16 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#0157ac',
     marginLeft: 20,
   },
   tasksTitle: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    color: '#000000',
     marginLeft: 20,
     textDecorationLine: 'underline',
+  },
+  calendarIcon: {
+    marginLeft: 'auto',
   },
 });
 

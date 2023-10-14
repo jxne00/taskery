@@ -1,28 +1,25 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 
+import CustomStatusBar from '../../components/StatusBar';
+import { useTheme } from '../../../utils/theme/ThemeContext';
+import useGlobalStyles from '../../../utils/hooks/globalStyles';
+
 const Community = () => {
+  const { theme } = useTheme();
+  const global = useGlobalStyles();
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <Text>This is the community screen</Text>
-        <StatusBar style="auto" />
+    <SafeAreaView style={global.container}>
+      <View style={global.container}>
+        <Text style={global.text}>This is the community screen</Text>
+        <CustomStatusBar />
       </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  container: {},
 });
 
 export default Community;

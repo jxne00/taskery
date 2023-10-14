@@ -1,5 +1,6 @@
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 
 // configure firebase
 const firebaseConfig = {
@@ -21,5 +22,6 @@ if (firebase.apps.length === 0) {
 }
 
 const auth = firebase.auth();
+const db = firebase.firestore();
 
-export { auth };
+export { auth, db };

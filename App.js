@@ -1,5 +1,5 @@
 import React from 'react';
-import ThemeProvider from './utils/theme/ThemeContext';
+import { ThemeProvider } from './utils/theme/ThemeContext';
 import AppNavigator from './src/navigation/AppNav';
 
 const App = () => {
