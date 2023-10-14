@@ -17,10 +17,14 @@ import { auth } from '../../../utils/config/firebase';
 const Register = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // password visibility
+  const [confirmPassword, setConfirmPassowrd] = useState('');
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleRegister = () => {
-    if (!email || !password) {
+    // ensure no empty fields
+    if (!email || !password || !confirmPassword) {
       Alert.alert(
         'Oops',
         'Looks like you missed something.\nPlease fill in all fields and try again.',
@@ -28,8 +32,15 @@ const Register = ({ navigation }) => {
       return;
     }
 
+    // ensure password and confirm password match
+    if (password !== confirmPassword) {
+      Alert.alert('Passwords do not match.', 'Please re-enter your password.');
+      return;
+    }
+
     setIsLoading(true);
 
+    // create user using firebase auth
     auth
       .createUserWithEmailAndPassword(email, password)
       .then(setIsLoading(false))
@@ -40,8 +51,9 @@ const Register = ({ navigation }) => {
         setEmail('');
         setPassword('');
       })
+
+      // catch errors and show alert
       .catch((error) => {
-        // check for existing email error
         if (error.code === 'auth/email-already-in-use')
           alert('Email is already is use.');
         else alert(error.message);
@@ -62,7 +74,7 @@ const Register = ({ navigation }) => {
         <Ionicons
           name="md-arrow-back"
           size={28}
-          color="black"
+          color="#0c0c0c"
           style={styles.backBtn}
           onPress={handleBackPress}
         />
@@ -76,7 +88,7 @@ const Register = ({ navigation }) => {
             value={email}
             style={styles.textInput}
             placeholder="Enter your email"
-            placeholderStyle={styles.placeholder}
+            placeholderTextColor={'#a9a9a9'}
             autoCapitalize="none"
             autoCompleteType="off"
             autoCorrect={false}
@@ -84,29 +96,72 @@ const Register = ({ navigation }) => {
             onChangeText={(text) => setEmail(text)}
           />
 
+          <View style={{ height: 20 }} />
+
           {/* password input */}
           <Text style={styles.inputLabel}>Password:</Text>
-          <TextInput
-            value={password}
-            style={styles.textInput}
-            placeholder="Enter your password"
-            placeholderStyle={styles.placeholder}
-            autoCapitalize="none"
-            autoCompleteType="off"
-            autoCorrect={false}
-            secureTextEntry={true}
-            onChangeText={(text) => setPassword(text)}
-          />
+          <View style={styles.inputBox}>
+            <TextInput
+              value={password}
+              style={styles.textInput}
+              placeholder="Set a password"
+              placeholderTextColor={'#a9a9a9'}
+              autoCapitalize="none"
+              autoCompleteType="off"
+              autoCorrect={false}
+              secureTextEntry={!showPassword}
+              onChangeText={(text) => setPassword(text)}
+            />
 
-          {/* signup button */}
-          <TouchableOpacity style={styles.registerBtn} onPress={handleRegister}>
-            {isLoading ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>Register</Text>
-            )}
-          </TouchableOpacity>
+            <Ionicons
+              name={showPassword ? 'eye' : 'eye-off'}
+              size={24}
+              color="#a9a9a9"
+              onPress={() => setShowPassword(!showPassword)}
+            />
+          </View>
+
+          <View style={{ height: 20 }} />
+
+          {/* confirm password input */}
+          <Text style={styles.inputLabel}>Confirm Password:</Text>
+          <View style={styles.inputBox}>
+            <TextInput
+              value={confirmPassword}
+              style={styles.textInput}
+              placeholder="Re-enter password"
+              placeholderTextColor={'#a9a9a9'}
+              autoCapitalize="none"
+              autoCompleteType="off"
+              autoCorrect={false}
+              secureTextEntry={!showConfirmPassword}
+              onChangeText={(text) => setConfirmPassowrd(text)}
+            />
+
+            <Ionicons
+              name={showConfirmPassword ? 'eye' : 'eye-off'}
+              size={24}
+              color="#a9a9a9"
+              onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+            />
+          </View>
         </View>
+
+        {/* signup button */}
+        <TouchableOpacity style={styles.registerBtn} onPress={handleRegister}>
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>Register</Text>
+          )}
+        </TouchableOpacity>
+
+        <Text style={styles.toLoginText}>
+          Already have an account?{' '}
+          <Text style={styles.loginTxt} onPress={() => navigation.goBack()}>
+            Login
+          </Text>
+        </Text>
       </View>
 
       <StatusBar style="light" />
@@ -121,8 +176,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 20,
-    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#907563',
   },
   backBtn: {
@@ -133,48 +187,66 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
+    marginTop: '20%',
     marginBottom: 20,
     textAlign: 'center',
     color: '#fff',
   },
   inputContainer: {
-    marginTop: 30,
+    marginVertical: 20,
+    width: '90%',
   },
   inputLabel: {
     fontSize: 18,
-    marginBottom: 5,
-    marginLeft: 8,
-    color: '#fff',
     fontWeight: 'bold',
+    marginBottom: 5,
+    marginLeft: 5,
+    color: '#FDF3EC',
+  },
+  inputBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#FDF3EC',
+    borderRadius: 5,
+    backgroundColor: '#FDF3EC',
+    height: 40,
+    paddingRight: 40,
   },
   textInput: {
-    backgroundColor: '#fff',
-    padding: 14,
-    borderRadius: 40,
-    marginBottom: 20,
-    fontSize: 18,
-  },
-  placeholder: {
-    color: '#ccc',
-  },
-  button: {
-    padding: 10,
+    borderWidth: 1,
+    borderColor: '#FDF3EC',
     borderRadius: 5,
-    alignItems: 'center',
+    backgroundColor: '#FDF3EC',
+    height: 40,
+    paddingHorizontal: 12,
+    fontSize: 18,
+    width: '100%',
   },
   registerBtn: {
     backgroundColor: '#171717',
     borderRadius: 20,
     paddingVertical: 12,
-    marginRight: 8,
+    marginRight: '5%',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 30,
     alignSelf: 'flex-end',
     width: '40%',
   },
   buttonText: {
     color: '#fff',
     fontSize: 20,
+    fontWeight: 'bold',
+  },
+  toLoginText: {
+    marginTop: 'auto',
+    marginBottom: 20,
+    color: '#fff',
+    fontSize: 18,
+  },
+  loginTxt: {
+    color: '#7ac7fe',
     fontWeight: 'bold',
   },
 });

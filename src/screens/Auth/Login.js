@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
-    marginLeft: 8,
+    marginLeft: 5,
     color: '#FDF3EC',
   },
   inputBox: {
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: '10%',
     textDecorationLine: 'underline',
-    color: '#e6cdaa',
+    color: '#fff',
   },
 });
 
