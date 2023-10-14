@@ -70,6 +70,7 @@ const Login = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      {/* main container */}
       <View style={styles.container}>
         <Text style={styles.headerText}>Taskery</Text>
 
@@ -137,24 +138,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#907563',
     alignItems: 'center',
-    justifyContent: 'center',
   },
   headerText: {
+    marginTop: 20,
     fontSize: 34,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#ebd8cc',
-    position: 'absolute',
-    top: '5%',
-    left: 0,
-    right: 0,
   },
   title: {
-    fontSize: 30,
+    fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'left',
     color: '#ffffff',
     marginBottom: 20,
+    marginTop: '30%',
   },
   inputContainer: {
     marginVertical: 20,
@@ -170,32 +168,30 @@ const styles = StyleSheet.create({
   textInput: {
     borderWidth: 1,
     borderColor: '#FDF3EC',
-    borderRadius: 20,
+    borderRadius: 5,
     backgroundColor: '#FDF3EC',
-    height: 42,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    height: 40,
+    paddingHorizontal: 12,
     fontSize: 18,
   },
   loginBtn: {
     backgroundColor: '#1d1d1d',
-    borderRadius: 15,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
     width: '90%',
+    height: 44,
     marginVertical: 20,
   },
   loginBtnText: {
     color: '#FDF3EC',
     fontSize: 20,
     fontWeight: 'bold',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
   },
   register: {
     fontSize: 17,
     textAlign: 'center',
-    marginTop: 22,
+    marginTop: '10%',
     textDecorationLine: 'underline',
     color: '#e6cdaa',
   },

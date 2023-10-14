@@ -49,7 +49,7 @@ const Register = ({ navigation }) => {
   };
 
   const handleBackPress = () => {
-    navigation.navigate('Login');
+    navigation.goBack();
 
     // clear all input fields
     setEmail('');

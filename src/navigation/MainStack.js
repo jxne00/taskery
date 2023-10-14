@@ -4,6 +4,8 @@ import Home from '../screens/Main/Home';
 import Profile from '../screens/Main/Profile';
 import Community from '../screens/Main/Community';
 
+import Settings from '../components/Settings';
+
 const StackH = createStackNavigator();
 const StackP = createStackNavigator();
 const StackC = createStackNavigator();
@@ -41,6 +43,7 @@ const ProfileStack = () => {
         headerShown: false,
       }}>
       <StackP.Screen name="Profile" component={Profile} />
+      <StackP.Screen name="Settings" component={Settings} />
     </StackP.Navigator>
   );
 };
