@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
+import { useTheme } from '../../utils/theme/ThemeContext';
 
 import AuthStack from './AuthStack';
 import { HomeStack, CommunityStack, ProfileStack } from './MainStack';
@@ -12,27 +13,41 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const HomeTabs = () => {
+  const { theme } = useTheme();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: theme.navBackground,
+          borderTopColor: theme.navInactive,
+        },
+        // set the icon for each tab
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           switch (route.name) {
             case 'HomeTab':
               iconName = 'home';
+              color = focused ? theme.navActive : theme.navInactive;
               break;
             case 'CommunityTab':
               iconName = 'earth';
+              color = focused ? theme.navActive : theme.navInactive;
               break;
             case 'ProfileTab':
               iconName = 'user';
+              color = focused ? theme.navActive : theme.navInactive;
               break;
             default:
               break;
           }
           return <AntDesign name={iconName} size={size} color={color} />;
         },
+        // text label color
+        tabBarActiveTintColor: theme.navActive,
+        tabBarInactiveTintColor: theme.navInactive,
+        // set the label for each tab
         tabBarLabel: ({ color }) => {
           let labelName;
           switch (route.name) {
@@ -49,7 +64,7 @@ const HomeTabs = () => {
               break;
           }
           return (
-            <Text style={{ color: color, fontSize: 10 }}>{labelName}</Text>
+            <Text style={{ color: color, fontSize: 12 }}>{labelName}</Text>
           );
         },
       })}>
@@ -64,9 +79,10 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="HomeTabs"
+        initialRouteName="AuthStack"
         screenOptions={{
           headerShown: false,
+          gestureEnabled: false, // prevent swipe to go back
         }}>
         <Stack.Screen name="AuthStack" component={AuthStack} />
         <Stack.Screen name="HomeTabs" component={HomeTabs} />

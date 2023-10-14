@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { useTheme } from '../../../utils/theme/ThemeContext';
@@ -12,7 +12,11 @@ const Profile = ({ navigation }) => {
   return (
     <SafeAreaView style={global.container}>
       <View style={[global.container, styles.container]}>
-        <Text style={global.text}>This is the profile screen</Text>
+        {/* user's avatar */}
+        <Image
+          source={require('../../../assets/avatars/a1.png')}
+          style={styles.avatar}
+        />
 
         <Ionicons
           name="settings"
@@ -31,12 +35,17 @@ const Profile = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    justifyContent: 'center',
   },
   settingsIcon: {
     position: 'absolute',
     top: 10,
     right: 20,
+  },
+  avatar: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    margin: 20,
   },
 });
 
