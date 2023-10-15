@@ -14,6 +14,7 @@ const lightTheme = {
   // buttons
   btnBlue: '#244371',
   btnBlack: '#121212',
+  btnRed: '#933A3A',
 };
 
 const darkTheme = {
@@ -32,6 +33,7 @@ const darkTheme = {
   // buttons
   btnBlue: '#183663',
   btnBlack: '#E32323',
+  btnRed: '#6A3535',
 };
 
 export { lightTheme, darkTheme };

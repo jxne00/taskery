@@ -9,16 +9,28 @@
  * - sort tasks
  */
 
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
-import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+} from 'react-native';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 
 import CustomStatusBar from '../../components/StatusBar';
 import { useTheme } from '../../../utils/theme/ThemeContext';
 import useGlobalStyles from '../../../utils/hooks/globalStyles';
 
+import CreateTask from '../../components/modals/CreateTask';
+
 const Home = ({ navigation }) => {
   const { theme } = useTheme();
   const global = useGlobalStyles();
+
+  // visibility of "add task" modal
+  const [showTaskModal, setShowTaskModal] = useState(false);
 
   return (
     <SafeAreaView style={global.container}>
@@ -43,6 +55,19 @@ const Home = ({ navigation }) => {
         <Text style={[global.text, styles.tasksTitle]}>Tasklist</Text>
 
         <Text style={global.text}>task list here</Text>
+
+        {/* button to create new task */}
+        <TouchableOpacity
+          style={[styles.addTaskBtn, { backgroundColor: theme.btnRed }]}
+          onPress={() => setShowTaskModal(true)}>
+          <Ionicons name="add" size={30} color={theme.navActive} />
+        </TouchableOpacity>
+
+        {/* "create task" modal */}
+        <CreateTask
+          modalVisible={showTaskModal}
+          setShowTaskModal={setShowTaskModal}
+        />
 
         <CustomStatusBar />
       </View>
@@ -74,6 +99,14 @@ const styles = StyleSheet.create({
   },
   calendarIcon: {
     marginLeft: 'auto',
+  },
+  addTaskBtn: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    borderRadius: 50,
+    padding: 10,
+    elevation: 5,
   },
 });
 

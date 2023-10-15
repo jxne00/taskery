@@ -22,8 +22,10 @@ const Profile = ({ navigation }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
+  const [avatar, setAvatar] = useState(null);
 
   const avatarImages = {
+    // map avatar file names to their respective paths
     'a1.png': require('../../../assets/avatars/a1.png'),
     'a2.png': require('../../../assets/avatars/a2.png'),
     'a3.png': require('../../../assets/avatars/a3.png'),
@@ -33,12 +35,17 @@ const Profile = ({ navigation }) => {
     'a7.png': require('../../../assets/avatars/a7.png'),
     'a8.png': require('../../../assets/avatars/a8.png'),
   };
-  const avatarImage = avatarImages[data.avatar_path];
 
-  // get user's data from firestore
+  // get profile data from firestore "users" collection
   useEffect(() => {
     setIsLoading(true);
     const user = auth.currentUser;
+
+    if (!user) {
+      Alert.alert('Error getting user', 'User not found');
+      setIsLoading(false);
+      return;
+    }
 
     db.collection('users')
       .doc(user.uid)
@@ -46,6 +53,9 @@ const Profile = ({ navigation }) => {
       .then((doc) => {
         if (doc.exists) {
           setData(doc.data());
+
+          setAvatar(avatarImages[doc.data().avatar_path]);
+          console.log('Document data:', doc.data());
         } else {
           Alert.alert('Error getting document', 'Document not found');
         }
@@ -70,11 +80,7 @@ const Profile = ({ navigation }) => {
       <View style={[global.container, styles.container]}>
         {/* avatar image */}
         <Image
-          source={
-            data?.avatar_path
-              ? avatarImage
-              : require('../../../assets/avatars/a1.png')
-          }
+          source={avatar ? avatar : require('../../../assets/avatars/a1.png')}
           style={styles.avatar}
         />
 
