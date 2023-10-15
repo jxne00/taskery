@@ -6,46 +6,115 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  KeyboardAvoidingView,
   SafeAreaView,
   Alert,
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { AntDesign } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DropDownPicker from 'react-native-dropdown-picker';
+// import ColorPicker from 'reanimated-color-picker';
 
 import { useTheme } from '../../../utils/theme/ThemeContext';
 import useGlobalStyles from '../../../utils/hooks/globalStyles';
+
+import { auth, db } from '../../../utils/config/firebase';
 
 const CreateTask = ({ modalVisible, setShowTaskModal }) => {
   const { theme } = useTheme();
   const global = useGlobalStyles();
 
-  // task information
+  // basic task information
   const [title, setTitle] = useState('');
   const [details, setDetails] = useState('');
   const [deadline, setdeadline] = useState(new Date());
 
+  // subtasks
   const [subtasks, setSubtasks] = useState([]);
   const [currentSubtask, setCurrentSubtask] = useState('');
 
+  // category
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [open, setOpen] = useState(false);
 
-  const handleAddTask = () => {
-    console.log(
-      'title: ',
+  // tags
+  const [tag, setTag] = useState('');
+  const [tags, setTags] = useState([]);
+  const presetColors = ['#0000ff', '#008080', '#ff0000', '#ee82ee', '#ffff00'];
+  const [selectedColor, setSelectedColor] = useState(presetColors[0]);
+
+  // add task to firestore
+  const handleAddTask = async () => {
+    // make sure there is title entered
+    if (!title) {
+      Alert.alert('Error', 'Title cannot be empty.', [{ text: 'OK' }]);
+      return;
+    }
+
+    // all details to be added to firestore
+    const taskDetails = {
       title,
-      'details: ',
       details,
-      'deadline: ',
       deadline,
-      'subtasks: ',
       subtasks,
-      'category: ',
-      selectedCategory,
-    );
+      category: selectedCategory,
+      tags,
+    };
+
+    // get current user
+    const user = auth.currentUser;
+
+    // add task to firestore collection: users/{user.uid}/tasks
+    await db
+      .collection('users')
+      .doc(user.uid)
+      .collection('tasks')
+      .add(taskDetails)
+      .then(() => {
+        // successfully added task to firestore
+        console.log('Task added to firestore.');
+        setShowTaskModal(false); // close modal
+      })
+      .catch((err) => {
+        Alert.alert('Error adding task', err.message);
+      });
+
+    // reset all states
+    resetStates();
+
+    // console.log(
+    //   'handleAddTask(): ',
+    //   '\ntitle: ',
+    //   title,
+    //   '\ndetails: ',
+    //   details,
+    //   '\ndeadline: ',
+    //   deadline,
+    //   '\nsubtasks: ',
+    //   subtasks,
+    //   '\ncategory: ',
+    //   selectedCategory,
+    //   '\ntags: ',
+    //   tags,
+    // );
+  };
+
+  const addTag = () => {
+    if (tag && !tags.some((t) => t.name.toLowerCase() === tag.toLowerCase())) {
+      setTags([...tags, { name: tag, color: selectedColor }]);
+      setTag('');
+    } else {
+      Alert.alert('Error adding tag', 'This tag already exists.', [
+        { text: 'OK' },
+      ]);
+    }
+  };
+
+  const removeTag = (index) => {
+    let tempTags = [...tags];
+    tempTags.splice(index, 1);
+    setTags(tempTags);
   };
 
   // add a new unique category to the list
@@ -109,6 +178,15 @@ const CreateTask = ({ modalVisible, setShowTaskModal }) => {
 
   // close modal & reset all states
   const handleCancelPress = () => {
+    // reset all states
+    resetStates();
+
+    // close modal
+    setShowTaskModal(false);
+  };
+
+  // reset all states
+  const resetStates = () => {
     setTitle('');
     setDetails('');
     setdeadline(new Date());
@@ -117,25 +195,25 @@ const CreateTask = ({ modalVisible, setShowTaskModal }) => {
     setCategories([]);
     setSelectedCategory(null);
     setOpen(false);
-
-    // close modal
-    setShowTaskModal(false);
+    setTag('');
+    setTags([]);
+    setSelectedColor(presetColors[0]);
   };
 
   return (
     <Modal visible={modalVisible} animationType="slide" transparent={true}>
       <SafeAreaView style={global.container}>
-        <KeyboardAvoidingView behavior="padding" style={global.container}>
-          <View style={[global.container, styles.container]}>
-            {/* header */}
-            <View style={styles.row}>
-              <Text style={[global.text, styles.header]}>New Task</Text>
+        <View style={[global.container, styles.container]}>
+          {/* header */}
+          <View style={styles.row}>
+            <Text style={[global.text, styles.header]}>New Task</Text>
 
-              <Text style={styles.cancelTxt} onPress={handleCancelPress}>
-                Cancel
-              </Text>
-            </View>
+            <Text style={styles.cancelTxt} onPress={handleCancelPress}>
+              Cancel
+            </Text>
+          </View>
 
+          <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
             {/* task title input box */}
             <TextInput
               value={title}
@@ -258,11 +336,65 @@ const CreateTask = ({ modalVisible, setShowTaskModal }) => {
               </View>
             </View>
 
-            <TouchableOpacity style={styles.createBtn} onPress={handleAddTask}>
-              <Text style={styles.createBtnText}>Create Task</Text>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
+            {/* tags */}
+            <View style={styles.tagsContainer}>
+              <Text style={[global.text, styles.subtaskTitle]}>Tags:</Text>
+
+              {/* add new tag */}
+              <View style={styles.tagRow}>
+                <TextInput
+                  value={tag}
+                  onChangeText={setTag}
+                  placeholder="Add Tag"
+                  placeholderTextColor={theme.textLight}
+                  style={styles.tagInput}
+                />
+                <Text onPress={addTag} style={[global.text, styles.addTagBtn]}>
+                  Add
+                </Text>
+              </View>
+
+              {/* tag color choices */}
+              <View style={styles.colorContainer}>
+                <Text style={[styles.subtask, { color: theme.text }]}>
+                  Colors:
+                </Text>
+                {presetColors.map((color, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={[styles.colorOption, { backgroundColor: color }]}
+                    onPress={() => setSelectedColor(color)}>
+                    {selectedColor === color && <Text>✔</Text>}
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {/* list of added tags */}
+              {tags.map((t, index) => (
+                <View key={index} style={styles.row}>
+                  <AntDesign
+                    name={'closecircle'}
+                    size={24}
+                    color={theme.btnRed}
+                    style={styles.Xicon}
+                    onPress={() => removeTag(index)}
+                  />
+                  <View
+                    style={[
+                      styles.tag,
+                      { backgroundColor: t.color, marginRight: 10 },
+                    ]}
+                  />
+                  <Text style={global.text}>{t.name}</Text>
+                </View>
+              ))}
+            </View>
+          </KeyboardAwareScrollView>
+
+          <TouchableOpacity style={styles.createBtn} onPress={handleAddTask}>
+            <Text style={styles.createBtnText}>Create Task</Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     </Modal>
   );
@@ -370,11 +502,10 @@ const styles = StyleSheet.create({
 
   // ======= category styles =======
   categoryContainer: {
-    marginVertical: 20,
+    marginTop: 10,
   },
   dropdownContainer: {
     height: 38,
-    marginBottom: 20,
     width: '80%',
     marginLeft: 15,
   },
@@ -382,6 +513,51 @@ const styles = StyleSheet.create({
     backgroundColor: '#dcdcdc',
     borderColor: '#dcdcdc',
     borderWidth: 1,
+    borderRadius: 5,
+  },
+
+  // ======= tag styles =======
+  tagsContainer: {
+    marginBottom: 10,
+  },
+  tagRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  tagInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    borderRadius: 5,
+    fontSize: 18,
+    flex: 1,
+  },
+  addTagBtn: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#d4d4d4',
+    backgroundColor: '#1e1c1c',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+
+  colorContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    marginBottom: 14,
+  },
+  colorOption: {
+    width: 30,
+    height: 30,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 10,
+  },
+
+  tag: {
+    padding: 10,
     borderRadius: 5,
   },
 });

@@ -21,7 +21,9 @@
     "react-native": "0.72.5",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-gesture-handler": "~2.12.0",
-    "react-native-reanimated": "~3.3.0"
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-reanimated": "~3.3.0",
+    "reanimated-color-picker": "^2.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
