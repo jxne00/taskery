@@ -24,9 +24,10 @@ import { useTheme } from '../../../utils/theme/ThemeContext';
 import useGlobalStyles from '../../../utils/hooks/globalStyles';
 
 import CreateTask from '../../components/modals/CreateTask';
+import Tasklist from '../../components/Tasklist';
 
 const Home = ({ navigation }) => {
-  const { theme } = useTheme();
+  const { theme, themeType } = useTheme();
   const global = useGlobalStyles();
 
   // visibility of "add task" modal
@@ -54,13 +55,25 @@ const Home = ({ navigation }) => {
         {/* Task section */}
         <Text style={[global.text, styles.tasksTitle]}>Tasklist</Text>
 
-        <Text style={global.text}>task list here</Text>
+        <Tasklist />
 
         {/* button to create new task */}
         <TouchableOpacity
-          style={[styles.addTaskBtn, { backgroundColor: theme.btnRed }]}
+          style={[styles.addTaskBtn, { backgroundColor: theme.blue }]}
           onPress={() => setShowTaskModal(true)}>
-          <Ionicons name="add" size={30} color={theme.navActive} />
+          <Text
+            style={[
+              styles.addTaskTxt,
+              { color: themeType === 'light' ? theme.navActive : theme.text },
+            ]}>
+            New Task
+          </Text>
+
+          <MaterialIcons
+            name="add-task"
+            size={26}
+            color={themeType === 'light' ? theme.navActive : theme.text}
+          />
         </TouchableOpacity>
 
         {/* "create task" modal */}
@@ -107,6 +120,13 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     padding: 10,
     elevation: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  addTaskTxt: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginRight: 6,
   },
 });
 

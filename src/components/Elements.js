@@ -15,7 +15,15 @@ const HeaderDivider = ({ color, text, height, margin }) => {
     <View style={[styles.container, { marginVertical: margin }]}>
       <View style={[styles.line, { backgroundColor: color, height: height }]} />
 
-      <Text style={styles.text}>{text}</Text>
+      <Text
+        style={[
+          styles.text,
+          {
+            color: color,
+          },
+        ]}>
+        {text}
+      </Text>
 
       <View style={[styles.line, { backgroundColor: color, height: height }]} />
     </View>
