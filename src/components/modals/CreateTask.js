@@ -1,3 +1,12 @@
+/**
+ * @todo
+ * - separate to components where possible
+ * - add loading indicator while adding task to firestore
+ * - add error handling
+ * - set theme colors
+ * - add dividers for different sections
+ * - implement color picker for tags
+ */
 import React, { useState } from 'react';
 import {
   Modal,
@@ -11,7 +20,7 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { AntDesign } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
+
 import DropDownPicker from 'react-native-dropdown-picker';
 // import ColorPicker from 'reanimated-color-picker';
 
@@ -20,14 +29,20 @@ import useGlobalStyles from '../../../utils/hooks/globalStyles';
 
 import { auth, db } from '../../../utils/config/firebase';
 
+import DeadlinePicker from '../DatePicker';
+import { HeaderDivider, Divider } from '../Elements';
+
 const CreateTask = ({ modalVisible, setShowTaskModal }) => {
-  const { theme } = useTheme();
+  const { theme, themeType } = useTheme();
   const global = useGlobalStyles();
 
-  // basic task information
+  // task title & details
   const [title, setTitle] = useState('');
   const [details, setDetails] = useState('');
+
+  // deadline
   const [deadline, setdeadline] = useState(new Date());
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
 
   // subtasks
   const [subtasks, setSubtasks] = useState([]);
@@ -48,7 +63,7 @@ const CreateTask = ({ modalVisible, setShowTaskModal }) => {
   const handleAddTask = async () => {
     // make sure there is title entered
     if (!title) {
-      Alert.alert('Error', 'Title cannot be empty.', [{ text: 'OK' }]);
+      Alert.alert('Title cannot be empty', 'Please set a title.');
       return;
     }
 
@@ -72,34 +87,17 @@ const CreateTask = ({ modalVisible, setShowTaskModal }) => {
       .collection('tasks')
       .add(taskDetails)
       .then(() => {
-        // successfully added task to firestore
-        console.log('Task added to firestore.');
-        setShowTaskModal(false); // close modal
+        // reset states and close modal on success
+        setShowTaskModal(false);
+        resetStates();
       })
       .catch((err) => {
+        // show alert if unsuccessful
         Alert.alert('Error adding task', err.message);
       });
-
-    // reset all states
-    resetStates();
-
-    // console.log(
-    //   'handleAddTask(): ',
-    //   '\ntitle: ',
-    //   title,
-    //   '\ndetails: ',
-    //   details,
-    //   '\ndeadline: ',
-    //   deadline,
-    //   '\nsubtasks: ',
-    //   subtasks,
-    //   '\ncategory: ',
-    //   selectedCategory,
-    //   '\ntags: ',
-    //   tags,
-    // );
   };
 
+  // add a new (unique) tag to the list
   const addTag = () => {
     if (tag && !tags.some((t) => t.name.toLowerCase() === tag.toLowerCase())) {
       setTags([...tags, { name: tag, color: selectedColor }]);
@@ -111,13 +109,14 @@ const CreateTask = ({ modalVisible, setShowTaskModal }) => {
     }
   };
 
+  // remove a tag from the list
   const removeTag = (index) => {
     let tempTags = [...tags];
     tempTags.splice(index, 1);
     setTags(tempTags);
   };
 
-  // add a new unique category to the list
+  // add a new (unique) category to the list
   const addNewCategory = () => {
     Alert.prompt(
       'Add New Category',
@@ -207,14 +206,13 @@ const CreateTask = ({ modalVisible, setShowTaskModal }) => {
           {/* header */}
           <View style={styles.row}>
             <Text style={[global.text, styles.header]}>New Task</Text>
-
             <Text style={styles.cancelTxt} onPress={handleCancelPress}>
               Cancel
             </Text>
           </View>
 
           <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
-            {/* task title input box */}
+            {/* ===== task title ===== */}
             <TextInput
               value={title}
               style={[global.text, styles.titleInput]}
@@ -223,7 +221,7 @@ const CreateTask = ({ modalVisible, setShowTaskModal }) => {
               placeholderTextColor={theme.textLight}
             />
 
-            {/* task details input box */}
+            {/* ===== task details ===== */}
             <TextInput
               value={details}
               style={[global.text, styles.detailsInput]}
@@ -233,8 +231,10 @@ const CreateTask = ({ modalVisible, setShowTaskModal }) => {
               placeholderTextColor={theme.textLight}
             />
 
-            {/* display list of added subtasks */}
+            {/* ===== subtasks section ===== */}
+
             {subtasks.length > 0 && (
+              // display added subtasks only if there are
               <>
                 <Text style={[global.text, styles.subtaskTitle]}>Subtasks</Text>
                 {subtasks.map((sub, index) => (
@@ -255,7 +255,7 @@ const CreateTask = ({ modalVisible, setShowTaskModal }) => {
               </>
             )}
 
-            {/* add subtask input box */}
+            {/* adding a new subtask */}
             <View style={styles.addSubtask}>
               <TextInput
                 value={currentSubtask}
@@ -268,35 +268,31 @@ const CreateTask = ({ modalVisible, setShowTaskModal }) => {
               <AntDesign
                 name="pluscircle"
                 size={32}
-                color={theme.btnBlue}
+                color={themeType === 'dark' ? '#e8e8e8' : '#313131'}
                 style={styles.addSubtaskBtn}
                 onPress={createSubTask}
               />
             </View>
 
-            {/* deadline calendar picker */}
-            <View style={styles.deadlineContainer}>
-              <Text style={[global.text, styles.deadlineTxt]}>Deadline:</Text>
+            <View style={{ height: 20 }} />
 
-              <DateTimePicker
-                style={styles.datepicker}
-                value={deadline}
-                mode={'date'}
-                display="default"
-                minimumDate={new Date()} // disable past dates
-                onChange={
-                  // set deadline to selected date
-                  (event, selectedDate) => {
-                    const currentDate = selectedDate || deadline;
-                    setdeadline(currentDate);
-                  }
-                }
-              />
-            </View>
+            {/* ===== deadline section ===== */}
+            <DeadlinePicker
+              openPicker={datePickerOpen}
+              setOpenPicker={setDatePickerOpen}
+              date={deadline}
+              setDate={setdeadline}
+            />
 
-            <View style={styles.categoryContainer}>
-              <Text style={[global.text, styles.subtaskTitle]}>Category:</Text>
+            <HeaderDivider
+              color={theme.textLight}
+              text={'Category'}
+              height={2}
+              margin={30}
+            />
 
+            {/* ===== category section ===== */}
+            <>
               <View style={styles.row}>
                 {/* add a new category */}
                 <AntDesign
@@ -334,12 +330,17 @@ const CreateTask = ({ modalVisible, setShowTaskModal }) => {
                   labelStyle={{ color: '#1e1e1e', fontSize: 18 }}
                 />
               </View>
-            </View>
+            </>
 
-            {/* tags */}
+            <HeaderDivider
+              color={theme.textLight}
+              text={'Tags'}
+              height={2}
+              margin={30}
+            />
+
+            {/* ===== tags section ===== */}
             <View style={styles.tagsContainer}>
-              <Text style={[global.text, styles.subtaskTitle]}>Tags:</Text>
-
               {/* add new tag */}
               <View style={styles.tagRow}>
                 <TextInput
@@ -391,6 +392,7 @@ const CreateTask = ({ modalVisible, setShowTaskModal }) => {
             </View>
           </KeyboardAwareScrollView>
 
+          {/* ===== submit button ===== */}
           <TouchableOpacity style={styles.createBtn} onPress={handleAddTask}>
             <Text style={styles.createBtnText}>Create Task</Text>
           </TouchableOpacity>
@@ -436,19 +438,6 @@ const styles = StyleSheet.create({
     height: 140,
     textAlignVertical: 'top',
     fontSize: 18,
-  },
-
-  // ======= deadline styles =======
-  deadlineContainer: {
-    flexDirection: 'row',
-    margin: 10,
-    alignItems: 'center',
-  },
-  datepicker: {},
-  deadlineTxt: {
-    marginRight: 5,
-    fontSize: 20,
-    fontWeight: 'bold',
   },
 
   // ======= button styles =======
@@ -501,9 +490,7 @@ const styles = StyleSheet.create({
   },
 
   // ======= category styles =======
-  categoryContainer: {
-    marginTop: 10,
-  },
+
   dropdownContainer: {
     height: 38,
     width: '80%',

@@ -10,21 +10,26 @@ const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(
     deviceTheme === 'dark' ? darkTheme : lightTheme,
   );
+  const [themeType, setThemeType] = useState('light');
 
   useEffect(() => {
     const updateTheme = (newTheme) => {
       switch (newTheme) {
         case 'light':
           setTheme(lightTheme);
+          setThemeType('light');
           break;
         case 'dark':
           setTheme(darkTheme);
+          setThemeType('dark');
           break;
         case 'system':
           setTheme(deviceTheme === 'dark' ? darkTheme : lightTheme);
+          setThemeType(deviceTheme);
           break;
         default:
           setTheme(lightTheme);
+          setThemeType('light');
       }
     };
 
@@ -41,7 +46,8 @@ const ThemeProvider = ({ children }) => {
   }, [themeMode, deviceTheme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, themeMode, setThemeMode }}>
+    <ThemeContext.Provider
+      value={{ theme, themeMode, setThemeMode, themeType }}>
       {children}
     </ThemeContext.Provider>
   );
