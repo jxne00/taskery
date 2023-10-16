@@ -141,14 +141,16 @@ const styles = StyleSheet.create({
   },
   taskDeadline: {
     fontSize: 18,
+    fontFamily: 'OpenSans-Medium',
   },
   taskTitle: {
     marginTop: 10,
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'OpenSans-Bold',
   },
   taskDetail: {
     fontSize: 18,
+    fontFamily: 'OpenSans-Medium',
   },
   tagContainer: {
     flexDirection: 'row',
@@ -167,6 +169,7 @@ const styles = StyleSheet.create({
   tagText: {
     fontSize: 15,
     marginLeft: 5,
+    fontFamily: 'OpenSans-Medium',
   },
 });
 

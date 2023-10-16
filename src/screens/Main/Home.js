@@ -1,14 +1,3 @@
-/**
- * @todo
- * - dark mode toggle
- * - add task button
- * - task list
- * - calendar view
- * - task details screen
- * - filter tasks
- * - sort tasks
- */
-
 import React, { useState } from 'react';
 import {
   StyleSheet,
@@ -17,7 +6,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
-import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 
 import CustomStatusBar from '../../components/StatusBar';
 import { useTheme } from '../../../utils/theme/ThemeContext';
@@ -26,7 +15,7 @@ import useGlobalStyles from '../../../utils/hooks/globalStyles';
 import CreateTask from '../../components/modals/CreateTask';
 import Tasklist from '../../components/Tasklist';
 
-const Home = ({ navigation }) => {
+const Home = () => {
   const { theme, themeType } = useTheme();
   const global = useGlobalStyles();
 
@@ -101,14 +90,14 @@ const styles = StyleSheet.create({
   },
   appName: {
     fontSize: 30,
-    fontWeight: 'bold',
+    fontFamily: 'OpenSans-Bold',
     marginLeft: 20,
   },
   tasksTitle: {
     fontSize: 26,
-    fontWeight: 'bold',
     marginLeft: 20,
     textDecorationLine: 'underline',
+    fontFamily: 'OpenSans-SemiBold',
   },
   calendarIcon: {
     marginLeft: 'auto',
@@ -127,6 +116,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginRight: 6,
+    fontFamily: 'OpenSans-Bold',
   },
 });
 

@@ -12,6 +12,7 @@ const useGlobalStyles = () => {
     text: {
       color: theme.text,
       fontSize: 18,
+      fontFamily: 'OpenSans-Medium',
     },
     blueBtn: {
       backgroundColor: theme.btnBlue,

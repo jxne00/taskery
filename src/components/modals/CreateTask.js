@@ -413,13 +413,14 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontFamily: 'OpenSans-Bold',
   },
   cancelTxt: {
     fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 'auto',
     color: '#eb523b',
+    fontFamily: 'OpenSans-SemiBold',
   },
   titleInput: {
     borderWidth: 1,
@@ -428,6 +429,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 12,
     fontSize: 18,
+    fontFamily: 'OpenSans-SemiBold',
   },
   detailsInput: {
     borderWidth: 1,
@@ -438,6 +440,7 @@ const styles = StyleSheet.create({
     height: 140,
     textAlignVertical: 'top',
     fontSize: 18,
+    fontFamily: 'OpenSans-Regular',
   },
 
   // ======= button styles =======
@@ -451,29 +454,32 @@ const styles = StyleSheet.create({
   },
   createBtnText: {
     textAlign: 'center',
-    fontSize: 18,
-    paddingVertical: 4,
+    fontSize: 20,
+    paddingVertical: 2,
     fontWeight: 'bold',
     color: '#fff',
+    fontFamily: 'OpenSans-Bold',
   },
 
   // ======= subtask styles =======
   subtaskTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
     marginBottom: 12,
     marginTop: 20,
+    fontFamily: 'OpenSans-Bold',
   },
   addSubtask: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    fontFamily: 'OpenSans-Regular',
   },
   Xicon: {
     marginRight: 12,
   },
   subtask: {
     fontSize: 20,
+    fontFamily: 'OpenSans-Regular',
   },
 
   subtaskInput: {
@@ -484,6 +490,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 10,
     fontSize: 18,
+    fontFamily: 'OpenSans-Regular',
   },
   addSubtaskBtn: {
     borderRadius: 5,
@@ -519,6 +526,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     fontSize: 18,
     flex: 1,
+    fontFamily: 'OpenSans-Regular',
   },
   addTagBtn: {
     fontSize: 18,

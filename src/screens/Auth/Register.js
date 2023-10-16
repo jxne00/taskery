@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
     color: '#fff',
+    fontFamily: 'OpenSans-Bold',
   },
   inputContainer: {
     marginVertical: 20,
@@ -202,6 +203,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginLeft: 5,
     color: '#FDF3EC',
+    fontFamily: 'OpenSans-SemiBold',
   },
   inputBox: {
     flexDirection: 'row',
@@ -223,6 +225,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 18,
     width: '100%',
+    fontFamily: 'OpenSans-Medium',
   },
   registerBtn: {
     backgroundColor: '#171717',
@@ -238,16 +241,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
+    fontFamily: 'OpenSans-SemiBold',
   },
   toLoginText: {
     marginTop: 'auto',
     marginBottom: 20,
     color: '#fff',
     fontSize: 18,
+    fontFamily: 'OpenSans-Medium',
   },
   loginTxt: {
-    color: '#7ac7fe',
+    color: '#7cbaf9',
     fontWeight: 'bold',
+    fontFamily: 'OpenSans-Regular',
   },
 });
 

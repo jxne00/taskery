@@ -154,6 +154,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 34,
     fontWeight: 'bold',
+    fontFamily: 'OpenSans-Bold',
     textAlign: 'center',
     color: '#ebd8cc',
   },
@@ -164,6 +165,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     marginBottom: 20,
     marginTop: '30%',
+    fontFamily: 'OpenSans-Bold',
   },
   inputContainer: {
     marginVertical: 20,
@@ -175,6 +177,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginLeft: 5,
     color: '#FDF3EC',
+    fontFamily: 'OpenSans-SemiBold',
   },
   inputBox: {
     flexDirection: 'row',
@@ -196,6 +199,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 18,
     width: '100%',
+    fontFamily: 'OpenSans-Medium',
   },
   loginBtn: {
     backgroundColor: '#1d1d1d',
@@ -210,6 +214,7 @@ const styles = StyleSheet.create({
     color: '#FDF3EC',
     fontSize: 20,
     fontWeight: 'bold',
+    fontFamily: 'OpenSans-SemiBold',
   },
   register: {
     fontSize: 17,
@@ -217,6 +222,7 @@ const styles = StyleSheet.create({
     marginTop: '10%',
     textDecorationLine: 'underline',
     color: '#fff',
+    fontFamily: 'OpenSans-Regular',
   },
 });
 

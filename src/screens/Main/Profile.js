@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   },
   profileName: {
     fontSize: 26,
-    fontWeight: 'bold',
+    fontFamily: 'OpenSans-Bold',
   },
 });
 

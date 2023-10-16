@@ -71,7 +71,7 @@ const Settings = ({ navigation }) => {
         </View>
 
         <TouchableOpacity
-          style={[global.blueBtn, styles.signOutBtn]}
+          style={[styles.signOutBtn, { backgroundColor: theme.blue }]}
           onPress={handleSignout}>
           <Text style={styles.signOutTxt}>Sign Out</Text>
         </TouchableOpacity>
@@ -85,9 +85,9 @@ const Settings = ({ navigation }) => {
 const styles = StyleSheet.create({
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
+    fontFamily: 'OpenSans-Bold',
   },
   backBtn: {
     margin: 16,
@@ -100,9 +100,9 @@ const styles = StyleSheet.create({
   },
   themeTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
     marginBottom: 10,
     textDecorationLine: 'underline',
+    fontFamily: 'OpenSans-Bold',
   },
   option: {
     flexDirection: 'row',
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'OpenSans-Medium',
   },
   signOutBtn: {
     width: '80%',
@@ -124,8 +124,8 @@ const styles = StyleSheet.create({
   signOutTxt: {
     color: '#fff',
     padding: 10,
-    fontWeight: 'bold',
     fontSize: 18,
+    fontFamily: 'OpenSans-Bold',
   },
 });
 
