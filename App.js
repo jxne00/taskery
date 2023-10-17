@@ -1,5 +1,7 @@
 import React from 'react';
 import { useFonts } from 'expo-font';
+import { Provider } from 'react-redux';
+import store from './utils/redux/store';
 
 import { ThemeProvider } from './utils/theme/ThemeContext';
 import AppNavigator from './src/navigation/AppNav';
@@ -18,9 +20,11 @@ const App = () => {
   }
 
   return (
-    <ThemeProvider>
-      <AppNavigator />
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider>
+        <AppNavigator />
+      </ThemeProvider>
+    </Provider>
   );
 };
 

@@ -13,12 +13,16 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { auth } from '../../../utils/config/firebase';
 
+/**
+ * The login screen using firebase for auth
+ */
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false); // password visibility
   const [isLoading, setIsLoading] = useState(false);
 
+  /** login authentication with firebase */
   const handleLogin = () => {
     setIsLoading(true);
 
@@ -40,10 +44,12 @@ const Login = ({ navigation }) => {
 
         if (user) {
           console.log('User ', user.email, ' logged in successfully.');
+
           // clear input fields
           setEmail('');
           setPassword('');
           setShowPassword(false);
+
           // navigate to main screens
           navigation.navigate('HomeTabs');
 
@@ -53,6 +59,7 @@ const Login = ({ navigation }) => {
       // catch errors and show alert
       .catch((error) => {
         const code = error.code;
+
         // show alert if login details are invalid.
         if (code === 'auth/invalid-email' || code === 'auth/user-not-found')
           Alert.alert(

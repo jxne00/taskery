@@ -4,7 +4,7 @@ import Home from '../screens/Main/Home';
 import Profile from '../screens/Main/Profile';
 import Community from '../screens/Main/Community';
 
-import Settings from '../components/Settings';
+import Settings from '../screens/Main/Settings';
 
 const StackH = createStackNavigator();
 const StackP = createStackNavigator();

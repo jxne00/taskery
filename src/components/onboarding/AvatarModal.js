@@ -10,9 +10,15 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Modal } from 'react-native';
 
+/**
+ * A modal to allow selection of an avatar image from a list of predefined ones
+ *
+ * @param {object} props modalVisible, setModalVisible, avatarIndex, setAvatarIndex
+ */
 const AvatarModal = (props) => {
   const { modalVisible, setModalVisible, avatarIndex, setAvatarIndex } = props;
 
+  // predefined avatar images
   // src: https://www.freepik.com/free-vector/smiling-people-avatar-set-different-men-women-characters-collection_13663484.htm
   const avatars = [
     require('../../../assets/avatars/a1.png'),
@@ -27,11 +33,13 @@ const AvatarModal = (props) => {
 
   const [chosenAvatar, setChosenAvatar] = useState(avatarIndex);
 
+  // set the chosen avatar
   const handleSetAvatar = () => {
     setAvatarIndex(chosenAvatar);
     setModalVisible(false);
   };
 
+  // close modal and reset chosen avatar
   const handleCancel = () => {
     setChosenAvatar(avatarIndex);
     setModalVisible(false);
@@ -39,6 +47,7 @@ const AvatarModal = (props) => {
 
   return (
     <View style={styles.container}>
+      {/* image of selected avatar */}
       <ImageBackground source={avatars[avatarIndex]} style={styles.avatarImage}>
         <MaterialCommunityIcons
           name="image-edit-outline"
@@ -48,6 +57,7 @@ const AvatarModal = (props) => {
         />
       </ImageBackground>
 
+      {/* modal to select new avatar */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -57,6 +67,7 @@ const AvatarModal = (props) => {
           <View style={styles.modalView}>
             <Text style={styles.title}>Select Avatar:</Text>
 
+            {/* display predefined avatar images */}
             <View style={styles.avatarsRow}>
               {avatars.map((avatar, index) => (
                 <TouchableOpacity
@@ -73,6 +84,7 @@ const AvatarModal = (props) => {
               ))}
             </View>
 
+            {/* buttons */}
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={[styles.buttonContainer, styles.cancelBg]}

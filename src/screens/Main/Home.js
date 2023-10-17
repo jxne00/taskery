@@ -12,8 +12,8 @@ import CustomStatusBar from '../../components/StatusBar';
 import { useTheme } from '../../../utils/theme/ThemeContext';
 import useGlobalStyles from '../../../utils/hooks/globalStyles';
 
-import CreateTask from '../../components/modals/CreateTask';
-import Tasklist from '../../components/Tasklist';
+import CreateTask from '../../components/task/CreateTask';
+import Tasklist from '../../components/task/Tasklist';
 
 const Home = () => {
   const { theme, themeType } = useTheme();
@@ -27,10 +27,8 @@ const Home = () => {
       <View style={[global.container, styles.container]}>
         {/* Header */}
         <View style={styles.row}>
-          <MaterialIcons name="add-task" size={28} color={theme.appName} />
-
           <Text style={[styles.appName, { color: theme.appName }]}>
-            Taskery
+            taskery
           </Text>
 
           <MaterialIcons
@@ -42,7 +40,7 @@ const Home = () => {
         </View>
 
         {/* Task section */}
-        <Text style={[global.text, styles.tasksTitle]}>Tasklist</Text>
+        <Text style={[global.text, styles.tasksTitle]}>Tasks</Text>
 
         <Tasklist />
 
@@ -91,13 +89,11 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 30,
     fontFamily: 'OpenSans-Bold',
-    marginLeft: 20,
   },
   tasksTitle: {
     fontSize: 26,
-    marginLeft: 20,
     textDecorationLine: 'underline',
-    fontFamily: 'OpenSans-SemiBold',
+    fontFamily: 'OpenSans-Bold',
   },
   calendarIcon: {
     marginLeft: 'auto',
@@ -106,16 +102,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     right: 20,
-    borderRadius: 50,
-    padding: 10,
-    elevation: 5,
     flexDirection: 'row',
     alignItems: 'center',
+    borderRadius: 50,
+    padding: 12,
   },
   addTaskTxt: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginRight: 6,
+    fontSize: 18,
+    marginRight: 5,
     fontFamily: 'OpenSans-Bold',
   },
 });

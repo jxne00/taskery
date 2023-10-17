@@ -22,6 +22,7 @@ const Register = ({ navigation }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  /** register new user with firebase auth */
   const handleRegister = () => {
     // ensure no empty fields
     if (!email || !password || !confirmPassword) {
@@ -60,6 +61,7 @@ const Register = ({ navigation }) => {
       });
   };
 
+  /** go back to login screen */
   const handleBackPress = () => {
     navigation.goBack();
 

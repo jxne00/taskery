@@ -1,4 +1,3 @@
-// import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
   Text,
@@ -8,11 +7,11 @@ import {
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
-import CustomStatusBar from './StatusBar';
-import { useTheme } from '../../utils/theme/ThemeContext';
-import useGlobalStyles from '../../utils/hooks/globalStyles';
+import CustomStatusBar from '../../components/StatusBar';
+import { useTheme } from '../../../utils/theme/ThemeContext';
+import useGlobalStyles from '../../../utils/hooks/globalStyles';
 
-import { auth } from '../../utils/config/firebase';
+import { auth } from '../../../utils/config/firebase';
 
 const Settings = ({ navigation }) => {
   const { theme, themeMode, setThemeMode } = useTheme();

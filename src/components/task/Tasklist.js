@@ -7,40 +7,28 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
-import { auth, db } from '../../utils/config/firebase';
-import { useTheme } from '../../utils/theme/ThemeContext';
+import { auth, db } from '../../../utils/config/firebase';
+import { useTheme } from '../../../utils/theme/ThemeContext';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTasks } from '../../../utils/redux/actions/taskActions';
 
 const Tasklist = () => {
   const { theme } = useTheme();
 
-  const [tasks, setTasks] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // get user id
+  const dispatch = useDispatch();
   const userId = auth.currentUser.uid;
+  const { tasks, isLoading, error } = useSelector((state) => state.tasks);
 
-  // get tasks from firestore: users/{userId}/tasks
   useEffect(() => {
-    try {
-      setIsLoading(true);
+    dispatch(fetchTasks(userId));
 
-      db.collection('users')
-        .doc(userId)
-        .collection('tasks')
-        .onSnapshot((snapshot) => {
-          const tasks = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setTasks(tasks);
-          setIsLoading(false);
-        });
-
-      setIsLoading(false);
-    } catch (error) {
+    if (error) {
       alert(error);
     }
-  }, []);
+  }, [userId]);
+
+  const arrayOfTasks = Object.values(tasks);
 
   // show loading indicator while getting tasks
   if (isLoading) {
@@ -68,7 +56,8 @@ const Tasklist = () => {
         {/* deadline */}
         <Text style={[styles.taskDeadline, { color: theme.textLight }]}>
           <AntDesign name="calendar" size={18} color={theme.textLight} />{' '}
-          {item.deadline?.toDate().toLocaleDateString()}
+          {/* {item.deadline?.toDate().toLocaleDateString()} */}
+          {item.deadline}
         </Text>
       </View>
 
@@ -109,7 +98,7 @@ const Tasklist = () => {
 
   return (
     <FlatList
-      data={tasks}
+      data={arrayOfTasks}
       keyExtractor={(item) => item.id}
       renderItem={renderTask}
       style={{ width: '90%' }}

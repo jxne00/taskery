@@ -10,18 +10,23 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import AvatarModal from '../../components/modals/AvatarModal';
+import AvatarModal from '../../components/onboarding/AvatarModal';
 
 import { Ionicons } from '@expo/vector-icons';
 
 import { auth, db } from '../../../utils/config/firebase';
 
+/**
+ * This screen is for setting up the user's profile details
+ * (name, avatar image)
+ */
 const Onboarding = ({ navigation }) => {
   const [name, setName] = useState('');
   const [avatarIndex, setAvatarIndex] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  /** save profile details to firestore 'users' collection */
   const handleNextPress = () => {
     setIsLoading(true);
 
@@ -42,6 +47,7 @@ const Onboarding = ({ navigation }) => {
         )
         .then(() => {
           setIsLoading(false);
+
           // navigate to main screens
           navigation.navigate('HomeTabs');
         })
@@ -87,7 +93,7 @@ const Onboarding = ({ navigation }) => {
             onChangeText={(text) => setName(text)}
           />
 
-          {/* next button */}
+          {/* button */}
           <TouchableOpacity
             style={styles.nextBtn}
             onPress={() => handleNextPress()}>
@@ -123,22 +129,24 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
     textAlign: 'center',
     color: '#ebd8cc',
     marginBottom: 10,
+    fontFamily: 'OpenSans-Bold',
   },
   subtitle: {
     fontSize: 20,
     color: '#f3eae4',
     marginBottom: 20,
     textAlign: 'center',
+    fontFamily: 'OpenSans-Regular',
   },
   subsubtitle: {
     fontSize: 18,
     color: '#ede4dd',
     marginBottom: 30,
     textAlign: 'center',
+    fontFamily: 'OpenSans-Regular',
   },
 
   inputContainer: {
@@ -146,9 +154,9 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: 18,
-    fontWeight: 'bold',
     marginBottom: 5,
     color: '#fff',
+    fontFamily: 'OpenSans-Bold',
   },
   textInput: {
     padding: 10,
@@ -156,6 +164,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     fontSize: 18,
     color: '#e9e9e9',
+    fontFamily: 'OpenSans-Regular',
   },
 
   nextBtn: {
@@ -177,9 +186,9 @@ const styles = StyleSheet.create({
   nextBtnText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold',
     textAlign: 'center',
     marginRight: 10,
+    fontFamily: 'OpenSans-SemiBold',
   },
 });
 
