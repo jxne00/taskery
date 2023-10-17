@@ -1,12 +1,3 @@
-/**
- * @todo
- * - separate to components where possible
- * - add loading indicator while adding task to firestore
- * - add error handling
- * - set theme colors
- * - add dividers for different sections
- * - implement color picker for tags
- */
 import React, { useState } from 'react';
 import {
   Modal,
@@ -17,6 +8,7 @@ import {
   StyleSheet,
   SafeAreaView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { AntDesign } from '@expo/vector-icons';

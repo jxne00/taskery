@@ -6,8 +6,10 @@ import {
   addTaskRequest,
   addTaskSuccess,
   addTaskFailure,
+  editTaskRequest,
   editTaskSuccess,
   editTaskFailure,
+  deleteTaskRequest,
   deleteTaskSuccess,
   deleteTaskFailure,
 } from '../slices/taskSlice';
@@ -59,8 +61,8 @@ const fetchTasks = (userId) => (dispatch) => {
  */
 const addTask = (userId, taskData) => async (dispatch) => {
   try {
-    //const deadlineTimestamp = firebase.firestore.Timestamp.fromDate(deadline);
-    //const newTask = { ...task, deadline: deadlineTimestamp };
+    dispatch(addTaskRequest());
+
     const taskRef = await db
       .collection('users')
       .doc(userId)
@@ -81,6 +83,8 @@ const addTask = (userId, taskData) => async (dispatch) => {
  */
 const editTask = (userId, taskId, updatedData) => async (dispatch) => {
   try {
+    dispatch(editTaskRequest());
+
     await db
       .collection('users')
       .doc(userId)
@@ -101,6 +105,8 @@ const editTask = (userId, taskId, updatedData) => async (dispatch) => {
  */
 const deleteTask = (userId, taskId) => async (dispatch) => {
   try {
+    dispatch(deleteTaskRequest());
+
     await db
       .collection('users')
       .doc(userId)

@@ -1,44 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  FlatList,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
+import React from 'react';
+import { View, FlatList, Text, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
-import { auth, db } from '../../../utils/config/firebase';
-import { useTheme } from '../../../utils/theme/ThemeContext';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchTasks } from '../../../utils/redux/actions/taskActions';
-
-const Tasklist = () => {
-  const { theme } = useTheme();
-
-  const dispatch = useDispatch();
-  const userId = auth.currentUser.uid;
-  const { tasks, isLoading, error } = useSelector((state) => state.tasks);
-
-  useEffect(() => {
-    dispatch(fetchTasks(userId));
-
-    if (error) {
-      alert(error);
-    }
-  }, [userId]);
-
-  const arrayOfTasks = Object.values(tasks);
-
-  // show loading indicator while getting tasks
-  if (isLoading) {
-    return (
-      <View style={styles.loading}>
-        <ActivityIndicator size="large" color={theme.textLight} />
-      </View>
-    );
-  }
-
+/**
+ * a flatlist of tasks with its details
+ */
+const Tasklist = ({ tasklist, theme }) => {
   // render flatlist item
   const renderTask = ({ item }) => (
     <View style={[styles.taskContainer, { borderColor: theme.textLight }]}>
@@ -56,7 +23,6 @@ const Tasklist = () => {
         {/* deadline */}
         <Text style={[styles.taskDeadline, { color: theme.textLight }]}>
           <AntDesign name="calendar" size={18} color={theme.textLight} />{' '}
-          {/* {item.deadline?.toDate().toLocaleDateString()} */}
           {item.deadline}
         </Text>
       </View>
@@ -65,7 +31,7 @@ const Tasklist = () => {
         {item.title}
       </Text>
 
-      {/* details of task (only if available) */}
+      {/* details of task */}
       {item.details && (
         <Text style={[styles.taskDetail, { color: theme.text }]}>
           {item.details}
@@ -98,7 +64,7 @@ const Tasklist = () => {
 
   return (
     <FlatList
-      data={arrayOfTasks}
+      data={tasklist}
       keyExtractor={(item) => item.id}
       renderItem={renderTask}
       style={{ width: '90%' }}
@@ -107,11 +73,6 @@ const Tasklist = () => {
 };
 
 const styles = StyleSheet.create({
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   taskContainer: {
     paddingHorizontal: 16,
     paddingVertical: 10,

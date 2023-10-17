@@ -31,6 +31,10 @@ const taskSlice = createSlice({
     },
 
     // =============== add task (not implemented yet)
+    addTaskRequest: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
     addTaskSuccess: (state, action) => {
       state.isLoading = false;
       state.tasks[action.payload.id] = action.payload;
@@ -41,6 +45,10 @@ const taskSlice = createSlice({
     },
 
     // =============== edit task (not implemented yet)
+    editTaskRequest: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
     editTaskSuccess: (state, action) => {
       const updatedTask = action.payload;
       state.tasks[updatedTask.id] = updatedTask;
@@ -51,6 +59,10 @@ const taskSlice = createSlice({
     },
 
     // =============== delete task (not implemented yet)
+    deleteTaskRequest: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
     deleteTaskSuccess: (state, action) => {
       const taskId = action.payload;
       delete state.tasks[taskId];
@@ -66,10 +78,16 @@ export const {
   fetchTasksRequest,
   fetchTasksSuccess,
   fetchTasksFailure,
+
+  addTaskRequest,
   addTaskSuccess,
   addTaskFailure,
+
+  editTaskRequest,
   editTaskSuccess,
   editTaskFailure,
+
+  deleteTaskRequest,
   deleteTaskSuccess,
   deleteTaskFailure,
 } = taskSlice.actions;
