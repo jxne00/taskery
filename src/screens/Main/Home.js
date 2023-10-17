@@ -17,8 +17,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks } from '../../../utils/redux/actions/taskActions';
 import { auth } from '../../../utils/config/firebase';
 
-import CreateTask from '../../components/task/CreateTask';
 import Tasklist from '../../components/task/Tasklist';
+import TaskDetails from '../../components/task/TaskDetails';
 
 const Home = () => {
   const { theme, themeType } = useTheme();
@@ -128,7 +128,7 @@ const Home = () => {
         </TouchableOpacity>
 
         {/* "create task" modal */}
-        <CreateTask
+        <TaskDetails
           modalVisible={showTaskModal}
           setShowTaskModal={setShowTaskModal}
           userId={userId}

@@ -33,7 +33,7 @@ import { HeaderDivider, Divider } from '../Elements';
  * @param {object} editTask - details of task to be edited
  * @param {function} setEditTask - setter for editTask
  */
-const CreateTask = (props) => {
+const TaskDetails = (props) => {
   const {
     modalVisible,
     setShowTaskModal,
@@ -595,4 +595,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateTask;
+export default TaskDetails;
