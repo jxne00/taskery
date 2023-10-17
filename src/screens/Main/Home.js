@@ -25,6 +25,7 @@ const Home = () => {
   const global = useGlobalStyles();
 
   const [showTaskModal, setShowTaskModal] = useState(false);
+  const [editTask, setEditTask] = useState(null);
 
   const userId = auth.currentUser.uid; // current user's id
   const dispatch = useDispatch(); // redux dispatch
@@ -34,6 +35,21 @@ const Home = () => {
   useEffect(() => {
     dispatch(fetchTasks(userId));
   }, [userId]);
+
+  // go to create task screen with pre-filled details
+  const handleEdit = (id) => {
+    const task = tasks[id];
+    console.log('(TODO!!!) edit task with id: ', task);
+
+    // show create task modal
+    setShowTaskModal(true);
+    setEditTask(task);
+  };
+
+  // delete task
+  const handleDelete = (id) => {
+    console.log('(TODO!!!) delete task with id: ', id);
+  };
 
   // display loading indicator while fetching tasks
   const showLoading = () => {
@@ -85,7 +101,11 @@ const Home = () => {
         {isLoading ? (
           showLoading()
         ) : (
-          <Tasklist tasklist={Object.values(tasks)} theme={theme} />
+          <Tasklist
+            tasklist={Object.values(tasks)}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+          />
         )}
 
         {/* button to create new task */}
@@ -113,6 +133,8 @@ const Home = () => {
           setShowTaskModal={setShowTaskModal}
           userId={userId}
           dispatch={dispatch}
+          editTask={editTask}
+          setEditTask={setEditTask}
         />
 
         <CustomStatusBar />

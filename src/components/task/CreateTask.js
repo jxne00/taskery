@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   Text,
@@ -30,8 +30,19 @@ import { HeaderDivider, Divider } from '../Elements';
  * @param {function} setShowTaskModal - modal visibility setter
  * @param {string} userId - current user's id
  * @param {function} dispatch - redux dispatch
+ * @param {object} editTask - details of task to be edited
+ * @param {function} setEditTask - setter for editTask
  */
-const CreateTask = ({ modalVisible, setShowTaskModal, userId, dispatch }) => {
+const CreateTask = (props) => {
+  const {
+    modalVisible,
+    setShowTaskModal,
+    userId,
+    dispatch,
+    editTask,
+    setEditTask,
+  } = props;
+
   const { theme, themeType } = useTheme();
   const global = useGlobalStyles();
 
@@ -60,6 +71,21 @@ const CreateTask = ({ modalVisible, setShowTaskModal, userId, dispatch }) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  // set initial values if on 'edit' mode
+  useEffect(() => {
+    if (editTask) {
+      setTitle(editTask.title);
+      editTask.details && setDetails(editTask.details);
+      setdeadline(new Date(editTask.deadline));
+      editTask.subtasks && setSubtasks(editTask.subtasks);
+      if (editTask.category) {
+        setCategories([{ label: editTask.category, value: editTask.category }]);
+        setSelectedCategory(editTask.category);
+      }
+      editTask.tags && setTags(editTask.tags);
+    }
+  }, [editTask]);
+
   /** handle adding of task */
   const handleAddTask = async () => {
     setIsLoading(true);
@@ -84,6 +110,17 @@ const CreateTask = ({ modalVisible, setShowTaskModal, userId, dispatch }) => {
     // add task to firestore & update redux state
     dispatch(addTask(userId, taskDetails));
     setIsLoading(false);
+
+    // reset all states
+    resetStates();
+    setShowTaskModal(false);
+  };
+
+  // update task details
+  const handleEditTask = () => {
+    console.log('edit task');
+    setEditTask(null);
+    setShowTaskModal(false);
   };
 
   // add a new (unique) tag to the list
@@ -167,6 +204,9 @@ const CreateTask = ({ modalVisible, setShowTaskModal, userId, dispatch }) => {
   // close modal & reset all states
   const handleCancelPress = () => {
     resetStates();
+    if (editTask) {
+      setEditTask(null);
+    }
     setShowTaskModal(false);
   };
 
@@ -191,7 +231,9 @@ const CreateTask = ({ modalVisible, setShowTaskModal, userId, dispatch }) => {
         <View style={[global.container, styles.container]}>
           {/* header */}
           <View style={styles.row}>
-            <Text style={[global.text, styles.header]}>New Task</Text>
+            <Text style={[global.text, styles.header]}>
+              {editTask ? 'Edit Task' : 'New Task'}
+            </Text>
             <Text style={styles.cancelTxt} onPress={handleCancelPress}>
               Cancel
             </Text>
@@ -379,10 +421,14 @@ const CreateTask = ({ modalVisible, setShowTaskModal, userId, dispatch }) => {
           </KeyboardAwareScrollView>
 
           {/* ===== submit button ===== */}
-          <TouchableOpacity style={styles.createBtn} onPress={handleAddTask}>
+          <TouchableOpacity
+            style={styles.createBtn}
+            onPress={editTask ? handleEditTask : handleAddTask}>
             <Text style={styles.createBtnText}>
               {isLoading ? (
                 <ActivityIndicator size="small" color="#fff" />
+              ) : editTask ? (
+                'Update'
               ) : (
                 'Create'
               )}

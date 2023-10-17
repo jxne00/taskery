@@ -1,4 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack';
+import { MenuProvider } from 'react-native-popup-menu';
 
 import Home from '../screens/Main/Home';
 import Profile from '../screens/Main/Profile';
@@ -12,14 +13,16 @@ const StackC = createStackNavigator();
 
 const HomeStack = () => {
   return (
-    <StackH.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        headerShown: false,
-        gestureEnabled: false, // prevent swipe to go back
-      }}>
-      <StackH.Screen name="Home" component={Home} />
-    </StackH.Navigator>
+    <MenuProvider>
+      <StackH.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          headerShown: false,
+          gestureEnabled: false, // prevent swipe to go back
+        }}>
+        <StackH.Screen name="Home" component={Home} />
+      </StackH.Navigator>
+    </MenuProvider>
   );
 };
 

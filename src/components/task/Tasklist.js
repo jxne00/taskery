@@ -3,12 +3,25 @@ import { View, FlatList, Text, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
 import { useTheme } from '../../../utils/theme/ThemeContext';
+import ContextMenu from './ContextMenu';
 
 /**
  * a flatlist of tasks with its details
+ * @param {array} tasklist - list of tasks
+ * @param {function} handleEdit - handle editing of task
+ * @param {function} handleDelete - handle deleting of task
  */
-const Tasklist = ({ tasklist }) => {
+const Tasklist = ({ tasklist, handleEdit, handleDelete }) => {
   const { theme } = useTheme();
+
+  const handleMenuPress = (value, id) => {
+    if (value === 'edit') {
+      handleEdit(id);
+    }
+    if (value === 'delete') {
+      handleDelete(id);
+    }
+  };
 
   // render flatlist item
   const renderTask = ({ item }) => (
@@ -42,27 +55,32 @@ const Tasklist = ({ tasklist }) => {
         </Text>
       )}
 
-      {/* tags */}
-      {item.tags && (
-        <View style={styles.tagContainer}>
-          {item.tags.map((tag) => (
-            <View
-              key={tag.name}
-              style={[
-                styles.tagBox,
-                {
-                  backgroundColor: theme.backgroundSec,
-                  borderColor: tag.color,
-                },
-              ]}>
-              <AntDesign name="tag" size={16} color={tag.color} />
-              <Text style={[styles.tagText, { color: theme.text }]}>
-                {tag.name}
-              </Text>
-            </View>
-          ))}
-        </View>
-      )}
+      <View style={styles.btmRow}>
+        {/* tags */}
+        {item.tags && (
+          <View style={styles.tagContainer}>
+            {item.tags.map((tag) => (
+              <View
+                key={tag.name}
+                style={[
+                  styles.tagBox,
+                  {
+                    backgroundColor: theme.backgroundSec,
+                    borderColor: tag.color,
+                  },
+                ]}>
+                <AntDesign name="tag" size={16} color={tag.color} />
+                <Text style={[styles.tagText, { color: theme.text }]}>
+                  {tag.name}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* context menu */}
+        <ContextMenu handleMenuPress={handleMenuPress} id={item.id} />
+      </View>
     </View>
   );
 
@@ -112,7 +130,6 @@ const styles = StyleSheet.create({
   tagContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    marginTop: 10,
   },
   tagBox: {
     flexDirection: 'row',
@@ -128,6 +145,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 5,
     fontFamily: 'OpenSans-SemiBold',
+  },
+  btmRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
   },
 });
 
