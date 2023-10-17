@@ -13,63 +13,43 @@ const taskSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
+    // start the fetch
     fetchTasksRequest: (state) => {
       state.isLoading = true;
       state.error = null;
     },
+    // fetch successful
     fetchTasksSuccess: (state, action) => {
       state.isLoading = false;
 
       // convert tasks array into object
+      // allows more efficient sorting/filtering
       action.payload.forEach((task) => {
         state.tasks[task.id] = task;
       });
     },
+    // set error message if fetch unsuccessful
     fetchTasksFailure: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     },
 
-    // =============== add task (not implemented yet)
-    addTaskRequest: (state) => {
-      state.isLoading = true;
-      state.error = null;
-    },
+    // add new task & update state
     addTaskSuccess: (state, action) => {
-      state.isLoading = false;
-      state.tasks[action.payload.id] = action.payload;
-    },
-    addTaskFailure: (state, action) => {
-      state.isLoading = false;
-      state.error = action.payload;
+      const newTask = action.payload;
+      state.tasks[newTask.id] = newTask;
     },
 
     // =============== edit task (not implemented yet)
-    editTaskRequest: (state) => {
-      state.isLoading = true;
-      state.error = null;
-    },
     editTaskSuccess: (state, action) => {
       const updatedTask = action.payload;
       state.tasks[updatedTask.id] = updatedTask;
     },
-    editTaskFailure: (state, action) => {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
 
     // =============== delete task (not implemented yet)
-    deleteTaskRequest: (state) => {
-      state.isLoading = true;
-      state.error = null;
-    },
     deleteTaskSuccess: (state, action) => {
       const taskId = action.payload;
       delete state.tasks[taskId];
-    },
-    deleteTaskFailure: (state, action) => {
-      state.isLoading = false;
-      state.error = action.payload;
     },
   },
 });
@@ -79,15 +59,12 @@ export const {
   fetchTasksSuccess,
   fetchTasksFailure,
 
-  addTaskRequest,
   addTaskSuccess,
   addTaskFailure,
 
-  editTaskRequest,
   editTaskSuccess,
   editTaskFailure,
 
-  deleteTaskRequest,
   deleteTaskSuccess,
   deleteTaskFailure,
 } = taskSlice.actions;

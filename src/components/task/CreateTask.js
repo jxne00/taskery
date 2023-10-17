@@ -16,15 +16,22 @@ import { AntDesign } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
 // import ColorPicker from 'reanimated-color-picker';
 
-import { useTheme } from '../../../utils/theme/ThemeContext';
 import useGlobalStyles from '../../../utils/hooks/globalStyles';
+import { useTheme } from '../../../utils/theme/ThemeContext';
 
-import { auth, db } from '../../../utils/config/firebase';
+import { addTask } from '../../../utils/redux/actions/taskActions';
 
 import DeadlinePicker from '../DatePicker';
 import { HeaderDivider, Divider } from '../Elements';
 
-const CreateTask = ({ modalVisible, setShowTaskModal }) => {
+/**
+ * modal to create a new task
+ * @param {boolean} modalVisible - visibility of modal
+ * @param {function} setShowTaskModal - modal visibility setter
+ * @param {string} userId - current user's id
+ * @param {function} dispatch - redux dispatch
+ */
+const CreateTask = ({ modalVisible, setShowTaskModal, userId, dispatch }) => {
   const { theme, themeType } = useTheme();
   const global = useGlobalStyles();
 
@@ -51,42 +58,32 @@ const CreateTask = ({ modalVisible, setShowTaskModal }) => {
   const presetColors = ['#0000ff', '#008080', '#ff0000', '#ee82ee', '#ffff00'];
   const [selectedColor, setSelectedColor] = useState(presetColors[0]);
 
-  // add task to firestore
+  const [isLoading, setIsLoading] = useState(false);
+
+  /** handle adding of task */
   const handleAddTask = async () => {
-    // make sure there is title entered
+    setIsLoading(true);
+
     if (!title) {
+      // title cannot be null
       Alert.alert('Title cannot be empty', 'Please set a title.');
+      setIsLoading(false);
       return;
     }
 
-    // all details to be added to firestore
+    // details of new task to be added
     const taskDetails = {
       title,
       details,
-      deadline,
+      deadline: deadline.toLocaleDateString(),
       subtasks,
       category: selectedCategory,
       tags,
     };
 
-    // get current user
-    const user = auth.currentUser;
-
-    // add task to firestore collection: users/{user.uid}/tasks
-    await db
-      .collection('users')
-      .doc(user.uid)
-      .collection('tasks')
-      .add(taskDetails)
-      .then(() => {
-        // reset states and close modal on success
-        setShowTaskModal(false);
-        resetStates();
-      })
-      .catch((err) => {
-        // show alert if unsuccessful
-        Alert.alert('Error adding task', err.message);
-      });
+    // add task to firestore & update redux state
+    dispatch(addTask(userId, taskDetails));
+    setIsLoading(false);
   };
 
   // add a new (unique) tag to the list
@@ -169,10 +166,7 @@ const CreateTask = ({ modalVisible, setShowTaskModal }) => {
 
   // close modal & reset all states
   const handleCancelPress = () => {
-    // reset all states
     resetStates();
-
-    // close modal
     setShowTaskModal(false);
   };
 
@@ -386,7 +380,13 @@ const CreateTask = ({ modalVisible, setShowTaskModal }) => {
 
           {/* ===== submit button ===== */}
           <TouchableOpacity style={styles.createBtn} onPress={handleAddTask}>
-            <Text style={styles.createBtnText}>Create Task</Text>
+            <Text style={styles.createBtnText}>
+              {isLoading ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                'Create'
+              )}
+            </Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

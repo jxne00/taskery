@@ -53,6 +53,15 @@ const Home = () => {
     );
   }
 
+  // display message if no tasks
+  if (!tasks) {
+    return (
+      <View style={styles.centered}>
+        <Text style={{ color: theme.textLight }}>No tasks add yet!</Text>
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={global.container}>
       <View style={[global.container, styles.container]}>
@@ -102,6 +111,8 @@ const Home = () => {
         <CreateTask
           modalVisible={showTaskModal}
           setShowTaskModal={setShowTaskModal}
+          userId={userId}
+          dispatch={dispatch}
         />
 
         <CustomStatusBar />
@@ -117,22 +128,20 @@ const styles = StyleSheet.create({
   centered: {
     flex: 1,
     justifyContent: 'center',
-    marginTop: 30,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '90%',
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   appName: {
-    fontSize: 30,
+    fontSize: 28,
     fontFamily: 'OpenSans-Bold',
   },
   tasksTitle: {
     fontSize: 26,
-    textDecorationLine: 'underline',
     fontFamily: 'OpenSans-Bold',
   },
   calendarIcon: {

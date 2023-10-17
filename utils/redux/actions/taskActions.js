@@ -1,17 +1,11 @@
-// actions/tasksActions.js
+import { Alert } from 'react-native';
 import {
   fetchTasksRequest,
   fetchTasksSuccess,
   fetchTasksFailure,
-  addTaskRequest,
   addTaskSuccess,
-  addTaskFailure,
-  editTaskRequest,
   editTaskSuccess,
-  editTaskFailure,
-  deleteTaskRequest,
   deleteTaskSuccess,
-  deleteTaskFailure,
 } from '../slices/taskSlice';
 import { db } from '../../config/firebase';
 
@@ -61,8 +55,6 @@ const fetchTasks = (userId) => (dispatch) => {
  */
 const addTask = (userId, taskData) => async (dispatch) => {
   try {
-    dispatch(addTaskRequest());
-
     const taskRef = await db
       .collection('users')
       .doc(userId)
@@ -71,7 +63,7 @@ const addTask = (userId, taskData) => async (dispatch) => {
 
     dispatch(addTaskSuccess({ id: taskRef.id, ...taskData }));
   } catch (error) {
-    dispatch(addTaskFailure(error.message));
+    Alert.alert('Error adding task', error.message);
   }
 };
 
@@ -83,8 +75,6 @@ const addTask = (userId, taskData) => async (dispatch) => {
  */
 const editTask = (userId, taskId, updatedData) => async (dispatch) => {
   try {
-    dispatch(editTaskRequest());
-
     await db
       .collection('users')
       .doc(userId)
@@ -94,7 +84,7 @@ const editTask = (userId, taskId, updatedData) => async (dispatch) => {
 
     dispatch(editTaskSuccess({ id: taskId, ...updatedData }));
   } catch (error) {
-    dispatch(editTaskFailure(error.message));
+    Alert.alert('Error editing task', error.message);
   }
 };
 
@@ -105,8 +95,6 @@ const editTask = (userId, taskId, updatedData) => async (dispatch) => {
  */
 const deleteTask = (userId, taskId) => async (dispatch) => {
   try {
-    dispatch(deleteTaskRequest());
-
     await db
       .collection('users')
       .doc(userId)
@@ -116,7 +104,7 @@ const deleteTask = (userId, taskId) => async (dispatch) => {
 
     dispatch(deleteTaskSuccess(taskId));
   } catch (error) {
-    dispatch(deleteTaskFailure(error.message));
+    Alert.alert('Error deleting task', error.message);
   }
 };
 

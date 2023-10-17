@@ -2,10 +2,14 @@ import React from 'react';
 import { View, FlatList, Text, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
+import { useTheme } from '../../../utils/theme/ThemeContext';
+
 /**
  * a flatlist of tasks with its details
  */
-const Tasklist = ({ tasklist, theme }) => {
+const Tasklist = ({ tasklist }) => {
+  const { theme } = useTheme();
+
   // render flatlist item
   const renderTask = ({ item }) => (
     <View style={[styles.taskContainer, { borderColor: theme.textLight }]}>
@@ -48,7 +52,7 @@ const Tasklist = ({ tasklist, theme }) => {
                 styles.tagBox,
                 {
                   backgroundColor: theme.backgroundSec,
-                  borderColor: theme.textLight,
+                  borderColor: tag.color,
                 },
               ]}>
               <AntDesign name="tag" size={16} color={tag.color} />
@@ -67,12 +71,15 @@ const Tasklist = ({ tasklist, theme }) => {
       data={tasklist}
       keyExtractor={(item) => item.id}
       renderItem={renderTask}
-      style={{ width: '90%' }}
+      style={styles.flatlist}
     />
   );
 };
 
 const styles = StyleSheet.create({
+  flatlist: {
+    width: '90%',
+  },
   taskContainer: {
     paddingHorizontal: 16,
     paddingVertical: 10,
@@ -94,7 +101,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Medium',
   },
   taskTitle: {
-    marginTop: 10,
+    marginTop: 6,
     fontSize: 20,
     fontFamily: 'OpenSans-Bold',
   },
@@ -111,15 +118,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 5,
-    borderWidth: 1,
-    borderRadius: 10,
+    marginRight: 6,
+    borderWidth: 2,
+    borderRadius: 4,
     paddingHorizontal: 6,
     paddingVertical: 3,
   },
   tagText: {
-    fontSize: 15,
+    fontSize: 14,
     marginLeft: 5,
-    fontFamily: 'OpenSans-Medium',
+    fontFamily: 'OpenSans-SemiBold',
   },
 });
 
