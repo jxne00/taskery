@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -17,23 +17,26 @@ import { auth } from '../../../utils/config/firebase';
 const Register = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassowrd] = useState('');
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [focusedBox, setFocusedBox] = useState(''); // 'email', 'password','password2'
+
   const [isLoading, setIsLoading] = useState(false);
+
+  const passwordRef = useRef(null);
+  const confirmPasswordRef = useRef(null);
 
   /** register new user with firebase auth */
   const handleRegister = () => {
     // ensure no empty fields
     if (!email || !password || !confirmPassword) {
-      Alert.alert(
-        'Oops',
-        'Looks like you missed something.\nPlease fill in all fields and try again.',
-      );
+      Alert.alert('Login Failed', 'Please fill in all fields and try again.');
       return;
     }
 
-    // ensure password and confirm password match
+    // check if password and confirm password match
     if (password !== confirmPassword) {
       Alert.alert('Passwords do not match.', 'Please re-enter your password.');
       return;
@@ -76,7 +79,6 @@ const Register = ({ navigation }) => {
         <Ionicons
           name="md-arrow-back"
           size={28}
-          color="#0c0c0c"
           style={styles.backBtn}
           onPress={handleBackPress}
         />
@@ -86,23 +88,44 @@ const Register = ({ navigation }) => {
         <View style={styles.inputContainer}>
           {/* email input */}
           <Text style={styles.inputLabel}>Email:</Text>
-          <TextInput
-            value={email}
-            style={styles.textInput}
-            placeholder="Enter your email"
-            placeholderTextColor={'#a9a9a9'}
-            autoCapitalize="none"
-            autoCompleteType="off"
-            autoCorrect={false}
-            keyboardType="email-address"
-            onChangeText={(text) => setEmail(text)}
-          />
+
+          <View
+            style={[
+              styles.inputBox,
+              focusedBox === 'email' && styles.focusedBox,
+            ]}>
+            <Ionicons name="person" size={24} color="#a9a9a9" />
+            <TextInput
+              value={email}
+              style={styles.textInput}
+              placeholder="Enter your email"
+              placeholderTextColor={'#a9a9a9'}
+              autoCapitalize="none"
+              autoCompleteType="off"
+              autoCorrect={false}
+              keyboardType="email-address"
+              onChangeText={(text) => setEmail(text)}
+              onFocus={() => setFocusedBox('email')}
+              onBlur={() => setFocusedBox('')}
+              onSubmitEditing={() =>
+                passwordRef.current && passwordRef.current.focus()
+              }
+              returnKeyType="next"
+            />
+          </View>
 
           <View style={{ height: 20 }} />
 
           {/* password input */}
           <Text style={styles.inputLabel}>Password:</Text>
-          <View style={styles.inputBox}>
+
+          <View
+            style={[
+              styles.inputBox,
+              focusedBox === 'password' && styles.focusedBox,
+            ]}>
+            <Ionicons name="md-lock-closed" size={24} color="#a9a9a9" />
+
             <TextInput
               value={password}
               style={styles.textInput}
@@ -113,12 +136,19 @@ const Register = ({ navigation }) => {
               autoCorrect={false}
               secureTextEntry={!showPassword}
               onChangeText={(text) => setPassword(text)}
+              onFocus={() => setFocusedBox('password')}
+              onBlur={() => setFocusedBox('')}
+              ref={passwordRef}
+              onSubmitEditing={() =>
+                confirmPasswordRef.current && confirmPasswordRef.current.focus()
+              }
+              returnKeyType="next"
             />
 
             <Ionicons
               name={showPassword ? 'eye' : 'eye-off'}
               size={24}
-              color="#a9a9a9"
+              style={styles.inputRightIcon}
               onPress={() => setShowPassword(!showPassword)}
             />
           </View>
@@ -127,7 +157,13 @@ const Register = ({ navigation }) => {
 
           {/* confirm password input */}
           <Text style={styles.inputLabel}>Confirm Password:</Text>
-          <View style={styles.inputBox}>
+          <View
+            style={[
+              styles.inputBox,
+              focusedBox === 'password2' && styles.focusedBox,
+            ]}>
+            <Ionicons name="md-lock-closed" size={24} color="#a9a9a9" />
+
             <TextInput
               value={confirmPassword}
               style={styles.textInput}
@@ -138,12 +174,16 @@ const Register = ({ navigation }) => {
               autoCorrect={false}
               secureTextEntry={!showConfirmPassword}
               onChangeText={(text) => setConfirmPassowrd(text)}
+              onFocus={() => setFocusedBox('password2')}
+              onBlur={() => setFocusedBox('')}
+              ref={confirmPasswordRef}
+              returnKeyType="done"
             />
 
             <Ionicons
               name={showConfirmPassword ? 'eye' : 'eye-off'}
               size={24}
-              color="#a9a9a9"
+              style={styles.inputRightIcon}
               onPress={() => setShowConfirmPassword(!showConfirmPassword)}
             />
           </View>
@@ -166,95 +206,99 @@ const Register = ({ navigation }) => {
         </Text>
       </View>
 
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
     </SafeAreaView>
   );
 };
 
+let PRIMARY_COL = '#0157ac';
+
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#907563',
+    backgroundColor: '#FDF3EC',
   },
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#907563',
+    backgroundColor: '#FDF3EC',
   },
+
   backBtn: {
     position: 'absolute',
     top: 50,
     left: 20,
+    backgroundColor: '#d7d7d7',
+    padding: 5,
+    color: '#0c0c0c',
   },
+
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
     marginTop: '20%',
-    marginBottom: 20,
     textAlign: 'center',
-    color: '#fff',
+    color: '#1b1b1b',
     fontFamily: 'OpenSans-Bold',
   },
+
   inputContainer: {
     marginVertical: 20,
     width: '90%',
+    marginTop: '20%',
   },
   inputLabel: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 16,
     marginBottom: 5,
     marginLeft: 5,
-    color: '#FDF3EC',
+    color: PRIMARY_COL,
     fontFamily: 'OpenSans-SemiBold',
   },
   inputBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    height: 45,
+    paddingHorizontal: 10,
     borderWidth: 1,
-    borderColor: '#FDF3EC',
-    borderRadius: 5,
-    backgroundColor: '#FDF3EC',
-    height: 40,
-    paddingRight: 40,
+    borderColor: '#7e7d7d',
+    borderRadius: 15,
+    backgroundColor: '#f4f2f1',
+  },
+  inputRightIcon: {
+    marginLeft: 'auto',
   },
   textInput: {
-    borderWidth: 1,
-    borderColor: '#FDF3EC',
-    borderRadius: 5,
-    backgroundColor: '#FDF3EC',
-    height: 40,
+    height: 45,
     paddingHorizontal: 12,
-    fontSize: 18,
+    fontSize: 16,
     width: '100%',
     fontFamily: 'OpenSans-Medium',
   },
+  focusedBox: {
+    borderColor: PRIMARY_COL,
+    borderWidth: 2,
+  },
+
   registerBtn: {
-    backgroundColor: '#171717',
+    backgroundColor: PRIMARY_COL,
     borderRadius: 20,
     paddingVertical: 12,
-    marginRight: '5%',
     alignItems: 'center',
-    marginTop: 30,
-    alignSelf: 'flex-end',
-    width: '40%',
+    width: '90%',
+    marginTop: 'auto',
   },
   buttonText: {
     color: '#fff',
     fontSize: 20,
-    fontWeight: 'bold',
     fontFamily: 'OpenSans-SemiBold',
   },
   toLoginText: {
-    marginTop: 'auto',
-    marginBottom: 20,
-    color: '#fff',
+    marginVertical: 20,
+    color: '#020202',
     fontSize: 18,
     fontFamily: 'OpenSans-Medium',
   },
   loginTxt: {
-    color: '#7cbaf9',
-    fontWeight: 'bold',
+    color: PRIMARY_COL,
     fontFamily: 'OpenSans-Regular',
   },
 });

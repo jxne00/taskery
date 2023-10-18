@@ -1,5 +1,5 @@
+import React, { useState, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -7,6 +7,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
   ActivityIndicator,
   Alert,
 } from 'react-native';
@@ -20,7 +21,11 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false); // password visibility
+
   const [isLoading, setIsLoading] = useState(false);
+  const [focusedBox, setFocusedBox] = useState(''); // 'email' or 'password'
+
+  const passwordRef = useRef(null);
 
   /** login authentication with firebase */
   const handleLogin = () => {
@@ -28,16 +33,13 @@ const Login = ({ navigation }) => {
 
     // check for empty fields
     if (!email || !password) {
-      Alert.alert(
-        'Oops',
-        'Looks like you missed something.\nPlease fill in all fields and try again.',
-      );
+      Alert.alert('Login Failed', 'Please fill in all fields and try again.');
       setIsLoading(false);
       return;
     }
 
-    // sign in using firebase auth
     auth
+      // firebase auth with email and password
       .signInWithEmailAndPassword(email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
@@ -52,25 +54,19 @@ const Login = ({ navigation }) => {
 
           // navigate to main screens
           navigation.navigate('HomeTabs');
-
           setIsLoading(false);
         }
       })
-      // catch errors and show alert
+      // catch errors and show alerts
       .catch((error) => {
         const code = error.code;
 
-        // show alert if login details are invalid.
-        if (code === 'auth/invalid-email' || code === 'auth/user-not-found')
-          Alert.alert(
-            'Try again',
-            'User does not exist. Please enter a valid email and password.',
-          );
-        else if (code === 'auth/wrong-password')
-          Alert.alert(
-            'Try again',
-            'Incorrect password. Please enter a valid email and password.',
-          );
+        if (
+          code === 'auth/invalid-email' ||
+          code === 'auth/user-not-found' ||
+          code === 'auth/wrong-password'
+        )
+          Alert.alert('Try again', 'Please enter a valid email and password.');
         else alert(error.message);
 
         setIsLoading(false);
@@ -81,30 +77,48 @@ const Login = ({ navigation }) => {
     <SafeAreaView style={styles.safeArea}>
       {/* main container */}
       <View style={styles.container}>
-        <Text style={styles.headerText}>Taskery</Text>
+        <Text style={styles.title}>taskery</Text>
+        <Text style={styles.subtitle}>Login to your account</Text>
 
-        <Text style={styles.title}>Login</Text>
-
-        <View style={styles.inputContainer}>
+        <KeyboardAvoidingView behavior="padding" style={styles.inputContainer}>
           {/* email input */}
           <Text style={styles.inputLabel}>Email:</Text>
-          <TextInput
-            value={email}
-            style={styles.textInput}
-            placeholder="Enter your email"
-            placeholderTextColor={'#a9a9a9'}
-            autoCapitalize="none"
-            autoCompleteType="off"
-            autoCorrect={false}
-            keyboardType="email-address"
-            onChangeText={(text) => setEmail(text)}
-          />
+          <View
+            style={[
+              styles.inputBox,
+              focusedBox === 'email' && styles.focusedBox,
+            ]}>
+            <Ionicons name="person" size={24} color="#a9a9a9" />
+            <TextInput
+              value={email}
+              style={[styles.textInput]}
+              placeholder="Enter your email"
+              placeholderTextColor={'#a9a9a9'}
+              autoCapitalize="none"
+              autoCompleteType="off"
+              autoCorrect={false}
+              keyboardType="email-address"
+              onChangeText={(text) => setEmail(text)}
+              onFocus={() => setFocusedBox('email')}
+              onBlur={() => setFocusedBox('')}
+              onSubmitEditing={() =>
+                passwordRef.current && passwordRef.current.focus()
+              }
+              returnKeyType="next"
+            />
+          </View>
 
           <View style={{ height: 20 }} />
 
           {/* password input */}
           <Text style={styles.inputLabel}>Password:</Text>
-          <View style={styles.inputBox}>
+          <View
+            style={[
+              styles.inputBox,
+              focusedBox === 'password' && styles.focusedBox,
+            ]}>
+            <Ionicons name="md-lock-closed" size={24} color="#a9a9a9" />
+
             <TextInput
               value={password}
               style={styles.textInput}
@@ -115,121 +129,136 @@ const Login = ({ navigation }) => {
               autoCompleteType="off"
               autoCorrect={false}
               onChangeText={(text) => setPassword(text)}
+              onFocus={() => setFocusedBox('password')}
+              onBlur={() => setFocusedBox('')}
+              ref={passwordRef}
+              returnKeyType="done"
             />
 
             <Ionicons
               name={showPassword ? 'eye' : 'eye-off'}
               size={24}
-              color="#a9a9a9"
+              color="#3e3e3e"
+              style={styles.inputRightIcon}
               onPress={() => setShowPassword(!showPassword)}
             />
           </View>
-        </View>
+        </KeyboardAvoidingView>
 
         <TouchableOpacity
           onPress={handleLogin}
           disabled={isLoading}
           style={styles.loginBtn}>
-          <Text style={styles.loginBtnText}>
+          <Text style={styles.loginText}>
             {isLoading ? <ActivityIndicator visible={isLoading} /> : 'Login'}
           </Text>
         </TouchableOpacity>
 
-        <Text
-          style={styles.register}
-          onPress={() => navigation.navigate('Register')}>
-          Register for an account?
-        </Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Register')}
+          disabled={isLoading}
+          style={styles.registerBtn}>
+          <Text style={styles.registerText}>Register</Text>
+        </TouchableOpacity>
 
-        <StatusBar style="light" />
+        <StatusBar style="dark" />
       </View>
     </SafeAreaView>
   );
 };
 
+let PRIMARY_COL = '#0157ac';
+
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#907563',
+    backgroundColor: '#FDF3EC',
   },
   container: {
     flex: 1,
-    backgroundColor: '#907563',
+    backgroundColor: '#FDF3EC',
     alignItems: 'center',
   },
-  headerText: {
+  title: {
     marginTop: 20,
     fontSize: 34,
-    fontWeight: 'bold',
     fontFamily: 'OpenSans-Bold',
     textAlign: 'center',
-    color: '#ebd8cc',
+    color: PRIMARY_COL,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    textAlign: 'left',
-    color: '#ffffff',
-    marginBottom: 20,
-    marginTop: '30%',
-    fontFamily: 'OpenSans-Bold',
+  subtitle: {
+    fontSize: 18,
+    color: '#4e4e4e',
+    fontFamily: 'OpenSans-Medium',
   },
+
+  // text input area
   inputContainer: {
-    marginVertical: 20,
     width: '90%',
+    marginTop: '30%',
   },
   inputLabel: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 16,
     marginBottom: 5,
     marginLeft: 5,
-    color: '#FDF3EC',
+    color: PRIMARY_COL,
     fontFamily: 'OpenSans-SemiBold',
   },
   inputBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    height: 45,
+    paddingHorizontal: 10,
     borderWidth: 1,
-    borderColor: '#FDF3EC',
-    borderRadius: 5,
-    backgroundColor: '#FDF3EC',
-    height: 40,
-    paddingRight: 40,
+    borderColor: '#7e7d7d',
+    borderRadius: 15,
+    backgroundColor: '#f4f2f1',
+  },
+  inputRightIcon: {
+    marginLeft: 'auto',
   },
   textInput: {
-    borderWidth: 1,
-    borderColor: '#FDF3EC',
-    borderRadius: 5,
-    backgroundColor: '#FDF3EC',
-    height: 40,
+    height: 45,
     paddingHorizontal: 12,
-    fontSize: 18,
+    fontSize: 16,
     width: '100%',
     fontFamily: 'OpenSans-Medium',
   },
+  focusedBox: {
+    borderColor: PRIMARY_COL,
+    borderWidth: 2,
+  },
+
+  // buttons
   loginBtn: {
-    backgroundColor: '#1d1d1d',
-    borderRadius: 20,
+    backgroundColor: PRIMARY_COL,
+    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
     width: '90%',
-    height: 44,
-    marginVertical: 20,
+    height: 45,
+    marginTop: 'auto',
   },
-  loginBtnText: {
+  loginText: {
     color: '#FDF3EC',
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
     fontFamily: 'OpenSans-SemiBold',
   },
-  register: {
-    fontSize: 17,
-    textAlign: 'center',
-    marginTop: '10%',
-    textDecorationLine: 'underline',
-    color: '#fff',
-    fontFamily: 'OpenSans-Regular',
+  registerBtn: {
+    borderBlockColor: '#242424',
+    borderWidth: 1,
+    height: 45,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '90%',
+    marginBottom: 20,
+    marginTop: 10,
+  },
+  registerText: {
+    color: '#242424',
+    fontSize: 18,
+    fontFamily: 'OpenSans-SemiBold',
   },
 });
 

@@ -32,7 +32,7 @@ const Tasklist = ({ tasklist, handleEdit, handleDelete }) => {
           <AntDesign
             name={item.status ? 'checkcircle' : 'closecircle'}
             size={18}
-            color={item.status ? theme.green : theme.red}
+            color={item.status ? theme.green : theme.appName}
           />{' '}
           {item.status ? 'Completed' : 'Not Done'}
         </Text>
