@@ -6,9 +6,7 @@ const initialState = {
   error: null,
 };
 
-/**
- * Redux slice for user's tasks states
- */
+// redux slice for tasks
 const taskSlice = createSlice({
   name: 'tasks',
   initialState,

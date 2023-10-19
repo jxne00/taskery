@@ -9,7 +9,7 @@ const Stack = createStackNavigator();
 const AuthStack = () => {
   return (
     <Stack.Navigator
-      initialRouteName="Onboarding"
+      initialRouteName="Login"
       screenOptions={{
         headerShown: false,
         gestureEnabled: false, // prevent swipe to go back

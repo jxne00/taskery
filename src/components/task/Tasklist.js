@@ -5,6 +5,8 @@ import { AntDesign } from '@expo/vector-icons';
 import { useTheme } from '../../../utils/theme/ThemeContext';
 import ContextMenu from './ContextMenu';
 
+import { toDateDisplay } from '../../../utils/helper';
+
 /**
  * a flatlist of tasks with its details
  * @param {array} tasklist - list of tasks
@@ -40,7 +42,7 @@ const Tasklist = ({ tasklist, handleEdit, handleDelete }) => {
         {/* deadline */}
         <Text style={[styles.taskDeadline, { color: theme.textLight }]}>
           <AntDesign name="calendar" size={18} color={theme.textLight} />{' '}
-          {item.deadline}
+          {toDateDisplay(item.deadline)}
         </Text>
       </View>
 

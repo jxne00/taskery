@@ -32,15 +32,15 @@ const Login = ({ navigation }) => {
     setIsLoading(true);
 
     // check for empty fields
-    if (!email || !password) {
-      Alert.alert('Login Failed', 'Please fill in all fields and try again.');
-      setIsLoading(false);
-      return;
-    }
+    // if (!email || !password) {
+    //   Alert.alert('Login Failed', 'Please fill in all fields and try again.');
+    //   setIsLoading(false);
+    //   return;
+    // }
 
-    auth
-      // firebase auth with email and password
-      .signInWithEmailAndPassword(email, password)
+    auth // firebase auth with email and password
+      // .signInWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword('june@demo.com', 'password')
       .then((userCredentials) => {
         const user = userCredentials.user;
 

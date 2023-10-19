@@ -39,7 +39,6 @@ const Home = () => {
   // go to create task screen with pre-filled details
   const handleEdit = (id) => {
     const task = tasks[id];
-    console.log('(TODO!!!) edit task with id: ', task);
 
     // show create task modal
     setShowTaskModal(true);

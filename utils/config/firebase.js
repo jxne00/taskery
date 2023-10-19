@@ -39,4 +39,10 @@ const fetchAvatarUrls = async () => {
   return avatars;
 };
 
-export { auth, db, storage, fetchAvatarUrls };
+// convert milliseconds to firebase timestamp
+const toTimestamp = (milliseconds) => {
+  const date = new Date(milliseconds);
+  return firebase.firestore.Timestamp.fromDate(date);
+};
+
+export { auth, db, storage, fetchAvatarUrls, toTimestamp };

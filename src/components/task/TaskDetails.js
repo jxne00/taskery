@@ -19,7 +19,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import useGlobalStyles from '../../../utils/hooks/globalStyles';
 import { useTheme } from '../../../utils/theme/ThemeContext';
 
-import { addTask } from '../../../utils/redux/actions/taskActions';
+import { addTask, updateTask } from '../../../utils/redux/actions/taskActions';
 
 import DeadlinePicker from '../DatePicker';
 import { HeaderDivider, Divider } from '../Elements';
@@ -63,7 +63,7 @@ const TaskDetails = (props) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [open, setOpen] = useState(false);
 
-  // tags
+  // tags & tag color
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState([]);
   const presetColors = ['#0000ff', '#008080', '#ff0000', '#ee82ee', '#ffff00'];
@@ -87,7 +87,7 @@ const TaskDetails = (props) => {
   }, [editTask]);
 
   /** handle adding of task */
-  const handleAddTask = async () => {
+  const handleSubmit = async () => {
     setIsLoading(true);
 
     if (!title) {
@@ -97,29 +97,29 @@ const TaskDetails = (props) => {
       return;
     }
 
-    // details of new task to be added
+    // details of task
     const taskDetails = {
       title,
       details,
-      deadline: deadline.toLocaleDateString(),
+      deadline: deadline.getTime(), // in milliseconds
       subtasks,
       category: selectedCategory,
       tags,
     };
 
-    // add task to firestore & update redux state
-    dispatch(addTask(userId, taskDetails));
+    // create or update task
+    if (editTask) {
+      // update task & redux state
+      dispatch(updateTask(userId, editTask.id, taskDetails));
+    } else {
+      // add task to firestore & update redux state
+      dispatch(addTask(userId, taskDetails));
+    }
+
     setIsLoading(false);
 
     // reset all states
     resetStates();
-    setShowTaskModal(false);
-  };
-
-  // update task details
-  const handleEditTask = () => {
-    console.log('edit task');
-    setEditTask(null);
     setShowTaskModal(false);
   };
 
@@ -421,9 +421,7 @@ const TaskDetails = (props) => {
           </KeyboardAwareScrollView>
 
           {/* ===== submit button ===== */}
-          <TouchableOpacity
-            style={styles.createBtn}
-            onPress={editTask ? handleEditTask : handleAddTask}>
+          <TouchableOpacity style={styles.createBtn} onPress={handleSubmit}>
             <Text style={styles.createBtnText}>
               {isLoading ? (
                 <ActivityIndicator size="small" color="#fff" />

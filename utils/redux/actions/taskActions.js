@@ -7,7 +7,7 @@ import {
   editTaskSuccess,
   deleteTaskSuccess,
 } from '../slices/taskSlice';
-import { db } from '../../config/firebase';
+import { db, toTimestamp } from '../../config/firebase';
 
 /**
  * fetch all task documents from "tasks" collection in firestore
@@ -26,9 +26,11 @@ const fetchTasks = (userId) => (dispatch) => {
           const tasks = snapshot.docs.map((doc) => {
             const data = doc.data();
 
-            // convert firebase timestamp to date string
+            // firestore's 'timestamp' type is non-seriazable
+            // but redux state must be serializable
+            // so my solution is to convert dates to milliseconds
             if (data.deadline) {
-              data.deadline = data.deadline.toDate().toLocaleDateString();
+              data.deadline = data.deadline.toMillis();
             }
 
             return {
@@ -49,17 +51,27 @@ const fetchTasks = (userId) => (dispatch) => {
 };
 
 /**
- * add a new task document to "tasks" collection in firestore
+ * add new task document to "tasks" collection in firestore
+ * and update redux state
  * @param {string} userId - id of user to add task to
  * @param {object} taskData - the task data to add
  */
 const addTask = (userId, taskData) => async (dispatch) => {
   try {
+    // copy of task data to prevent mutation
+    const taskDataCopy = { ...taskData };
+
+    // convert deadline back to firestore 'timestamp' type
+    // (only for the copy that will be added to firestore)
+    if (taskDataCopy.deadline) {
+      taskDataCopy.deadline = toTimestamp(taskDataCopy.deadline);
+    }
+
     const taskRef = await db
       .collection('users')
       .doc(userId)
       .collection('tasks')
-      .add(taskData);
+      .add(taskDataCopy);
 
     dispatch(addTaskSuccess({ id: taskRef.id, ...taskData }));
   } catch (error) {
@@ -73,14 +85,20 @@ const addTask = (userId, taskData) => async (dispatch) => {
  * @param {string} taskId - id of task to edit
  * @param {object} updatedData - the new data to use to update the task
  */
-const editTask = (userId, taskId, updatedData) => async (dispatch) => {
+const updateTask = (userId, taskId, updatedData) => async (dispatch) => {
   try {
+    const updatedDataCopy = { ...updatedData };
+
+    if (updatedDataCopy.deadline) {
+      updatedDataCopy.deadline = toTimestamp(updatedDataCopy.deadline);
+    }
+
     await db
       .collection('users')
       .doc(userId)
       .collection('tasks')
       .doc(taskId)
-      .update(updatedData);
+      .update(updatedDataCopy);
 
     dispatch(editTaskSuccess({ id: taskId, ...updatedData }));
   } catch (error) {
@@ -108,4 +126,4 @@ const deleteTask = (userId, taskId) => async (dispatch) => {
   }
 };
 
-export { fetchTasks, addTask, editTask, deleteTask };
+export { fetchTasks, addTask, updateTask, deleteTask };
