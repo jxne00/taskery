@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   View,
@@ -10,9 +10,10 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import AvatarModal from '../../components/onboarding/AvatarModal';
-
 import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+
+import AvatarModal from '../../components/onboarding/AvatarModal';
 
 import { auth, db } from '../../../utils/config/firebase';
 
@@ -22,42 +23,55 @@ import { auth, db } from '../../../utils/config/firebase';
  */
 const Onboarding = ({ navigation }) => {
   const [name, setName] = useState('');
-  const [avatarIndex, setAvatarIndex] = useState(0);
+  const [chosenAvatar, setChosenAvatar] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [uploaded, setUploaded] = useState(null);
 
-  /** save profile details to firestore 'users' collection */
-  const handleNextPress = () => {
-    setIsLoading(true);
+  // pick image from device's gallery
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1,
+    });
 
-    // get current user
-    const user = auth.currentUser;
+    // set the user's uploaded image
+    if (!result.canceled) {
+      console.log('selected image: ', result);
 
-    if (user.uid) {
-      db.collection('users')
-        .doc(user.uid)
-        .set(
-          {
-            name: name,
-            avatar_path: `a${avatarIndex + 1}.png`,
-            is_public: false,
-            created_at: new Date(),
-          },
-          { merge: true },
-        )
-        .then(() => {
-          setIsLoading(false);
-
-          // navigate to main screens
-          navigation.navigate('HomeTabs');
-        })
-        .catch((error) => {
-          Alert.alert('Error', error.message);
-        });
+      const response = await fetch(result.uri);
+      setUploaded(await response.blob());
     } else {
-      setIsLoading(false);
-      Alert.alert('Error', 'User not found.');
+      alert('You did not select any image.');
     }
+  };
+
+  // capture image using camera
+  const takePhoto = async () => {
+    // get permisson to access camera
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+
+    // return if permission not granted
+    if (status !== 'granted') {
+      alert('Please allow camera access to use this feature.');
+      return;
+    }
+
+    // open camera
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      console.log('picture taken: ', result);
+    } else {
+      console.log('no image selected');
+    }
+  };
+
+  const handleNextPress = () => {
+    console.log('store details to firebase');
   };
 
   return (
@@ -75,8 +89,8 @@ const Onboarding = ({ navigation }) => {
         <AvatarModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
-          avatarIndex={avatarIndex}
-          setAvatarIndex={setAvatarIndex}
+          chosenAvatar={chosenAvatar}
+          setChosenAvatar={setChosenAvatar}
         />
 
         <View style={styles.inputContainer}>

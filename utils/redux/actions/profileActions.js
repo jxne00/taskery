@@ -11,7 +11,7 @@ import { db } from '../../config/firebase';
 const listenToProfileChanges = (userId) => (dispatch) => {
   dispatch(fetchProfileRequest());
 
-  // get profile details from firestore
+  // user document in firestore
   const ref = db.collection('users').doc(userId);
 
   // attach listener to the document

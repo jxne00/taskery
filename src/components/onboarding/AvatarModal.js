@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,56 +6,87 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Modal } from 'react-native';
+import { MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
+
+import { fetchAvatarUrls } from '../../../utils/config/firebase';
 
 /**
  * A modal to allow selection of an avatar image from a list of predefined ones
  *
- * @param {object} props modalVisible, setModalVisible, avatarIndex, setAvatarIndex
+ * @param {object} props modalVisible, setModalVisible, chosenAvatar, setChosenAvatar
  */
 const AvatarModal = (props) => {
-  const { modalVisible, setModalVisible, avatarIndex, setAvatarIndex } = props;
+  const { modalVisible, setModalVisible, chosenAvatar, setChosenAvatar } =
+    props;
 
-  // predefined avatar images
-  // src: https://www.freepik.com/free-vector/smiling-people-avatar-set-different-men-women-characters-collection_13663484.htm
-  const avatars = [
-    require('../../../assets/avatars/a1.png'),
-    require('../../../assets/avatars/a2.png'),
-    require('../../../assets/avatars/a3.png'),
-    require('../../../assets/avatars/a4.png'),
-    require('../../../assets/avatars/a5.png'),
-    require('../../../assets/avatars/a6.png'),
-    require('../../../assets/avatars/a7.png'),
-    require('../../../assets/avatars/a8.png'),
-  ];
+  const [avatarUrls, setAvatarUrls] = useState([]);
+  const [current, setCurrent] = useState(0); // avatar that user clicks on
 
-  const [chosenAvatar, setChosenAvatar] = useState(avatarIndex);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // fetch avatar urls from firebase storage
+  useEffect(() => {
+    const fetchUrls = async () => {
+      setIsLoading(true);
+
+      try {
+        const urls = await fetchAvatarUrls();
+        setAvatarUrls(urls);
+      } catch (err) {
+        alert('Error fetching avatar images', err.message);
+      }
+
+      setIsLoading(false);
+    };
+
+    fetchUrls();
+  }, []);
+
+  // set a random avatar as the default
+  const getRandAvatar = () => {
+    const rand = Math.floor(Math.random() * avatarUrls.length);
+    setCurrent(rand);
+  };
 
   // set the chosen avatar
-  const handleSetAvatar = () => {
-    setAvatarIndex(chosenAvatar);
+  const handleSubmit = () => {
+    setChosenAvatar(current);
+
+    setCurrent(0);
     setModalVisible(false);
   };
 
-  // close modal and reset chosen avatar
+  // close modal without setting avatar
   const handleCancel = () => {
-    setChosenAvatar(avatarIndex);
+    setCurrent(0);
     setModalVisible(false);
   };
 
   return (
     <View style={styles.container}>
       {/* image of selected avatar */}
-      <ImageBackground source={avatars[avatarIndex]} style={styles.avatarImage}>
-        <MaterialCommunityIcons
-          name="image-edit-outline"
-          size={30}
-          style={styles.editAvatarBtn}
-          onPress={() => setModalVisible(true)}
-        />
-      </ImageBackground>
+      {isLoading ? (
+        <ActivityIndicator size="small" color="#000000" />
+      ) : (
+        <ImageBackground
+          source={{
+            uri: avatarUrls[chosenAvatar],
+          }}
+          style={[
+            styles.avatarImage,
+            !chosenAvatar && { backgroundColor: 'rgba(255, 255, 255, 0.5)' },
+          ]}>
+          <MaterialCommunityIcons
+            name="image-edit-outline"
+            size={30}
+            style={styles.editAvatarBtn}
+            onPress={() => setModalVisible(true)}
+          />
+        </ImageBackground>
+      )}
 
       {/* modal to select new avatar */}
       <Modal
@@ -67,24 +98,30 @@ const AvatarModal = (props) => {
           <View style={styles.modalView}>
             <Text style={styles.title}>Select Avatar:</Text>
 
-            {/* display predefined avatar images */}
+            {/* display predefined avatar images from firebase storage */}
             <View style={styles.avatarsRow}>
-              {avatars.map((avatar, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => setChosenAvatar(index)}>
+              {avatarUrls.map((url, index) => (
+                <TouchableOpacity key={index} onPress={() => setCurrent(index)}>
                   <Image
-                    source={avatar}
+                    source={{ uri: url }}
                     style={[
                       styles.avatarImg,
-                      chosenAvatar === index && styles.selectedAvatar,
+                      current === index && styles.selectedAvatar,
                     ]}
                   />
                 </TouchableOpacity>
               ))}
             </View>
 
-            {/* buttons */}
+            <FontAwesome
+              name="random"
+              size={28}
+              color="#333333"
+              style={{ marginTop: 20 }}
+              onPress={getRandAvatar}
+            />
+
+            {/* cancel & confirm buttons */}
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={[styles.buttonContainer, styles.cancelBg]}
@@ -94,7 +131,7 @@ const AvatarModal = (props) => {
 
               <TouchableOpacity
                 style={[styles.buttonContainer, styles.confirmBg]}
-                onPress={handleSetAvatar}>
+                onPress={handleSubmit}>
                 <Text style={styles.btnText}>Set Avatar</Text>
               </TouchableOpacity>
             </View>
@@ -154,7 +191,7 @@ const styles = StyleSheet.create({
   },
   selectedAvatar: {
     borderWidth: 2,
-    borderColor: '#0119b5',
+    borderColor: '#0072e3',
   },
   modalButtons: {
     flexDirection: 'row',

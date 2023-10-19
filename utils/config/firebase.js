@@ -26,4 +26,17 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
 
-export { auth, db, storage };
+// fetch avatar urls from firebase storage
+const fetchAvatarUrls = async () => {
+  let avatars = [];
+
+  // get files name a1.png - a8.png from "/avatars" folder
+  for (let i = 1; i <= 8; i++) {
+    const path = `avatars/a${i}.png`;
+    const url = await storage.ref(path).getDownloadURL();
+    avatars.push(url);
+  }
+  return avatars;
+};
+
+export { auth, db, storage, fetchAvatarUrls };
