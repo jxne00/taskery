@@ -1,69 +1,62 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+// initial state of tasks
 const initialState = {
   tasks: {},
   isLoading: false,
   error: null,
 };
 
-// redux slice for tasks
 const taskSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    // start the fetch
+    // reset state on logout
+    logout: (state) => {
+      return initialState;
+    },
+    // start fetching tasks
     fetchTasksRequest: (state) => {
       state.isLoading = true;
       state.error = null;
     },
-    // fetch successful
+    // tasks successfully fetched
     fetchTasksSuccess: (state, action) => {
       state.isLoading = false;
-
-      // convert tasks array into object
-      // allows more efficient sorting/filtering
-      action.payload.forEach((task) => {
-        state.tasks[task.id] = task;
-      });
+      state.tasks = {
+        ...state.tasks,
+        ...action.payload.reduce((acc, task) => {
+          acc[task.id] = task;
+          return acc;
+        }, {}),
+      };
     },
-    // set error message if fetch unsuccessful
+    // tasks fetching failed
     fetchTasksFailure: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     },
 
-    // add new task & update state
     addTaskSuccess: (state, action) => {
-      const newTask = action.payload;
-      state.tasks[newTask.id] = newTask;
+      state.tasks[action.payload.id] = action.payload;
     },
-
-    // =============== edit task (not implemented yet)
     editTaskSuccess: (state, action) => {
-      const updatedTask = action.payload;
-      state.tasks[updatedTask.id] = updatedTask;
+      state.tasks[action.payload.id] = action.payload;
     },
-
-    // =============== delete task (not implemented yet)
     deleteTaskSuccess: (state, action) => {
-      const taskId = action.payload;
-      delete state.tasks[taskId];
+      delete state.tasks[action.payload];
     },
   },
 });
 
 export const {
+  logout,
   fetchTasksRequest,
   fetchTasksSuccess,
   fetchTasksFailure,
-
   addTaskSuccess,
-  addTaskFailure,
-
   editTaskSuccess,
-  editTaskFailure,
-
   deleteTaskSuccess,
-  deleteTaskFailure,
 } = taskSlice.actions;
+
 export default taskSlice.reducer;

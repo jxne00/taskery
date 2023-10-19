@@ -11,16 +11,23 @@ import CustomStatusBar from '../../components/StatusBar';
 import { useTheme } from '../../../utils/theme/ThemeContext';
 import useGlobalStyles from '../../../utils/hooks/globalStyles';
 
-import { auth } from '../../../utils/config/firebase';
+import { auth } from '../../../utils/firebase/config';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../../utils/redux/slices/taskSlice';
 
 const Settings = ({ navigation }) => {
   const { theme, themeMode, setThemeMode } = useTheme();
   const global = useGlobalStyles();
+  const dispatch = useDispatch();
 
   // signout user
   const handleSignout = () => {
     auth
       .signOut()
+      .then(() => {
+        // reset redux back to initial state
+        dispatch(logout);
+      })
       .then(() => navigation.navigate('Login'))
       .catch((error) => {
         console.log('Error signing out: ', error);

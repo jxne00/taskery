@@ -24,24 +24,20 @@ import { addTask, updateTask } from '../../../utils/redux/actions/taskActions';
 import DeadlinePicker from '../DatePicker';
 import { HeaderDivider, Divider } from '../Elements';
 
+import { useDispatch } from 'react-redux';
+
 /**
  * modal to create a new task
  * @param {boolean} modalVisible - visibility of modal
  * @param {function} setShowTaskModal - modal visibility setter
  * @param {string} userId - current user's id
- * @param {function} dispatch - redux dispatch
  * @param {object} editTask - details of task to be edited
  * @param {function} setEditTask - setter for editTask
  */
 const TaskDetails = (props) => {
-  const {
-    modalVisible,
-    setShowTaskModal,
-    userId,
-    dispatch,
-    editTask,
-    setEditTask,
-  } = props;
+  const { modalVisible, setShowTaskModal, userId, editTask, setEditTask } =
+    props;
+  const dispatch = useDispatch();
 
   const { theme, themeType } = useTheme();
   const global = useGlobalStyles();

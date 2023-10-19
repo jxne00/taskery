@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 
-import { fetchAvatarUrls } from '../../../utils/config/firebase';
+import { fetchAvatarUrls } from '../../../utils/firebase/helper';
 
 /**
  * A modal to allow selection of an avatar image from a list of predefined ones

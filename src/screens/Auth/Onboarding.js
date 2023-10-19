@@ -15,7 +15,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 import AvatarModal from '../../components/onboarding/AvatarModal';
 
-import { auth, db } from '../../../utils/config/firebase';
+import { auth, db } from '../../../utils/firebase/config';
 
 /**
  * This screen is for setting up the user's profile details

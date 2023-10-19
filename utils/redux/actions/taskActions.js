@@ -1,5 +1,6 @@
 import { Alert } from 'react-native';
 import {
+  logout,
   fetchTasksRequest,
   fetchTasksSuccess,
   fetchTasksFailure,
@@ -7,52 +8,53 @@ import {
   editTaskSuccess,
   deleteTaskSuccess,
 } from '../slices/taskSlice';
-import { db, toTimestamp } from '../../config/firebase';
+import { db } from '../../firebase/config';
+import { toTimestamp } from '../../firebase/helper';
 
 /**
  * fetch all task documents from "tasks" collection in firestore
+ *
  * @param {string} userId - id of user to fetch tasks of
  */
 const fetchTasks = (userId) => (dispatch) => {
   try {
     dispatch(fetchTasksRequest());
 
-    return db
-      .collection('users')
-      .doc(userId)
-      .collection('tasks')
-      .onSnapshot(
-        (snapshot) => {
-          const tasks = snapshot.docs.map((doc) => {
-            const data = doc.data();
+    const tasksRef = db.collection('users').doc(userId).collection('tasks');
 
-            // firestore's 'timestamp' type is non-seriazable
-            // but redux state must be serializable
-            // so my solution is to convert dates to milliseconds
-            if (data.deadline) {
-              data.deadline = data.deadline.toMillis();
-            }
+    return tasksRef.onSnapshot(
+      (snapshot) => {
+        const tasks = snapshot.docs.map((doc) => {
+          const data = doc.data();
 
-            return {
-              id: doc.id,
-              ...data,
-            };
-          });
+          // firestore's 'timestamp' type is non-seriazable
+          // but redux state must be serializable
+          // so my solution is to convert dates to milliseconds
+          if (data.deadline) {
+            data.deadline = data.deadline.toMillis();
+          }
 
-          dispatch(fetchTasksSuccess(tasks));
-        },
-        (error) => {
-          dispatch(fetchTasksFailure(error.message));
-        },
-      );
+          return {
+            id: doc.id,
+            ...data,
+          };
+        });
+
+        dispatch(fetchTasksSuccess(tasks));
+      },
+      (error) => {
+        dispatch(fetchTasksFailure(error.message));
+      },
+    );
   } catch (error) {
-    dispatch(fetchTasksFailure(error.message));
+    Alert.alert('error fetching tasks: ', error.message);
   }
 };
 
 /**
  * add new task document to "tasks" collection in firestore
  * and update redux state
+ *
  * @param {string} userId - id of user to add task to
  * @param {object} taskData - the task data to add
  */
@@ -81,6 +83,7 @@ const addTask = (userId, taskData) => async (dispatch) => {
 
 /**
  * edit a task document in "tasks" collection in firestore
+ *
  * @param {string} userId - id of user to edit task of
  * @param {string} taskId - id of task to edit
  * @param {object} updatedData - the new data to use to update the task
@@ -108,6 +111,7 @@ const updateTask = (userId, taskId, updatedData) => async (dispatch) => {
 
 /**
  * delete a task document from "tasks" collection in firestore
+ *
  * @param {string} userId - id of user to delete task of
  * @param {string} taskId - id of task to delete
  */

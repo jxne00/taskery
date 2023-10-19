@@ -3,7 +3,7 @@ import {
   fetchProfileSuccess,
   fetchProfileFailure,
 } from '../slices/profileSlice';
-import { db } from '../../config/firebase';
+import { db } from '../../firebase/config';
 
 /**
  * redux thunk action to listen to profile changes

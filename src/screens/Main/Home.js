@@ -15,7 +15,7 @@ import useGlobalStyles from '../../../utils/hooks/globalStyles';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks } from '../../../utils/redux/actions/taskActions';
-import { auth } from '../../../utils/config/firebase';
+import { auth } from '../../../utils/firebase/config';
 
 import Tasklist from '../../components/task/Tasklist';
 import TaskDetails from '../../components/task/TaskDetails';
@@ -23,17 +23,21 @@ import TaskDetails from '../../components/task/TaskDetails';
 const Home = () => {
   const { theme, themeType } = useTheme();
   const global = useGlobalStyles();
+  const dispatch = useDispatch(); // redux dispatch
 
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [editTask, setEditTask] = useState(null);
 
   const userId = auth.currentUser.uid; // current user's id
-  const dispatch = useDispatch(); // redux dispatch
   const { tasks, isLoading, error } = useSelector((state) => state.tasks);
 
   // fetch tasks
   useEffect(() => {
-    dispatch(fetchTasks(userId));
+    const unsubscribe = dispatch(fetchTasks(userId));
+
+    return () => {
+      unsubscribe();
+    };
   }, [userId]);
 
   // go to create task screen with pre-filled details
@@ -126,12 +130,11 @@ const Home = () => {
           />
         </TouchableOpacity>
 
-        {/* "create task" modal */}
+        {/* "task details" modal */}
         <TaskDetails
           modalVisible={showTaskModal}
           setShowTaskModal={setShowTaskModal}
           userId={userId}
-          dispatch={dispatch}
           editTask={editTask}
           setEditTask={setEditTask}
         />

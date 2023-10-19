@@ -14,7 +14,7 @@ import { useTheme } from '../../../utils/theme/ThemeContext';
 import useGlobalStyles from '../../../utils/hooks/globalStyles';
 import CustomStatusBar from '../../components/StatusBar';
 
-import { auth, db } from '../../../utils/config/firebase';
+import { auth, db } from '../../../utils/firebase/config';
 
 const Profile = ({ navigation }) => {
   const { theme } = useTheme();
