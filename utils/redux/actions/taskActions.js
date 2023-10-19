@@ -40,6 +40,7 @@ const fetchTasks = (userId) => (dispatch) => {
           };
         });
 
+        console.log('\ntasks fetched: ', tasks);
         dispatch(fetchTasksSuccess(tasks));
       },
       (error) => {

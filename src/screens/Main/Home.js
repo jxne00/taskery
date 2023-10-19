@@ -15,6 +15,7 @@ import useGlobalStyles from '../../../utils/hooks/globalStyles';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks } from '../../../utils/redux/actions/taskActions';
+import { fetchProfile } from '../../../utils/redux/actions/profileActions';
 import { auth } from '../../../utils/firebase/config';
 
 import Tasklist from '../../components/task/Tasklist';
@@ -28,17 +29,25 @@ const Home = () => {
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [editTask, setEditTask] = useState(null);
 
-  const userId = auth.currentUser.uid; // current user's id
+  const userId = auth.currentUser?.uid; // current user's id
+
+  // get tasks and profile state from redux store
   const { tasks, isLoading, error } = useSelector((state) => state.tasks);
+  const { profileData } = useSelector((state) => state.profile);
 
-  // fetch tasks
   useEffect(() => {
-    const unsubscribe = dispatch(fetchTasks(userId));
+    if (!userId) return;
 
+    // dispatch fetch tasks and profile to redux store
+    const unsubscribeTasks = dispatch(fetchTasks(userId));
+    const unsubscribeProfile = dispatch(fetchProfile(userId));
+
+    // unsubscribe listeners on unmount
     return () => {
-      unsubscribe();
+      unsubscribeTasks();
+      unsubscribeProfile();
     };
-  }, [userId]);
+  }, [userId, dispatch]);
 
   // go to create task screen with pre-filled details
   const handleEdit = (id) => {

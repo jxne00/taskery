@@ -10,19 +10,29 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+import { useDispatch, useSelector } from 'react-redux';
+
 import { useTheme } from '../../../utils/theme/ThemeContext';
 import useGlobalStyles from '../../../utils/hooks/globalStyles';
 import CustomStatusBar from '../../components/StatusBar';
 
 import { auth, db } from '../../../utils/firebase/config';
+import { fetchProfile } from '../../../utils/redux/actions/profileActions';
+import { toDateDisplay } from '../../../utils/helper';
 
 const Profile = ({ navigation }) => {
   const { theme } = useTheme();
   const global = useGlobalStyles();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState(null);
-  const [avatar, setAvatar] = useState(null);
+  // get profile data from redux store
+  const { profileData, profileIsLoading, error } = useSelector(
+    (state) => state.profile,
+  );
+  const dispatch = useDispatch();
+  const userId = auth.currentUser?.uid;
+
+  // const [data, setData] = useState(null);
+  // const [avatar, setAvatar] = useState(null);
 
   const avatarImages = {
     // map avatar file names to their respective paths
@@ -36,38 +46,19 @@ const Profile = ({ navigation }) => {
     'a8.png': require('../../../assets/avatars/a8.png'),
   };
 
-  // get profile data from firestore "users" collection
   useEffect(() => {
-    setIsLoading(true);
-    const user = auth.currentUser;
+    if (!userId) return;
 
-    if (!user) {
-      Alert.alert('Error getting user', 'User not found');
-      setIsLoading(false);
-      return;
-    }
+    // dispatch fetchprofile to redux store
+    const unsubscribeProfile = dispatch(fetchProfile(userId));
 
-    db.collection('users')
-      .doc(user.uid)
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          setData(doc.data());
+    // unsubscribe listener on unmount
+    return () => {
+      unsubscribeProfile();
+    };
+  }, [userId, dispatch]);
 
-          setAvatar(avatarImages[doc.data().avatar_path]);
-          console.log('Document data:', doc.data());
-        } else {
-          Alert.alert('Error getting document', 'Document not found');
-        }
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        Alert.alert('Error getting data', err.message);
-        setIsLoading(false);
-      });
-  }, []);
-
-  if (isLoading) {
+  if (profileIsLoading) {
     return (
       <View style={[global.container, styles.loading]}>
         <ActivityIndicator size="large" color={theme.primary} />
@@ -80,12 +71,13 @@ const Profile = ({ navigation }) => {
       <View style={[global.container, styles.container]}>
         {/* avatar image */}
         <Image
-          source={avatar ? avatar : require('../../../assets/avatars/a1.png')}
+          source={
+            profileData?.avatar_path
+              ? avatarImages[profileData.avatar_path]
+              : require('../../../assets/avatars/a1.png')
+          }
           style={styles.avatar}
         />
-
-        {/* name */}
-        <Text style={[global.text, styles.profileName]}>{data?.name}</Text>
 
         <Ionicons
           name="settings"
@@ -94,6 +86,21 @@ const Profile = ({ navigation }) => {
           color={theme.textLight}
           onPress={() => navigation.navigate('Settings')}
         />
+
+        {/* name */}
+        <Text style={[global.text, styles.profileName]}>
+          {profileData?.name}
+        </Text>
+
+        {/* profile visibility */}
+        <Text style={[global.text, styles.profileVisibility]}>
+          {profileData?.is_public ? 'Public' : 'Private'}
+        </Text>
+
+        {/* creation date */}
+        <Text style={[global.text, styles.profileCreationDate]}>
+          Member since: {toDateDisplay(profileData?.created_at)}
+        </Text>
 
         <CustomStatusBar />
       </View>
@@ -122,6 +129,19 @@ const styles = StyleSheet.create({
   profileName: {
     fontSize: 26,
     fontFamily: 'OpenSans-Bold',
+  },
+  profileVisibility: {
+    fontSize: 18,
+    fontFamily: 'OpenSans-Regular',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginVertical: 10,
+  },
+  profileCreationDate: {
+    fontSize: 16,
+    fontFamily: 'OpenSans-Regular',
   },
 });
 

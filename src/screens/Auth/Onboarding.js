@@ -10,7 +10,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
 import AvatarModal from '../../components/onboarding/AvatarModal';
@@ -77,14 +77,14 @@ const Onboarding = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Text style={styles.title}>Welcome to Taskery!</Text>
+        {/* <Text style={styles.title}>Welcome to Taskery!</Text>
 
         <Text style={styles.subtitle}>Set up your profile to get started.</Text>
 
         <Text style={styles.subsubtitle}>
           Your name and avatar will be visible to other users in the community.
           Feel free to use a nickname or alias if you prefer.
-        </Text>
+        </Text> */}
 
         <AvatarModal
           modalVisible={modalVisible}
@@ -92,6 +92,8 @@ const Onboarding = ({ navigation }) => {
           chosenAvatar={chosenAvatar}
           setChosenAvatar={setChosenAvatar}
         />
+
+        <MaterialCommunityIcons name="image-plus" size={24} color="#4d4d4d" />
 
         <View style={styles.inputContainer}>
           {/* name input */}
@@ -134,12 +136,12 @@ const Onboarding = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#907563',
+    backgroundColor: '#FDF3EC',
   },
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#907563',
+    backgroundColor: '#FDF3EC',
   },
   title: {
     fontSize: 32,
@@ -169,21 +171,22 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 18,
     marginBottom: 5,
-    color: '#fff',
+    color: '#0157ac',
     fontFamily: 'OpenSans-Bold',
   },
   textInput: {
     padding: 10,
-    borderBottomColor: '#d6d6d6',
+    borderBottomColor: '#5d5d5d',
     borderBottomWidth: 1,
     fontSize: 18,
-    color: '#e9e9e9',
+    color: '#000000',
     fontFamily: 'OpenSans-Regular',
   },
 
   nextBtn: {
-    backgroundColor: '#258952',
-    padding: 10,
+    backgroundColor: '#0157ac',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     borderRadius: 5,
     marginTop: '20%',
     alignSelf: 'flex-end',

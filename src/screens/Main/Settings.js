@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,8 +13,9 @@ import { useTheme } from '../../../utils/theme/ThemeContext';
 import useGlobalStyles from '../../../utils/hooks/globalStyles';
 
 import { auth } from '../../../utils/firebase/config';
+import { logoutTask } from '../../../utils/redux/slices/taskSlice';
+import { logoutProfile } from '../../../utils/redux/slices/profileSlice';
 import { useDispatch } from 'react-redux';
-import { logout } from '../../../utils/redux/slices/taskSlice';
 
 const Settings = ({ navigation }) => {
   const { theme, themeMode, setThemeMode } = useTheme();
@@ -25,8 +27,9 @@ const Settings = ({ navigation }) => {
     auth
       .signOut()
       .then(() => {
-        // reset redux back to initial state
-        dispatch(logout);
+        // reset redux slices back to initial state
+        dispatch(logoutTask);
+        dispatch(logoutProfile);
       })
       .then(() => navigation.navigate('Login'))
       .catch((error) => {

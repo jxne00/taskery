@@ -11,10 +11,6 @@ const taskSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    // reset state on logout
-    logout: (state) => {
-      return initialState;
-    },
     // start fetching tasks
     fetchTasksRequest: (state) => {
       state.isLoading = true;
@@ -40,23 +36,28 @@ const taskSlice = createSlice({
     addTaskSuccess: (state, action) => {
       state.tasks[action.payload.id] = action.payload;
     },
+
     editTaskSuccess: (state, action) => {
       state.tasks[action.payload.id] = action.payload;
     },
+
     deleteTaskSuccess: (state, action) => {
       delete state.tasks[action.payload];
     },
+
+    // reset state on logout
+    logout: () => initialState,
   },
 });
 
 export const {
-  logout,
   fetchTasksRequest,
   fetchTasksSuccess,
   fetchTasksFailure,
   addTaskSuccess,
   editTaskSuccess,
   deleteTaskSuccess,
+  logout: logoutTask,
 } = taskSlice.actions;
 
 export default taskSlice.reducer;

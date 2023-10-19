@@ -6,9 +6,9 @@ import {
 import { db } from '../../firebase/config';
 
 /**
- * redux thunk action to listen to profile changes
+ * fetch user's profile from firestore
  */
-const listenToProfileChanges = (userId) => (dispatch) => {
+const fetchProfile = (userId) => (dispatch) => {
   dispatch(fetchProfileRequest());
 
   // user document in firestore
@@ -18,15 +18,23 @@ const listenToProfileChanges = (userId) => (dispatch) => {
   return ref.onSnapshot(
     (doc) => {
       if (doc.exists) {
-        dispatch(fetchProfileSuccess(doc.data()));
+        const profile = doc.data();
+
+        // convert firestore's 'timestamp' type to milliseconds
+        if (profile.created_at) {
+          profile.created_at = profile.created_at.toMillis();
+        }
+
+        console.log('\nprofile fetched: ', profile);
+        dispatch(fetchProfileSuccess(profile));
       } else {
         dispatch(fetchProfileFailure('Profile does not exist.'));
       }
     },
-    (error) => {
-      dispatch(fetchProfileFailure(error.message));
+    (err) => {
+      dispatch(fetchProfileFailure(err.message));
     },
   );
 };
 
-export { listenToProfileChanges };
+export { fetchProfile };
