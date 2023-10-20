@@ -182,14 +182,14 @@ const styles = StyleSheet.create({
   title: {
     marginTop: 20,
     fontSize: 34,
-    fontFamily: 'OpenSans-Bold',
+    fontFamily: 'PoetsenOne-Regular',
     textAlign: 'center',
     color: PRIMARY_COL,
   },
   subtitle: {
     fontSize: 18,
     color: '#4e4e4e',
-    fontFamily: 'OpenSans-Medium',
+    fontFamily: 'Inter-Medium',
   },
 
   // text input area
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginLeft: 5,
     color: PRIMARY_COL,
-    fontFamily: 'OpenSans-SemiBold',
+    fontFamily: 'Inter-SemiBold',
   },
   inputBox: {
     flexDirection: 'row',
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 16,
     width: '100%',
-    fontFamily: 'OpenSans-Medium',
+    fontFamily: 'Inter-Medium',
   },
   focusedBox: {
     borderColor: PRIMARY_COL,
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   loginText: {
     color: '#FDF3EC',
     fontSize: 18,
-    fontFamily: 'OpenSans-SemiBold',
+    fontFamily: 'Inter-SemiBold',
   },
   registerBtn: {
     borderBlockColor: '#242424',
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   registerText: {
     color: '#242424',
     fontSize: 18,
-    fontFamily: 'OpenSans-SemiBold',
+    fontFamily: 'Inter-SemiBold',
   },
 });
 

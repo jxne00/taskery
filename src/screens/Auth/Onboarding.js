@@ -148,21 +148,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#ebd8cc',
     marginBottom: 10,
-    fontFamily: 'OpenSans-Bold',
+    fontFamily: 'Inter-Bold',
   },
   subtitle: {
     fontSize: 20,
     color: '#f3eae4',
     marginBottom: 20,
     textAlign: 'center',
-    fontFamily: 'OpenSans-Regular',
+    fontFamily: 'Inter-Regular',
   },
   subsubtitle: {
     fontSize: 18,
     color: '#ede4dd',
     marginBottom: 30,
     textAlign: 'center',
-    fontFamily: 'OpenSans-Regular',
+    fontFamily: 'Inter-Regular',
   },
 
   inputContainer: {
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 5,
     color: '#0157ac',
-    fontFamily: 'OpenSans-Bold',
+    fontFamily: 'Inter-Bold',
   },
   textInput: {
     padding: 10,
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     fontSize: 18,
     color: '#000000',
-    fontFamily: 'OpenSans-Regular',
+    fontFamily: 'Inter-Regular',
   },
 
   nextBtn: {
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     marginRight: 10,
-    fontFamily: 'OpenSans-SemiBold',
+    fontFamily: 'Inter-SemiBold',
   },
 });
 

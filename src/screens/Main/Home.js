@@ -171,11 +171,11 @@ const styles = StyleSheet.create({
   },
   appName: {
     fontSize: 28,
-    fontFamily: 'OpenSans-Bold',
+    fontFamily: 'PoetsenOne-Regular',
   },
   tasksTitle: {
     fontSize: 26,
-    fontFamily: 'OpenSans-Bold',
+    fontFamily: 'Inter-Bold',
   },
   calendarIcon: {
     marginLeft: 'auto',
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
   addTaskTxt: {
     fontSize: 18,
     marginRight: 5,
-    fontFamily: 'OpenSans-Bold',
+    fontFamily: 'Inter-Bold',
   },
 });
 

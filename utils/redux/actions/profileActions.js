@@ -2,7 +2,7 @@ import {
   fetchProfileRequest,
   fetchProfileSuccess,
   fetchProfileFailure,
-} from '../slices/profileSlice';
+} from '../reducers/profile';
 import { db } from '../../firebase/config';
 
 /**

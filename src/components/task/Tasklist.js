@@ -33,7 +33,7 @@ const Tasklist = ({ tasklist, handleEdit, handleDelete }) => {
         <Text style={[styles.taskStatus, { color: theme.textLight }]}>
           <AntDesign
             name={item.status ? 'checkcircle' : 'closecircle'}
-            size={18}
+            size={16}
             color={item.status ? theme.green : theme.appName}
           />{' '}
           {item.status ? 'Completed' : 'Not Done'}
@@ -41,7 +41,7 @@ const Tasklist = ({ tasklist, handleEdit, handleDelete }) => {
 
         {/* deadline */}
         <Text style={[styles.taskDeadline, { color: theme.textLight }]}>
-          <AntDesign name="calendar" size={18} color={theme.textLight} />{' '}
+          <AntDesign name="calendar" size={16} color={theme.textLight} />{' '}
           {toDateDisplay(item.deadline)}
         </Text>
       </View>
@@ -66,10 +66,7 @@ const Tasklist = ({ tasklist, handleEdit, handleDelete }) => {
                 key={tag.name}
                 style={[
                   styles.tagBox,
-                  {
-                    backgroundColor: theme.backgroundSec,
-                    borderColor: tag.color,
-                  },
+                  { backgroundColor: theme.backgroundSec },
                 ]}>
                 <AntDesign name="tag" size={16} color={tag.color} />
                 <Text style={[styles.tagText, { color: theme.text }]}>
@@ -113,21 +110,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   taskStatus: {
-    fontSize: 17,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontFamily: 'Inter-SemiBold',
   },
   taskDeadline: {
-    fontSize: 18,
-    fontFamily: 'OpenSans-Medium',
+    fontSize: 14,
+    fontFamily: 'Inter-Medium',
   },
   taskTitle: {
     marginTop: 6,
-    fontSize: 20,
-    fontFamily: 'OpenSans-Bold',
+    fontSize: 18,
+    fontFamily: 'Inter-SemiBold',
   },
   taskDetail: {
-    fontSize: 18,
-    fontFamily: 'OpenSans-Medium',
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
   },
   tagContainer: {
     flexDirection: 'row',
@@ -136,17 +133,14 @@ const styles = StyleSheet.create({
   tagBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 5,
+    marginVertical: 4,
     marginRight: 6,
-    borderWidth: 2,
-    borderRadius: 4,
-    paddingHorizontal: 6,
-    paddingVertical: 3,
+    borderRadius: 6,
   },
   tagText: {
     fontSize: 14,
     marginLeft: 5,
-    fontFamily: 'OpenSans-SemiBold',
+    fontFamily: 'Inter-SemiBold',
   },
   btmRow: {
     flexDirection: 'row',

@@ -445,14 +445,14 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 28,
-    fontFamily: 'OpenSans-Bold',
+    fontFamily: 'Inter-Bold',
   },
   cancelTxt: {
     fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 'auto',
     color: '#eb523b',
-    fontFamily: 'OpenSans-SemiBold',
+    fontFamily: 'Inter-SemiBold',
   },
   titleInput: {
     borderWidth: 1,
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 12,
     fontSize: 18,
-    fontFamily: 'OpenSans-SemiBold',
+    fontFamily: 'Inter-SemiBold',
   },
   detailsInput: {
     borderWidth: 1,
@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
     height: 140,
     textAlignVertical: 'top',
     fontSize: 18,
-    fontFamily: 'OpenSans-Regular',
+    fontFamily: 'Inter-Regular',
   },
 
   // ======= button styles =======
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     fontWeight: 'bold',
     color: '#fff',
-    fontFamily: 'OpenSans-Bold',
+    fontFamily: 'Inter-Bold',
   },
 
   // ======= subtask styles =======
@@ -498,20 +498,20 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 12,
     marginTop: 20,
-    fontFamily: 'OpenSans-Bold',
+    fontFamily: 'Inter-Bold',
   },
   addSubtask: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
-    fontFamily: 'OpenSans-Regular',
+    fontFamily: 'Inter-Regular',
   },
   Xicon: {
     marginRight: 12,
   },
   subtask: {
     fontSize: 20,
-    fontFamily: 'OpenSans-Regular',
+    fontFamily: 'Inter-Regular',
   },
 
   subtaskInput: {
@@ -522,7 +522,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 10,
     fontSize: 18,
-    fontFamily: 'OpenSans-Regular',
+    fontFamily: 'Inter-Regular',
   },
   addSubtaskBtn: {
     borderRadius: 5,
@@ -558,7 +558,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     fontSize: 18,
     flex: 1,
-    fontFamily: 'OpenSans-Regular',
+    fontFamily: 'Inter-Regular',
   },
   addTagBtn: {
     fontSize: 18,

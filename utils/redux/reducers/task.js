@@ -44,9 +44,6 @@ const taskSlice = createSlice({
     deleteTaskSuccess: (state, action) => {
       delete state.tasks[action.payload];
     },
-
-    // reset state on logout
-    logout: () => initialState,
   },
 });
 
@@ -57,7 +54,6 @@ export const {
   addTaskSuccess,
   editTaskSuccess,
   deleteTaskSuccess,
-  logout: logoutTask,
 } = taskSlice.actions;
 
 export default taskSlice.reducer;

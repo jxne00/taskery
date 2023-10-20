@@ -47,7 +47,7 @@ const style = StyleSheet.create({
   text: {
     fontSize: 18,
     padding: 5,
-    fontFamily: 'OpenSans-Regular',
+    fontFamily: 'Inter-Regular',
   },
 });
 

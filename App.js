@@ -9,10 +9,14 @@ import AppNavigator from './src/navigation/AppNav';
 const App = () => {
   // load fonts from assets
   const [fontsLoaded] = useFonts({
-    'OpenSans-Medium': require('./assets/fonts/OpenSans-Medium.ttf'),
-    'OpenSans-Regular': require('./assets/fonts/OpenSans-Regular.ttf'),
-    'OpenSans-SemiBold': require('./assets/fonts/OpenSans-SemiBold.ttf'),
-    'OpenSans-Bold': require('./assets/fonts/OpenSans-Bold.ttf'),
+    // src: https://fonts.google.com/specimen/Inter
+    'Inter-Regular': require('./assets/fonts/Inter-Regular.ttf'),
+    'Inter-Bold': require('./assets/fonts/Inter-Bold.ttf'),
+    'Inter-SemiBold': require('./assets/fonts/Inter-SemiBold.ttf'),
+    'Inter-Medium': require('./assets/fonts/Inter-Medium.ttf'),
+
+    // src: https://www.dafont.com/poetsen-one.font
+    'PoetsenOne-Regular': require('./assets/fonts/PoetsenOne-Regular.ttf'),
   });
 
   if (!fontsLoaded) {

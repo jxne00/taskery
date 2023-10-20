@@ -128,11 +128,11 @@ const styles = StyleSheet.create({
   },
   profileName: {
     fontSize: 26,
-    fontFamily: 'OpenSans-Bold',
+    fontFamily: 'Inter-Bold',
   },
   profileVisibility: {
     fontSize: 18,
-    fontFamily: 'OpenSans-Regular',
+    fontFamily: 'Inter-Regular',
     borderWidth: 1,
     borderRadius: 5,
     paddingVertical: 4,
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   },
   profileCreationDate: {
     fontSize: 16,
-    fontFamily: 'OpenSans-Regular',
+    fontFamily: 'Inter-Regular',
   },
 });
 

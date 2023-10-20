@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     marginTop: '20%',
     textAlign: 'center',
     color: '#1b1b1b',
-    fontFamily: 'OpenSans-Bold',
+    fontFamily: 'Inter-Bold',
   },
 
   inputContainer: {
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginLeft: 5,
     color: PRIMARY_COL,
-    fontFamily: 'OpenSans-SemiBold',
+    fontFamily: 'Inter-SemiBold',
   },
   inputBox: {
     flexDirection: 'row',
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 16,
     width: '100%',
-    fontFamily: 'OpenSans-Medium',
+    fontFamily: 'Inter-Medium',
   },
   focusedBox: {
     borderColor: PRIMARY_COL,
@@ -289,17 +289,17 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 20,
-    fontFamily: 'OpenSans-SemiBold',
+    fontFamily: 'Inter-SemiBold',
   },
   toLoginText: {
     marginVertical: 20,
     color: '#020202',
     fontSize: 18,
-    fontFamily: 'OpenSans-Medium',
+    fontFamily: 'Inter-Medium',
   },
   loginTxt: {
     color: PRIMARY_COL,
-    fontFamily: 'OpenSans-Regular',
+    fontFamily: 'Inter-Regular',
   },
 });
 

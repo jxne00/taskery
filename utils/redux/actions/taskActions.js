@@ -1,13 +1,12 @@
 import { Alert } from 'react-native';
 import {
-  logout,
   fetchTasksRequest,
   fetchTasksSuccess,
   fetchTasksFailure,
   addTaskSuccess,
   editTaskSuccess,
   deleteTaskSuccess,
-} from '../slices/taskSlice';
+} from '../reducers/task';
 import { db } from '../../firebase/config';
 import { toTimestamp } from '../../firebase/helper';
 

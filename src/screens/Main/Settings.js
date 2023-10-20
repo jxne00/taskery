@@ -13,8 +13,6 @@ import { useTheme } from '../../../utils/theme/ThemeContext';
 import useGlobalStyles from '../../../utils/hooks/globalStyles';
 
 import { auth } from '../../../utils/firebase/config';
-import { logoutTask } from '../../../utils/redux/slices/taskSlice';
-import { logoutProfile } from '../../../utils/redux/slices/profileSlice';
 import { useDispatch } from 'react-redux';
 
 const Settings = ({ navigation }) => {
@@ -22,19 +20,15 @@ const Settings = ({ navigation }) => {
   const global = useGlobalStyles();
   const dispatch = useDispatch();
 
-  // signout user
-  const handleSignout = () => {
-    auth
-      .signOut()
-      .then(() => {
-        // reset redux slices back to initial state
-        dispatch(logoutTask);
-        dispatch(logoutProfile);
-      })
-      .then(() => navigation.navigate('Login'))
-      .catch((error) => {
-        console.log('Error signing out: ', error);
-      });
+  // signout user using firebase
+  const handleSignout = async () => {
+    try {
+      await auth.signOut();
+      dispatch({ type: 'LOGOUT' });
+      navigation.navigate('Login');
+    } catch (err) {
+      console.log('Error signing out: ', err);
+    }
   };
 
   return (
@@ -96,7 +90,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: 'center',
     marginBottom: 20,
-    fontFamily: 'OpenSans-Bold',
+    fontFamily: 'Inter-Bold',
   },
   backBtn: {
     margin: 16,
@@ -111,7 +105,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 10,
     textDecorationLine: 'underline',
-    fontFamily: 'OpenSans-Bold',
+    fontFamily: 'Inter-Bold',
   },
   option: {
     flexDirection: 'row',
@@ -121,7 +115,7 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 18,
-    fontFamily: 'OpenSans-Medium',
+    fontFamily: 'Inter-Medium',
   },
   signOutBtn: {
     width: '80%',
@@ -134,7 +128,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     padding: 10,
     fontSize: 18,
-    fontFamily: 'OpenSans-Bold',
+    fontFamily: 'Inter-Bold',
   },
 });
 

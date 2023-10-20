@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 
 const useGlobalStyles = () => {
-  const { theme } = useTheme();
+  const { theme, themeType } = useTheme();
 
   return StyleSheet.create({
     container: {
@@ -11,8 +11,8 @@ const useGlobalStyles = () => {
     },
     text: {
       color: theme.text,
-      fontSize: 18,
-      fontFamily: 'OpenSans-Medium',
+      fontSize: 16,
+      fontFamily: 'Inter-Regular',
     },
     blueBtn: {
       backgroundColor: theme.btnBlue,
