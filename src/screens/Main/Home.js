@@ -33,7 +33,7 @@ const Home = () => {
 
   // get tasks and profile state from redux store
   const { tasks, isLoading, error } = useSelector((state) => state.tasks);
-  const { profileData } = useSelector((state) => state.profile);
+  // const { profileData } = useSelector((state) => state.profile);
 
   useEffect(() => {
     if (!userId) return;

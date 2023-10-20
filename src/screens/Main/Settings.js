@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,7 +6,8 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 import CustomStatusBar from '../../components/StatusBar';
 import { useTheme } from '../../../utils/theme/ThemeContext';
@@ -19,6 +20,9 @@ const Settings = ({ navigation }) => {
   const { theme, themeMode, setThemeMode } = useTheme();
   const global = useGlobalStyles();
   const dispatch = useDispatch();
+
+  const [isPublic, setIsPublic] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // signout user using firebase
   const handleSignout = async () => {
@@ -34,10 +38,11 @@ const Settings = ({ navigation }) => {
   return (
     <SafeAreaView style={global.container}>
       <View style={global.container}>
-        <FontAwesome
-          name="chevron-left"
-          size={24}
-          color={theme.textLight}
+        {/* back button */}
+        <Ionicons
+          name="md-arrow-back"
+          size={28}
+          color={theme.text}
           style={styles.backBtn}
           onPress={() => {
             navigation.goBack();
@@ -65,7 +70,7 @@ const Settings = ({ navigation }) => {
                     ? 'check-square-o'
                     : 'square-o'
                 }
-                size={24}
+                size={22}
                 color={theme.text}
                 onPress={() => setThemeMode(mode.toLowerCase())}
               />
@@ -73,8 +78,49 @@ const Settings = ({ navigation }) => {
           ))}
         </View>
 
+        <View style={{ height: 20 }} />
+
+        {/* privacy */}
+        <View style={[styles.themeBox, { borderColor: theme.textLight }]}>
+          <Text style={[global.text, styles.themeTitle]}>Privacy</Text>
+
+          <Text style={[global.text, styles.optionText]}>
+            By setting your account to public, users in the community will be
+            able to see your posts.
+          </Text>
+
+          <View style={styles.option}>
+            <Text style={[global.text, styles.optionText]}>
+              <Ionicons
+                name="information-circle-sharp"
+                size={24}
+                color="black"
+                onPress={console.log('(TODO!!!) show info tip')}
+              />
+              Account Privacy
+            </Text>
+
+            <DropDownPicker
+              items={[
+                { label: 'Public', value: true },
+                { label: 'Private', value: false },
+              ]}
+              defaultValue={isPublic}
+              placeholder={isPublic ? 'Public' : 'Private'}
+              containerStyle={{ width: 100 }}
+              style={{ backgroundColor: theme.background }}
+              itemStyle={{
+                justifyContent: 'flex-start',
+              }}
+              open={dropdownOpen}
+              setOpen={setDropdownOpen}
+              setValue={setIsPublic}
+            />
+          </View>
+        </View>
+
         <TouchableOpacity
-          style={[styles.signOutBtn, { backgroundColor: theme.blue }]}
+          style={[styles.signOutBtn, { backgroundColor: theme.btnBlack }]}
           onPress={handleSignout}>
           <Text style={styles.signOutTxt}>Sign Out</Text>
         </TouchableOpacity>
@@ -98,11 +144,12 @@ const styles = StyleSheet.create({
   themeBox: {
     borderWidth: 1,
     borderRadius: 5,
-    padding: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     marginHorizontal: 14,
   },
   themeTitle: {
-    fontSize: 20,
+    fontSize: 18,
     marginBottom: 10,
     textDecorationLine: 'underline',
     fontFamily: 'Inter-Bold',
@@ -111,10 +158,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 6,
+    marginBottom: 4,
   },
   optionText: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'Inter-Medium',
   },
   signOutBtn: {
@@ -122,13 +169,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     borderRadius: 20,
-    marginVertical: 20,
+    marginTop: 'auto',
+    marginBottom: 20,
   },
   signOutTxt: {
     color: '#fff',
     padding: 10,
     fontSize: 18,
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'Inter-SemiBold',
   },
 });
 

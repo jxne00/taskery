@@ -95,14 +95,13 @@ const Tasklist = ({ tasklist, handleEdit, handleDelete }) => {
 
 const styles = StyleSheet.create({
   flatlist: {
-    width: '90%',
+    width: '94%',
   },
   taskContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    padding: 10,
     borderWidth: 1,
-    marginVertical: 10,
-    borderRadius: 10,
+    marginVertical: 6,
+    borderRadius: 6,
   },
   toprow: {
     flexDirection: 'row',
@@ -110,7 +109,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   taskStatus: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'Inter-SemiBold',
   },
   taskDeadline: {
@@ -119,11 +118,11 @@ const styles = StyleSheet.create({
   },
   taskTitle: {
     marginTop: 6,
-    fontSize: 18,
+    fontSize: 17,
     fontFamily: 'Inter-SemiBold',
   },
   taskDetail: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'Inter-Regular',
   },
   tagContainer: {

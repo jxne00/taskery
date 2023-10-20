@@ -88,12 +88,12 @@ const Login = ({ navigation }) => {
               styles.inputBox,
               focusedBox === 'email' && styles.focusedBox,
             ]}>
-            <Ionicons name="person" size={24} color="#a9a9a9" />
+            <Ionicons name="person" size={20} color="#919090" />
             <TextInput
               value={email}
               style={[styles.textInput]}
               placeholder="Enter your email"
-              placeholderTextColor={'#a9a9a9'}
+              placeholderTextColor={'#999999'}
               autoCapitalize="none"
               autoCompleteType="off"
               autoCorrect={false}
@@ -117,13 +117,13 @@ const Login = ({ navigation }) => {
               styles.inputBox,
               focusedBox === 'password' && styles.focusedBox,
             ]}>
-            <Ionicons name="md-lock-closed" size={24} color="#a9a9a9" />
+            <Ionicons name="md-lock-closed" size={20} color="#919090" />
 
             <TextInput
               value={password}
               style={styles.textInput}
               placeholder="Enter your password"
-              placeholderTextColor={'#a9a9a9'}
+              placeholderTextColor={'#999999'}
               secureTextEntry={!showPassword}
               autoCapitalize="none"
               autoCompleteType="off"
@@ -135,13 +135,15 @@ const Login = ({ navigation }) => {
               returnKeyType="done"
             />
 
-            <Ionicons
-              name={showPassword ? 'eye' : 'eye-off'}
-              size={24}
-              color="#3e3e3e"
-              style={styles.inputRightIcon}
-              onPress={() => setShowPassword(!showPassword)}
-            />
+            {password && (
+              <Ionicons
+                name={showPassword ? 'eye' : 'eye-off'}
+                size={22}
+                color="#000000"
+                style={styles.inputRightIcon}
+                onPress={() => setShowPassword(!showPassword)}
+              />
+            )}
           </View>
         </KeyboardAvoidingView>
 
@@ -167,7 +169,7 @@ const Login = ({ navigation }) => {
   );
 };
 
-let PRIMARY_COL = '#0157ac';
+let PRIMARY_COL = '#583492';
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -182,13 +184,14 @@ const styles = StyleSheet.create({
   title: {
     marginTop: 20,
     fontSize: 34,
+    marginBottom: 10,
     fontFamily: 'PoetsenOne-Regular',
     textAlign: 'center',
     color: PRIMARY_COL,
   },
   subtitle: {
-    fontSize: 18,
-    color: '#4e4e4e',
+    fontSize: 16,
+    color: '#3c3c3c',
     fontFamily: 'Inter-Medium',
   },
 
@@ -202,17 +205,15 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginLeft: 5,
     color: PRIMARY_COL,
-    fontFamily: 'Inter-SemiBold',
+    fontFamily: 'Inter-Bold',
   },
   inputBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 45,
+    height: 44,
     paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: '#7e7d7d',
-    borderRadius: 15,
-    backgroundColor: '#f4f2f1',
+    borderRadius: 18,
+    backgroundColor: '#d7d6d6',
   },
   inputRightIcon: {
     marginLeft: 'auto',
@@ -236,7 +237,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '90%',
-    height: 45,
+    height: 42,
     marginTop: 'auto',
   },
   loginText: {
@@ -247,7 +248,7 @@ const styles = StyleSheet.create({
   registerBtn: {
     borderBlockColor: '#242424',
     borderWidth: 1,
-    height: 45,
+    height: 42,
     borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',

@@ -52,8 +52,8 @@ const Profile = ({ navigation }) => {
     // dispatch fetchprofile to redux store
     const unsubscribeProfile = dispatch(fetchProfile(userId));
 
-    // unsubscribe listener on unmount
     return () => {
+      // unsubscribe listener on unmount
       unsubscribeProfile();
     };
   }, [userId, dispatch]);

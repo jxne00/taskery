@@ -94,7 +94,7 @@ const Register = ({ navigation }) => {
               styles.inputBox,
               focusedBox === 'email' && styles.focusedBox,
             ]}>
-            <Ionicons name="person" size={24} color="#a9a9a9" />
+            <Ionicons name="person" size={20} color="#a9a9a9" />
             <TextInput
               value={email}
               style={styles.textInput}
@@ -124,7 +124,7 @@ const Register = ({ navigation }) => {
               styles.inputBox,
               focusedBox === 'password' && styles.focusedBox,
             ]}>
-            <Ionicons name="md-lock-closed" size={24} color="#a9a9a9" />
+            <Ionicons name="md-lock-closed" size={20} color="#a9a9a9" />
 
             <TextInput
               value={password}
@@ -135,6 +135,7 @@ const Register = ({ navigation }) => {
               autoCompleteType="off"
               autoCorrect={false}
               secureTextEntry={!showPassword}
+              textContentType="oneTimeCode"
               onChangeText={(text) => setPassword(text)}
               onFocus={() => setFocusedBox('password')}
               onBlur={() => setFocusedBox('')}
@@ -145,12 +146,14 @@ const Register = ({ navigation }) => {
               returnKeyType="next"
             />
 
-            <Ionicons
-              name={showPassword ? 'eye' : 'eye-off'}
-              size={24}
-              style={styles.inputRightIcon}
-              onPress={() => setShowPassword(!showPassword)}
-            />
+            {password && (
+              <Ionicons
+                name={showPassword ? 'eye' : 'eye-off'}
+                size={22}
+                style={styles.inputRightIcon}
+                onPress={() => setShowPassword(!showPassword)}
+              />
+            )}
           </View>
 
           <View style={{ height: 20 }} />
@@ -162,7 +165,7 @@ const Register = ({ navigation }) => {
               styles.inputBox,
               focusedBox === 'password2' && styles.focusedBox,
             ]}>
-            <Ionicons name="md-lock-closed" size={24} color="#a9a9a9" />
+            <Ionicons name="md-lock-closed" size={20} color="#a9a9a9" />
 
             <TextInput
               value={confirmPassword}
@@ -173,6 +176,7 @@ const Register = ({ navigation }) => {
               autoCompleteType="off"
               autoCorrect={false}
               secureTextEntry={!showConfirmPassword}
+              textContentType="oneTimeCode"
               onChangeText={(text) => setConfirmPassowrd(text)}
               onFocus={() => setFocusedBox('password2')}
               onBlur={() => setFocusedBox('')}
@@ -180,12 +184,14 @@ const Register = ({ navigation }) => {
               returnKeyType="done"
             />
 
-            <Ionicons
-              name={showConfirmPassword ? 'eye' : 'eye-off'}
-              size={24}
-              style={styles.inputRightIcon}
-              onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-            />
+            {showConfirmPassword && (
+              <Ionicons
+                name={showConfirmPassword ? 'eye' : 'eye-off'}
+                size={22}
+                style={styles.inputRightIcon}
+                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+              />
+            )}
           </View>
         </View>
 
@@ -211,7 +217,7 @@ const Register = ({ navigation }) => {
   );
 };
 
-let PRIMARY_COL = '#0157ac';
+let PRIMARY_COL = '#583492';
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -226,15 +232,13 @@ const styles = StyleSheet.create({
 
   backBtn: {
     position: 'absolute',
-    top: 50,
+    top: 40,
     left: 20,
-    backgroundColor: '#d7d7d7',
-    padding: 5,
     color: '#0c0c0c',
   },
 
   title: {
-    fontSize: 32,
+    fontSize: 28,
     marginTop: '20%',
     textAlign: 'center',
     color: '#1b1b1b',
@@ -242,7 +246,6 @@ const styles = StyleSheet.create({
   },
 
   inputContainer: {
-    marginVertical: 20,
     width: '90%',
     marginTop: '20%',
   },
@@ -251,15 +254,15 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginLeft: 5,
     color: PRIMARY_COL,
-    fontFamily: 'Inter-SemiBold',
+    fontFamily: 'Inter-Bold',
   },
   inputBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 45,
+    height: 44,
     paddingHorizontal: 10,
     borderWidth: 1,
-    borderColor: '#7e7d7d',
+    borderColor: '#8f8f8f',
     borderRadius: 15,
     backgroundColor: '#f4f2f1',
   },
@@ -267,7 +270,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
   },
   textInput: {
-    height: 45,
+    height: 44,
     paddingHorizontal: 12,
     fontSize: 16,
     width: '100%',
@@ -281,25 +284,25 @@ const styles = StyleSheet.create({
   registerBtn: {
     backgroundColor: PRIMARY_COL,
     borderRadius: 20,
-    paddingVertical: 12,
+    paddingVertical: 10,
     alignItems: 'center',
     width: '90%',
     marginTop: 'auto',
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 20,
+    color: '#FDF3EC',
+    fontSize: 18,
     fontFamily: 'Inter-SemiBold',
   },
   toLoginText: {
-    marginVertical: 20,
-    color: '#020202',
-    fontSize: 18,
+    marginVertical: 18,
+    color: '#292929',
+    fontSize: 15,
     fontFamily: 'Inter-Medium',
   },
   loginTxt: {
     color: PRIMARY_COL,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Inter-Medium',
   },
 });
 

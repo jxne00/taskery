@@ -6,13 +6,12 @@ const lightTheme = {
   textLight: '#666666',
 
   // navbar
-  // navBackground: '#907563',
-  navBackground: '#0157ac',
+  navBackground: '#583492',
   navActive: '#FDF3EC',
   navInactive: '#C2B4AC',
 
   // app name
-  appName: '#0157ac',
+  appName: '#583492',
 
   // buttons
   btnBlue: '#0157ac',

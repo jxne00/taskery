@@ -1,21 +1,15 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Appearance } from 'react-native';
 import { useTheme } from '../../utils/theme/ThemeContext';
 
+/**
+ * custom status bar styled based on theme
+ */
 const CustomStatusBar = () => {
-  const { themeMode } = useTheme();
+  const { themeType } = useTheme();
 
-  const statusBarStyle =
-    themeMode === 'system'
-      ? Appearance.getColorScheme() === 'dark'
-        ? 'light'
-        : 'dark'
-      : themeMode === 'dark'
-      ? 'light'
-      : 'dark';
-
-  return <StatusBar style={statusBarStyle} />;
+  // set the status bar to "light" or "dark" based on theme
+  return <StatusBar style={themeType === 'light' ? 'dark' : 'light'} />;
 };
 
 export default CustomStatusBar;

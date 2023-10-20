@@ -20,7 +20,7 @@ const ContextMenu = ({ handleMenuPress, id }) => {
   return (
     <Menu onSelect={(value) => handleMenuPress(value, id)}>
       <MenuTrigger>
-        <Ionicons name="ellipsis-vertical" size={24} color={theme.text} />
+        <Ionicons name="ellipsis-vertical" size={20} color={theme.text} />
       </MenuTrigger>
 
       <MenuOptions
@@ -29,7 +29,7 @@ const ContextMenu = ({ handleMenuPress, id }) => {
           borderColor: theme.text,
           borderWidth: 1,
           borderRadius: 5,
-          padding: 5,
+          paddingVertical: 5,
         }}>
         <MenuOption value="edit">
           <Text style={[style.text, { color: theme.text }]}>Edit</Text>
@@ -45,9 +45,9 @@ const ContextMenu = ({ handleMenuPress, id }) => {
 
 const style = StyleSheet.create({
   text: {
-    fontSize: 18,
-    padding: 5,
-    fontFamily: 'Inter-Regular',
+    fontSize: 16,
+    fontFamily: 'Inter-Medium',
+    textAlign: 'center',
   },
 });
 
