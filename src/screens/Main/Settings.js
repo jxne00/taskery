@@ -11,7 +11,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 
 import CustomStatusBar from '../../components/StatusBar';
 import { useTheme } from '../../../utils/theme/ThemeContext';
-import useGlobalStyles from '../../../utils/hooks/globalStyles';
+import useGlobalStyles from '../../../utils/theme/globalStyles';
 
 import { auth } from '../../../utils/firebase/config';
 import { useDispatch } from 'react-redux';

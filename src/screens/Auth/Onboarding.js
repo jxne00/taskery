@@ -10,10 +10,10 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons';
 
 import AvatarModal from '../../components/onboarding/AvatarModal';
+import InfoBox from '../../components/InfoBox';
 
 import { auth, db } from '../../../utils/firebase/config';
 
@@ -24,84 +24,42 @@ import { auth, db } from '../../../utils/firebase/config';
 const Onboarding = ({ navigation }) => {
   const [name, setName] = useState('');
   const [chosenAvatar, setChosenAvatar] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [uploaded, setUploaded] = useState(null);
-
-  // pick image from device's gallery
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    // set the user's uploaded image
-    if (!result.canceled) {
-      console.log('selected image: ', result);
-
-      const response = await fetch(result.uri);
-      setUploaded(await response.blob());
-    } else {
-      alert('You did not select any image.');
-    }
-  };
-
-  // capture image using camera
-  const takePhoto = async () => {
-    // get permisson to access camera
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-
-    // return if permission not granted
-    if (status !== 'granted') {
-      alert('Please allow camera access to use this feature.');
-      return;
-    }
-
-    // open camera
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      console.log('picture taken: ', result);
-    } else {
-      console.log('no image selected');
-    }
-  };
 
   const handleNextPress = () => {
-    console.log('store details to firebase');
+    console.log('todo: store details to firebase');
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        {/* <Text style={styles.title}>Welcome to Taskery!</Text>
+        <Text style={styles.title}>Welcome to taskery!</Text>
 
         <Text style={styles.subtitle}>Set up your profile to get started.</Text>
 
-        <Text style={styles.subsubtitle}>
-          Your name and avatar will be visible to other users in the community.
-          Feel free to use a nickname or alias if you prefer.
-        </Text> */}
-
         <AvatarModal
-          modalVisible={modalVisible}
-          setModalVisible={setModalVisible}
           chosenAvatar={chosenAvatar}
           setChosenAvatar={setChosenAvatar}
         />
 
-        <MaterialCommunityIcons name="image-plus" size={24} color="#4d4d4d" />
-
         <View style={styles.inputContainer}>
           {/* name input */}
-          <Text style={styles.inputLabel}>Name</Text>
+          <View style={styles.row}>
+            <Text style={styles.inputLabel}>Name</Text>
+            <InfoBox
+              title={'Privacy Notice'}
+              text={
+                'Your profile name and avatar will be visible to other users in the community.\nYou can change these details anytime you want later in the Settings.'
+              }
+              iconColor={'#3c3c3c'}
+              bgColor={'#c7c7c7'}
+            />
+          </View>
+
           <TextInput
             value={name}
             style={styles.textInput}
-            placeholder="Enter your name, nickname or alias"
+            placeholder="Enter a name, nickname or alias"
             placeholderTextColor={'#afafaf'}
             autoCapitalize="none"
             autoCompleteType="off"
@@ -116,22 +74,24 @@ const Onboarding = ({ navigation }) => {
             {isLoading ? (
               <ActivityIndicator size="small" color="#ffffff" />
             ) : (
-              <View style={styles.nextBtnContainer}>
+              <>
                 <Text style={styles.nextBtnText}>Continue</Text>
                 <Ionicons
                   name="arrow-forward-circle-outline"
                   color={'#fff'}
-                  size={28}
+                  size={24}
                 />
-              </View>
+              </>
             )}
           </TouchableOpacity>
         </View>
       </View>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
     </SafeAreaView>
   );
 };
+
+let PRIMARY_COL = '#583492';
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -144,66 +104,56 @@ const styles = StyleSheet.create({
     backgroundColor: '#FDF3EC',
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     textAlign: 'center',
-    color: '#ebd8cc',
+    color: PRIMARY_COL,
     marginBottom: 10,
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'PoetsenOne-Regular',
   },
   subtitle: {
-    fontSize: 20,
-    color: '#f3eae4',
+    fontSize: 16,
+    color: '#232323',
     marginBottom: 20,
-    textAlign: 'center',
-    fontFamily: 'Inter-Regular',
-  },
-  subsubtitle: {
-    fontSize: 18,
-    color: '#ede4dd',
-    marginBottom: 30,
     textAlign: 'center',
     fontFamily: 'Inter-Regular',
   },
 
   inputContainer: {
     marginTop: 30,
+    width: '100%',
   },
   inputLabel: {
-    fontSize: 18,
-    marginBottom: 5,
-    color: '#0157ac',
+    fontSize: 16,
+    color: PRIMARY_COL,
     fontFamily: 'Inter-Bold',
+    paddingRight: 5,
   },
   textInput: {
     padding: 10,
     borderBottomColor: '#5d5d5d',
     borderBottomWidth: 1,
-    fontSize: 18,
+    fontSize: 16,
     color: '#000000',
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Inter-Medium',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
   },
 
   nextBtn: {
-    backgroundColor: '#0157ac',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    backgroundColor: PRIMARY_COL,
+    paddingVertical: 8,
     borderRadius: 5,
-    marginTop: '20%',
-    alignSelf: 'flex-end',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 5,
-  },
-  nextBtnContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '40%',
   },
   nextBtnText: {
     color: '#fff',
     fontSize: 18,
-    textAlign: 'center',
     marginRight: 10,
     fontFamily: 'Inter-SemiBold',
   },

@@ -11,7 +11,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 import CustomStatusBar from '../../components/StatusBar';
 import { useTheme } from '../../../utils/theme/ThemeContext';
-import useGlobalStyles from '../../../utils/hooks/globalStyles';
+import useGlobalStyles from '../../../utils/theme/globalStyles';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks } from '../../../utils/redux/actions/taskActions';

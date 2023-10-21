@@ -13,7 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useTheme } from '../../../utils/theme/ThemeContext';
-import useGlobalStyles from '../../../utils/hooks/globalStyles';
+import useGlobalStyles from '../../../utils/theme/globalStyles';
 import CustomStatusBar from '../../components/StatusBar';
 
 import { auth, db } from '../../../utils/firebase/config';

@@ -38,7 +38,8 @@ const Login = ({ navigation }) => {
       return;
     }
 
-    auth // firebase auth with email and password
+    // firebase auth with email and password
+    auth
       .signInWithEmailAndPassword(email, password)
       // .signInWithEmailAndPassword('june@demo.com', 'password')
       .then((userCredentials) => {
@@ -75,7 +76,6 @@ const Login = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* main container */}
       <View style={styles.container}>
         <Text style={styles.title}>taskery</Text>
         <Text style={styles.subtitle}>Login to your account</Text>
