@@ -2,10 +2,10 @@ import React from 'react';
 import { View, FlatList, Text, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
-import { useTheme } from '../../../utils/theme/ThemeContext';
+import { useTheme } from '../../theme/ThemeContext';
 import ContextMenu from './ContextMenu';
 
-import { toDateDisplay } from '../../../utils/helper';
+import { toDateDisplay } from '../helper/timeConverters';
 
 /**
  * a flatlist of tasks with its details

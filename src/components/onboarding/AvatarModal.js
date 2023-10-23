@@ -14,7 +14,7 @@ import {
 import { MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
-import { fetchAvatarUrls } from '../../../utils/firebase/helper';
+import { fetchAvatarUrls } from '../../services/firebase/helper';
 
 /**
  * an avatar image that shows a modal when clicked.

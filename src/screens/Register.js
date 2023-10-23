@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import { auth } from '../../../utils/firebase/config';
+import { auth } from '../services/firebase/config';
 
 const Register = ({ navigation }) => {
   const [email, setEmail] = useState('');

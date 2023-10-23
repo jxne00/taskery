@@ -12,7 +12,7 @@ import {
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { auth } from '../../../utils/firebase/config';
+import { auth } from '../services/firebase/config';
 
 /**
  * The login screen using firebase for auth

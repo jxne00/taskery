@@ -8,10 +8,11 @@ import {
 } from 'react-native-popup-menu';
 import { Ionicons } from '@expo/vector-icons';
 
-import { useTheme } from '../../../utils/theme/ThemeContext';
+import { useTheme } from '../../theme/ThemeContext';
 
 /**
  * a context menu to choose "edit" or "delete" task
+ * 
  * @param {function} handleMenuPress - function to handle context menu press
  */
 const ContextMenu = ({ handleMenuPress, id }) => {

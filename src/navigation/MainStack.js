@@ -1,11 +1,11 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { MenuProvider } from 'react-native-popup-menu';
 
-import Home from '../screens/Main/Home';
-import Profile from '../screens/Main/Profile';
-import Community from '../screens/Main/Community';
+import Home from '../screens/Home';
+import Profile from '../screens/Profile';
+import Community from '../screens/Community';
 
-import Settings from '../screens/Main/Settings';
+import Settings from '../screens/Settings';
 
 const StackH = createStackNavigator();
 const StackP = createStackNavigator();

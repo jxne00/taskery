@@ -6,9 +6,9 @@ import {
   addTaskSuccess,
   editTaskSuccess,
   deleteTaskSuccess,
-} from '../reducers/task';
-import { db } from '../../firebase/config';
-import { toTimestamp } from '../../firebase/helper';
+} from './taskReducer';
+import { db } from '../firebase/config';
+import { toTimestamp } from '../firebase/helper';
 
 /**
  * fetch all task documents from "tasks" collection in firestore

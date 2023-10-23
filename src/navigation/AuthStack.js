@@ -1,15 +1,15 @@
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Login from '../screens/Auth/Login';
-import Register from '../screens/Auth/Register';
-import Onboarding from '../screens/Auth/Onboarding';
+import Login from '../screens/Login';
+import Register from '../screens/Register';
+import Onboarding from '../screens/Onboarding';
 
 const Stack = createStackNavigator();
 
 const AuthStack = () => {
   return (
     <Stack.Navigator
-      initialRouteName="Onboarding"
+      initialRouteName="Login"
       screenOptions={{
         headerShown: false,
         gestureEnabled: false, // prevent swipe to go back

@@ -12,19 +12,18 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { AntDesign } from '@expo/vector-icons';
+import { useDispatch } from 'react-redux';
 
 import DropDownPicker from 'react-native-dropdown-picker';
 // import ColorPicker from 'reanimated-color-picker';
 
-import useGlobalStyles from '../../../utils/hooks/globalStyles';
-import { useTheme } from '../../../utils/theme/ThemeContext';
+import useGlobalStyles from '../../theme/globalStyles';
+import { useTheme } from '../../theme/ThemeContext';
 
-import { addTask, updateTask } from '../../../utils/redux/actions/taskActions';
+import { addTask, updateTask } from '../../services/redux/taskActions';
 
 import DeadlinePicker from '../DatePicker';
 import { HeaderDivider, Divider } from '../Elements';
-
-import { useDispatch } from 'react-redux';
 
 /**
  * modal to create a new task

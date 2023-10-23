@@ -9,17 +9,17 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
-import CustomStatusBar from '../../components/StatusBar';
-import { useTheme } from '../../../utils/theme/ThemeContext';
-import useGlobalStyles from '../../../utils/theme/globalStyles';
+import CustomStatusBar from '../components/StatusBar';
+import { useTheme } from '../theme/ThemeContext';
+import useGlobalStyles from '../theme/globalStyles';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTasks } from '../../../utils/redux/actions/taskActions';
-import { fetchProfile } from '../../../utils/redux/actions/profileActions';
-import { auth } from '../../../utils/firebase/config';
+import { fetchTasks } from '../services/redux/taskActions';
+import { fetchProfile } from '../services/redux/profileActions';
+import { auth } from '../services/firebase/config';
 
-import Tasklist from '../../components/task/Tasklist';
-import TaskDetails from '../../components/task/TaskDetails';
+import Tasklist from '../components/task/Tasklist';
+import TaskDetails from '../components/task/TaskDetails';
 
 const Home = () => {
   const { theme, themeType } = useTheme();

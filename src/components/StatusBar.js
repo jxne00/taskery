@@ -1,6 +1,6 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { useTheme } from '../../utils/theme/ThemeContext';
+import { useTheme } from '../theme/ThemeContext';
 
 /**
  * custom status bar styled based on theme

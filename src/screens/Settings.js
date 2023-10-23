@@ -8,16 +8,16 @@ import {
 } from 'react-native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
-
-import CustomStatusBar from '../../components/StatusBar';
-import { useTheme } from '../../../utils/theme/ThemeContext';
-import useGlobalStyles from '../../../utils/theme/globalStyles';
-
-import { auth } from '../../../utils/firebase/config';
 import { useDispatch } from 'react-redux';
+import { auth } from '../services/firebase/config';
+
+import CustomStatusBar from '../components/StatusBar';
+import { useTheme } from '../theme/ThemeContext';
+import useGlobalStyles from '../theme/globalStyles';
+import InfoBox from '../components/InfoBox';
 
 const Settings = ({ navigation }) => {
-  const { theme, themeMode, setThemeMode } = useTheme();
+  const { theme, themeMode, setThemeMode, themeType } = useTheme();
   const global = useGlobalStyles();
   const dispatch = useDispatch();
 
@@ -84,19 +84,14 @@ const Settings = ({ navigation }) => {
         <View style={[styles.themeBox, { borderColor: theme.textLight }]}>
           <Text style={[global.text, styles.themeTitle]}>Privacy</Text>
 
-          <Text style={[global.text, styles.optionText]}>
-            By setting your account to public, users in the community will be
-            able to see your posts.
-          </Text>
-
           <View style={styles.option}>
+            <InfoBox
+              title="Account Privacy"
+              text="By setting your account to public, users in the community will be able to see your posts."
+              iconColor={theme.text}
+              bgColor={themeType === 'light' ? '#FDF3EC' : '#d0d0d0'}
+            />
             <Text style={[global.text, styles.optionText]}>
-              <Ionicons
-                name="information-circle-sharp"
-                size={24}
-                color="black"
-                onPress={console.log('(TODO!!!) show info tip')}
-              />
               Account Privacy
             </Text>
 
@@ -108,7 +103,7 @@ const Settings = ({ navigation }) => {
               defaultValue={isPublic}
               placeholder={isPublic ? 'Public' : 'Private'}
               containerStyle={{ width: 100 }}
-              style={{ backgroundColor: theme.background }}
+              style={{ backgroundColor: theme.navActive }}
               itemStyle={{
                 justifyContent: 'flex-start',
               }}

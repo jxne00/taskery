@@ -19,9 +19,13 @@ firebase.apps.length === 0
   ? firebase.initializeApp(firebaseConfig)
   : firebase.app();
 
-// services
+/** firebase auth */
 const auth = firebase.auth();
+
+/** firebase firestore */
 const db = firebase.firestore();
+
+/** firebase storage */
 const storage = firebase.storage();
 
 export { auth, db, storage };

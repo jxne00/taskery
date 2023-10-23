@@ -2,7 +2,7 @@
 
 /**
  * convert milliseconds to dd MMM yyyy format
- * 
+ *
  * @param {number} milliseconds date in milliseconds
  */
 const toDateDisplay = (milliseconds) => {

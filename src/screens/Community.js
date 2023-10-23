@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 
-import CustomStatusBar from '../../components/StatusBar';
-import { useTheme } from '../../../utils/theme/ThemeContext';
-import useGlobalStyles from '../../../utils/theme/globalStyles';
+import CustomStatusBar from '../components/StatusBar';
+import { useTheme } from '../theme/ThemeContext';
+import useGlobalStyles from '../theme/globalStyles';
 
 const Community = () => {
   const { theme } = useTheme();

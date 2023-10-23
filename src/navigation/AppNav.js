@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
-import { useTheme } from '../../utils/theme/ThemeContext';
+import { useTheme } from '../theme/ThemeContext';
 
 import AuthStack from './AuthStack';
 import { HomeStack, CommunityStack, ProfileStack } from './MainStack';
