@@ -5,6 +5,14 @@ import { FontAwesome } from '@expo/vector-icons';
 
 import { useTheme } from '../theme/ThemeContext';
 
+/**
+ * a date picker component
+ * 
+ * @param openPicker  boolean to open/close the picker
+ * @param setOpenPicker  function to set openPicker
+ * @param date  date object
+ * @param setDate  function to set date
+ */
 const DeadlinePicker = ({ openPicker, setOpenPicker, date, setDate }) => {
   const { theme, themeType } = useTheme();
 

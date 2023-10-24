@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 
 import { useTheme } from '../../theme/ThemeContext';
 import useGlobalStyles from '../../theme/globalStyles';
-
-// sounds from https://pixabay.com/sound-effects/
-import whitenoise from '../../assets/sound/white-noise.mp3';
-import nature from '../../assets/sound/rain-thunder-nature.mp3';
-import cafe from '../../assets/sound/cafe-ambience.mp3';
-import birds from '../../assets/sound/bird-chirp.mp3';
 
 /**
  * a playlist component to play sound from a list of sounds
@@ -19,48 +13,55 @@ const Playlist = () => {
   const { theme } = useTheme();
   const global = useGlobalStyles();
 
+  // tracks from: https://pixabay.com/sound-effects/
+  const tracks = [
+    { name: 'White Noise', file: require('../../assets/sound/whitenoise.mp3') },
+    { name: 'Nature', file: require('../../assets/sound/nature.mp3') },
+    { name: 'Cafe', file: require('../../assets/sound/cafe-ambience.mp3') },
+    { name: 'Birds Chirp', file: require('../../assets/sound/bird-chirp.mp3') },
+  ];
+
   const [sound, setSound] = useState(null);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [isPlaying, setIsPlaying] = useState(false);
   const [position, setPosition] = useState(0);
 
-  const tracks = [
-    { name: 'White Noise', file: whitenoise },
-    { name: 'Nature', file: nature },
-    { name: 'Cafe', file: cafe },
-    { name: 'Birds Chirp', file: birds },
-  ];
+  // unload sound on unmount
+  useEffect(() => {
+    return sound ? () => sound.unloadAsync() : undefined;
+  }, [sound]);
 
-  // play the selected sound
+  /** play the selected sound */
   const playSound = async (index) => {
-    // stop & unload first if another sound is playing
-    if (sound && activeIndex !== index) {
-      await sound.stopAsync();
-      await sound.unloadAsync();
-      setPosition(0);
-    }
-
-    // load & play the sound
     try {
+      // stop & unload first if another sound is playing
+      if (sound && activeIndex !== index) {
+        resetSound();
+      }
+
+      // resume from pause
+      if (sound && activeIndex === index) {
+        await sound.playAsync(position);
+        setIsPlaying(true);
+        return;
+      }
+
+      // load & play the sound
       const { sound: newSound } = await Audio.Sound.createAsync(
         tracks[index].file,
       );
       setSound(newSound);
       setActiveIndex(index);
 
-      console.log('Playing');
       await newSound.playAsync();
       setIsPlaying(true);
-    } catch (error) {
-      alert(error);
+    } catch (err) {
+      alert('Error playing sound', err);
     }
   };
 
-  // FIXME - resume restarts sound
-  // pause or resume the sound
+  /** pause sound and save its position */
   const togglePause = async () => {
-    if (!sound) return;
-
     if (isPlaying) {
       // save position where it paused
       const { positionMillis } = await sound.getStatusAsync();
@@ -68,37 +69,26 @@ const Playlist = () => {
 
       await sound.pauseAsync();
     }
-    // resume sound from paused position
-    else {
-      if (position > 0) {
-        await sound.setPositionAsync(position);
-      }
-
-      await sound.playAsync();
-    }
     setIsPlaying(!isPlaying);
   };
 
-  // stop the sound
+  /** stop the sound */
   const stopSound = async () => {
     if (sound) {
-      await sound.stopAsync();
-      await sound.unloadAsync();
-
-      setIsPlaying(false);
-      setActiveIndex(-1);
-      setPosition(0);
+      resetSound();
     }
   };
 
-  // unload
-  useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
+  /** reset sound and states */
+  const resetSound = async () => {
+    await sound.stopAsync();
+    await sound.unloadAsync();
+
+    setIsPlaying(false);
+    setActiveIndex(-1);
+    setPosition(0);
+    setSound(null);
+  };
 
   return (
     <View style={styles.container}>

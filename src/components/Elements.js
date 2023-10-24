@@ -22,6 +22,14 @@ const HeaderDivider = ({ color, text, height, margin }) => {
   );
 };
 
+/**
+ * basic divider line
+ * `-----------------------`
+ *
+ * @param color color of divider line
+ * @param height height of divider line
+ * @param margin vertical margin of divider
+ */
 const Divider = ({ color, height, margin }) => {
   return (
     <View
