@@ -31,6 +31,8 @@ const Profile = ({ navigation }) => {
   const dispatch = useDispatch();
   const userId = auth.currentUser?.uid;
 
+  const [isPublic, setIsPublic] = useState(profileData?.is_public);
+
   // const [data, setData] = useState(null);
   // const [avatar, setAvatar] = useState(null);
 
@@ -84,7 +86,13 @@ const Profile = ({ navigation }) => {
           size={28}
           style={styles.settingsIcon}
           color={theme.textLight}
-          onPress={() => navigation.navigate('Settings')}
+          onPress={() =>
+            navigation.navigate('Settings', {
+              userId,
+              isPublic,
+              setIsPublic,
+            })
+          }
         />
 
         {/* name */}

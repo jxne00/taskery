@@ -8,6 +8,7 @@ import { useTheme } from '../theme/ThemeContext';
 
 import AuthStack from './AuthStack';
 import { HomeStack, CommunityStack, ProfileStack } from './MainStack';
+import Session from '../screens/Session';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -29,6 +30,10 @@ const HomeTabs = () => {
           switch (route.name) {
             case 'HomeTab':
               iconName = 'home';
+              color = focused ? theme.navActive : theme.navInactive;
+              break;
+            case 'SessionTab':
+              iconName = 'bulb1';
               color = focused ? theme.navActive : theme.navInactive;
               break;
             case 'CommunityTab':
@@ -54,6 +59,9 @@ const HomeTabs = () => {
             case 'HomeTab':
               labelName = 'Home';
               break;
+            case 'SessionTab':
+              labelName = 'Session';
+              break;
             case 'CommunityTab':
               labelName = 'Community';
               break;
@@ -69,6 +77,7 @@ const HomeTabs = () => {
         },
       })}>
       <Tab.Screen name="HomeTab" component={HomeStack} />
+      <Tab.Screen name="SessionTab" component={Session} />
       <Tab.Screen name="CommunityTab" component={CommunityStack} />
       <Tab.Screen name="ProfileTab" component={ProfileStack} />
     </Tab.Navigator>

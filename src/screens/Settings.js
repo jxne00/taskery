@@ -16,12 +16,11 @@ import { useTheme } from '../theme/ThemeContext';
 import useGlobalStyles from '../theme/globalStyles';
 import InfoBox from '../components/InfoBox';
 
-const Settings = ({ navigation }) => {
+const Settings = ({ navigation, userId, isPublic, setIsPublic }) => {
   const { theme, themeMode, setThemeMode, themeType } = useTheme();
   const global = useGlobalStyles();
   const dispatch = useDispatch();
 
-  const [isPublic, setIsPublic] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // signout user using firebase
@@ -34,6 +33,10 @@ const Settings = ({ navigation }) => {
       console.log('Error signing out: ', err);
     }
   };
+
+  useEffect(() => {
+    // TODO: update 'is_public' in firestore
+  }, [userId, isPublic]);
 
   return (
     <SafeAreaView style={global.container}>
