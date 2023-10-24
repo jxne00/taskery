@@ -6,13 +6,15 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
 import { useTheme } from '../theme/ThemeContext';
 
+import Session from '../screens/Session';
+
 import AuthStack from './AuthStack';
 import { HomeStack, CommunityStack, ProfileStack } from './MainStack';
-import Session from '../screens/Session';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
+/** bottom tab navigator of main screens */
 const HomeTabs = () => {
   const { theme } = useTheme();
 
@@ -84,6 +86,7 @@ const HomeTabs = () => {
   );
 };
 
+/** the main navigator of the app */
 const AppNavigator = () => {
   return (
     <NavigationContainer>

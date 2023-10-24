@@ -8,10 +8,9 @@ import { useTheme } from '../theme/ThemeContext';
 import useGlobalStyles from '../theme/globalStyles';
 
 import Playlist from '../components/session/playlist';
+import Timer from '../components/session/timer';
 
-// sounds from https://pixabay.com/sound-effects/
-import alarm from '../assets/sound/clock-alarm.mp3';
-
+/** The session screen to start a productivity session */
 const Session = () => {
   const { theme } = useTheme();
   const global = useGlobalStyles();
@@ -25,7 +24,7 @@ const Session = () => {
 
         <Playlist />
 
-        {/* TODO - implement timer (with pomodoro option) */}
+        <Timer />
 
         <CustomStatusBar />
       </View>

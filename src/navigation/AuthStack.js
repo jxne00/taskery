@@ -6,6 +6,10 @@ import Onboarding from '../screens/Onboarding';
 
 const Stack = createStackNavigator();
 
+/**
+ * navigation stack for auth related screens
+ * (Login, Register, Onboarding)
+ */
 const AuthStack = () => {
   return (
     <Stack.Navigator

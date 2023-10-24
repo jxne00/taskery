@@ -18,6 +18,7 @@ const lightTheme = {
   btnBlack: '#121212',
   btnRed: '#933A3A',
 
+  // colors
   green: '#2ED649',
   red: '#EC2323',
   blue: '#5050B3',
@@ -44,6 +45,7 @@ const darkTheme = {
   btnBlack: '#E32323',
   btnRed: '#6A3535',
 
+  // colors
   green: '#2E9B5C',
   red: '#B33535',
   blue: '5050B3',

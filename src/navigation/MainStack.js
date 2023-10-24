@@ -11,6 +11,7 @@ const StackH = createStackNavigator();
 const StackP = createStackNavigator();
 const StackC = createStackNavigator();
 
+/** navigation stack for home screen */
 const HomeStack = () => {
   return (
     <MenuProvider>
@@ -26,6 +27,7 @@ const HomeStack = () => {
   );
 };
 
+/** navigation stack for community screen */
 const CommunityStack = () => {
   return (
     <StackC.Navigator
@@ -38,6 +40,7 @@ const CommunityStack = () => {
   );
 };
 
+/** navigation stack for profile screen */
 const ProfileStack = () => {
   return (
     <StackP.Navigator

@@ -21,6 +21,7 @@ import { auth } from '../services/firebase/config';
 import Tasklist from '../components/task/Tasklist';
 import TaskDetails from '../components/task/TaskDetails';
 
+/** The home screen that displays a list of tasks */
 const Home = () => {
   const { theme, themeType } = useTheme();
   const global = useGlobalStyles();

@@ -18,7 +18,7 @@ import InfoBox from '../components/InfoBox';
 import { auth, db } from '../services/firebase/config';
 
 /**
- * This screen is for setting up the user's profile details
+ * The onboarding screen for setting up the user's profile details
  * (name, avatar image)
  */
 const Onboarding = ({ navigation }) => {

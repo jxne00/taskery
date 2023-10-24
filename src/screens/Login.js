@@ -14,9 +14,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { auth } from '../services/firebase/config';
 
-/**
- * The login screen using firebase for auth
- */
+/** The login screen to login to app using firebase for auth */
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

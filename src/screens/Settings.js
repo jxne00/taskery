@@ -16,6 +16,7 @@ import { useTheme } from '../theme/ThemeContext';
 import useGlobalStyles from '../theme/globalStyles';
 import InfoBox from '../components/InfoBox';
 
+/** The settings screen to manage app & account settings */
 const Settings = ({ navigation, userId, isPublic, setIsPublic }) => {
   const { theme, themeMode, setThemeMode, themeType } = useTheme();
   const global = useGlobalStyles();

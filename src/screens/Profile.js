@@ -20,6 +20,7 @@ import { auth, db } from '../services/firebase/config';
 import { fetchProfile } from '../services/redux/profileActions';
 import { toDateDisplay } from '../components/helper/timeConverters';
 
+/** The profile screen displaying user's profile info */
 const Profile = ({ navigation }) => {
   const { theme } = useTheme();
   const global = useGlobalStyles();

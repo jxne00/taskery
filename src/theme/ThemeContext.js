@@ -8,9 +8,7 @@ const ThemeContext = createContext();
 // key for async storage
 const THEME_ASYNC_KEY = 'theme';
 
-/**
- * provider for the theme context
- */
+/** Provider for the theme context */
 const ThemeProvider = ({ children }) => {
   const deviceTheme = Appearance.getColorScheme();
   const [themeMode, setThemeMode] = useState('system');
@@ -85,9 +83,7 @@ const ThemeProvider = ({ children }) => {
   );
 };
 
-/**
- * hook to use the theme context
- */
+/** The hook to use theme context */
 const useTheme = () => useContext(ThemeContext);
 
 export { ThemeProvider, useTheme };

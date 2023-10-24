@@ -4,6 +4,7 @@ import CustomStatusBar from '../components/StatusBar';
 import { useTheme } from '../theme/ThemeContext';
 import useGlobalStyles from '../theme/globalStyles';
 
+/** The community screen that shows posts shared by other uses */
 const Community = () => {
   const { theme } = useTheme();
   const global = useGlobalStyles();
