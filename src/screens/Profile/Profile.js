@@ -12,13 +12,13 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useTheme } from '../theme/ThemeContext';
-import useGlobalStyles from '../theme/globalStyles';
-import CustomStatusBar from '../components/StatusBar';
+import { useTheme } from '../../theme/ThemeContext';
+import useGlobalStyles from '../../theme/globalStyles';
+import CustomStatusBar from '../../components/shared/StatusBar';
 
-import { auth, db } from '../services/firebase/config';
-import { fetchProfile } from '../services/redux/profileActions';
-import { toDateDisplay } from '../components/helper/timeConverters';
+import { auth, db } from '../../services/firebase/config';
+import { fetchProfile } from '../../services/redux/profileActions';
+import { toDateDisplay } from '../../components/helper/timeConverters';
 
 /** The profile screen displaying user's profile info */
 const Profile = ({ navigation }) => {
@@ -39,14 +39,14 @@ const Profile = ({ navigation }) => {
 
   const avatarImages = {
     // map avatar file names to their respective paths
-    'a1.png': require('../assets/avatars/a1.png'),
-    'a2.png': require('../assets/avatars/a2.png'),
-    'a3.png': require('../assets/avatars/a3.png'),
-    'a4.png': require('../assets/avatars/a4.png'),
-    'a5.png': require('../assets/avatars/a5.png'),
-    'a6.png': require('../assets/avatars/a6.png'),
-    'a7.png': require('../assets/avatars/a7.png'),
-    'a8.png': require('../assets/avatars/a8.png'),
+    'a1.png': require('../../assets/avatars/a1.png'),
+    'a2.png': require('../../assets/avatars/a2.png'),
+    'a3.png': require('../../assets/avatars/a3.png'),
+    'a4.png': require('../../assets/avatars/a4.png'),
+    'a5.png': require('../../assets/avatars/a5.png'),
+    'a6.png': require('../../assets/avatars/a6.png'),
+    'a7.png': require('../../assets/avatars/a7.png'),
+    'a8.png': require('../../assets/avatars/a8.png'),
   };
 
   useEffect(() => {
@@ -77,7 +77,7 @@ const Profile = ({ navigation }) => {
           source={
             profileData?.avatar_path
               ? avatarImages[profileData.avatar_path]
-              : require('../assets/avatars/a1.png')
+              : require('../../assets/avatars/a1.png')
           }
           style={styles.avatar}
         />

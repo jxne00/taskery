@@ -13,7 +13,7 @@ import * as Haptics from 'expo-haptics';
 import { useTheme } from '../../theme/ThemeContext';
 import useGlobalStyles from '../../theme/globalStyles';
 
-import { secondsToHMS } from '../helper/timeConverters';
+import { secondsToHMS } from '../../components/helper/timeConverters';
 
 const ONE_SECOND = 1000;
 

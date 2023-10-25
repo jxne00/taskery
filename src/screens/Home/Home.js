@@ -9,17 +9,17 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
-import CustomStatusBar from '../components/StatusBar';
-import { useTheme } from '../theme/ThemeContext';
-import useGlobalStyles from '../theme/globalStyles';
+import CustomStatusBar from '../../components/shared/StatusBar';
+import { useTheme } from '../../theme/ThemeContext';
+import useGlobalStyles from '../../theme/globalStyles';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTasks } from '../services/redux/taskActions';
-import { fetchProfile } from '../services/redux/profileActions';
-import { auth } from '../services/firebase/config';
+import { fetchTasks } from '../../services/redux/taskActions';
+import { fetchProfile } from '../../services/redux/profileActions';
+import { auth } from '../../services/firebase/config';
 
-import Tasklist from '../components/task/Tasklist';
-import TaskDetails from '../components/task/TaskDetails';
+import Tasklist from './TaskList/Tasklist';
+import TaskDetails from './CreateTask/TaskDetails';
 
 /** The home screen that displays a list of tasks */
 const Home = () => {
@@ -50,7 +50,7 @@ const Home = () => {
     };
   }, [userId, dispatch]);
 
-  // go to create task screen with pre-filled details
+  /** go to create task screen with pre-filled details */
   const handleEdit = (id) => {
     const task = tasks[id];
 
@@ -59,12 +59,13 @@ const Home = () => {
     setEditTask(task);
   };
 
-  // delete task
+  /** delete task */
   const handleDelete = (id) => {
+    // TODO delete task
     console.log('(TODO!!!) delete task with id: ', id);
   };
 
-  // display loading indicator while fetching tasks
+  /** display loading indicator while fetching tasks */
   const showLoading = () => {
     return (
       <View style={styles.centered}>
@@ -105,11 +106,38 @@ const Home = () => {
             size={30}
             color={theme.text}
             style={styles.calendarIcon}
+            // TODO implement calendar function
+            onPress={() => console.log('calendar (TODO!!!)')}
           />
         </View>
 
         {/* List of tasks */}
-        <Text style={[global.text, styles.tasksTitle]}>Tasks</Text>
+        <View style={styles.titleRow}>
+          <Text style={[global.text, styles.tasksTitle]}>Tasks</Text>
+
+          <View
+            style={[
+              styles.titleRow,
+              {
+                marginLeft: 'auto',
+                marginRight: 10,
+              },
+            ]}>
+            <MaterialIcons
+              name="filter-list-alt"
+              size={28}
+              color={theme.textLight}
+              // TODO implement filter function
+              onPress={() => console.log('filter (TODO!!!)')}
+            />
+            <MaterialIcons
+              name="sort"
+              size={24}
+              color={theme.textLight} // TODO implement sort function
+              onPress={() => console.log('sort (TODO!!!)')}
+            />
+          </View>
+        </View>
 
         {isLoading ? (
           showLoading()
@@ -123,7 +151,10 @@ const Home = () => {
 
         {/* button to create new task */}
         <TouchableOpacity
-          style={[styles.addTaskBtn, { backgroundColor: theme.blue }]}
+          style={[
+            styles.addTaskBtn,
+            { backgroundColor: themeType === 'light' ? '#a13030' : '#EC6565' },
+          ]}
           onPress={() => setShowTaskModal(true)}>
           <Text
             style={[
@@ -168,13 +199,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '90%',
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 20,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignContent: 'center',
+    marginHorizontal: 20,
+    marginBottom: 6,
   },
   appName: {
     fontSize: 28,
     fontFamily: 'PoetsenOne-Regular',
   },
   tasksTitle: {
+    flex: 1,
     fontSize: 26,
     fontFamily: 'Inter-Bold',
   },
@@ -187,13 +225,13 @@ const styles = StyleSheet.create({
     right: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 50,
-    padding: 12,
+    borderRadius: 8,
+    padding: 10,
   },
   addTaskTxt: {
     fontSize: 18,
     marginRight: 5,
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'Inter-SemiBold',
   },
 });
 

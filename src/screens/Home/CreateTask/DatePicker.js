@@ -3,11 +3,11 @@ import { StyleSheet, View, Text } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { FontAwesome } from '@expo/vector-icons';
 
-import { useTheme } from '../theme/ThemeContext';
+import { useTheme } from '../../../theme/ThemeContext';
 
 /**
- * a date picker component
- * 
+ * a date picker component for deadline
+ *
  * @param openPicker  boolean to open/close the picker
  * @param setOpenPicker  function to set openPicker
  * @param date  date object
@@ -27,23 +27,19 @@ const DeadlinePicker = ({ openPicker, setOpenPicker, date, setDate }) => {
 
   return (
     <>
-      <View style={styles.pickerRow}>
-        <Text style={[styles.pickerText, { color: theme.text }]}>
-          Deadline:
+      <Text style={[styles.label, { color: theme.text }]}>Deadline</Text>
+
+      <View style={[styles.pickerRow, { borderBottomColor: theme.textLight }]}>
+        <Text style={[styles.dateText, { color: theme.text }]}>
+          {date.toLocaleDateString()}
         </Text>
 
-        <View style={[styles.box, { borderColor: theme.text }]}>
-          <Text style={[styles.dateText, { color: theme.text }]}>
-            {date.toLocaleDateString()}
-          </Text>
-
-          <FontAwesome
-            name="calendar-plus-o"
-            size={30}
-            color={themeType === 'dark' ? '#fff' : '#000'}
-            onPress={() => setOpenPicker(true)}
-          />
-        </View>
+        <FontAwesome
+          name="calendar-plus-o"
+          size={24}
+          color={theme.text}
+          onPress={() => setOpenPicker(true)}
+        />
       </View>
 
       <DateTimePickerModal
@@ -52,6 +48,7 @@ const DeadlinePicker = ({ openPicker, setOpenPicker, date, setDate }) => {
         onConfirm={handleConfirm}
         onCancel={handleCancel}
         minimumDate={new Date()} // disable past dates
+        themeVariant={themeType === 'light' ? 'light' : 'dark'}
         isDarkModeEnabled={themeType === 'dark'}
       />
     </>
@@ -61,24 +58,21 @@ const DeadlinePicker = ({ openPicker, setOpenPicker, date, setDate }) => {
 const styles = StyleSheet.create({
   pickerRow: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    borderBottomWidth: 1,
+    paddingBottom: 8,
+    marginBottom: 20,
   },
-  pickerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginRight: 10,
+  label: {
+    fontSize: 16,
+    fontFamily: 'Inter-SemiBold',
+    marginBottom: 4,
   },
   dateText: {
-    fontSize: 20,
-    marginRight: 20,
-  },
-  box: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 40,
+    fontSize: 18,
+    fontFamily: 'Inter-Medium',
+    marginLeft: 10,
   },
 });
 

@@ -3,12 +3,12 @@ import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 
-import CustomStatusBar from '../components/StatusBar';
-import { useTheme } from '../theme/ThemeContext';
-import useGlobalStyles from '../theme/globalStyles';
+import CustomStatusBar from '../../components/shared/StatusBar';
+import { useTheme } from '../../theme/ThemeContext';
+import useGlobalStyles from '../../theme/globalStyles';
 
-import Playlist from '../components/session/Playlist';
-import Timer from '../components/session/timer';
+import Playlist from './Playlist';
+import Timer from './timer';
 
 /** The session screen to start a productivity session */
 const Session = () => {

@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
 import { useTheme } from '../theme/ThemeContext';
 
-import Session from '../screens/Session';
+import Session from '../screens/Session/Session';
 
 import AuthStack from './AuthStack';
 import { HomeStack, CommunityStack, ProfileStack } from './MainStack';

@@ -12,10 +12,10 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import AvatarModal from '../components/onboarding/AvatarModal';
-import InfoBox from '../components/InfoBox';
+import AvatarModal from '../../components/onboarding/AvatarModal';
+import InfoBox from '../../components/shared/InfoBox';
 
-import { auth, db } from '../services/firebase/config';
+import { auth, db } from '../../services/firebase/config';
 
 /**
  * The onboarding screen for setting up the user's profile details

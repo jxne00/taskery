@@ -2,10 +2,10 @@ import React from 'react';
 import { View, FlatList, Text, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
-import { useTheme } from '../../theme/ThemeContext';
+import { useTheme } from '../../../theme/ThemeContext';
 import ContextMenu from './ContextMenu';
 
-import { toDateDisplay } from '../helper/timeConverters';
+import { toDateDisplay } from '../../../components/helper/timeConverters';
 
 /**
  * a flatlist of tasks with its details
@@ -22,6 +22,10 @@ const Tasklist = ({ tasklist, handleEdit, handleDelete }) => {
     }
     if (value === 'delete') {
       handleDelete(id);
+    }
+    if (value === 'duplicate') {
+      // TODO implement duplicate task
+      console.log('duplicate pressed');
     }
   };
 

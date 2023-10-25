@@ -17,13 +17,13 @@ import { useDispatch } from 'react-redux';
 import DropDownPicker from 'react-native-dropdown-picker';
 // import ColorPicker from 'reanimated-color-picker';
 
-import useGlobalStyles from '../../theme/globalStyles';
-import { useTheme } from '../../theme/ThemeContext';
+import useGlobalStyles from '../../../theme/globalStyles';
+import { useTheme } from '../../../theme/ThemeContext';
 
-import { addTask, updateTask } from '../../services/redux/taskActions';
+import { addTask, updateTask } from '../../../services/redux/taskActions';
 
-import DeadlinePicker from '../DatePicker';
-import { HeaderDivider, Divider } from '../Elements';
+import DeadlinePicker from './DatePicker';
+import { HeaderDivider, Divider } from '../../../components/shared/Elements';
 
 /**
  * modal to create a new task
@@ -244,6 +244,18 @@ const TaskDetails = (props) => {
               placeholderTextColor={theme.textLight}
             />
 
+            <View style={{ height: 20 }} />
+
+            {/* ===== deadline section ===== */}
+            <DeadlinePicker
+              openPicker={datePickerOpen}
+              setOpenPicker={setDatePickerOpen}
+              date={deadline}
+              setDate={setdeadline}
+            />
+
+            <View style={{ height: 30 }} />
+
             {/* ===== task details ===== */}
             <TextInput
               value={details}
@@ -298,14 +310,6 @@ const TaskDetails = (props) => {
             </View>
 
             <View style={{ height: 20 }} />
-
-            {/* ===== deadline section ===== */}
-            <DeadlinePicker
-              openPicker={datePickerOpen}
-              setOpenPicker={setDatePickerOpen}
-              date={deadline}
-              setDate={setdeadline}
-            />
 
             <HeaderDivider
               color={theme.textLight}

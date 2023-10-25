@@ -8,11 +8,11 @@ import {
 } from 'react-native-popup-menu';
 import { Ionicons } from '@expo/vector-icons';
 
-import { useTheme } from '../../theme/ThemeContext';
+import { useTheme } from '../../../theme/ThemeContext';
 
 /**
- * a context menu to choose "edit" or "delete" task
- * 
+ * A context menu to edit, duplicate or delete a task
+ *
  * @param {function} handleMenuPress - function to handle context menu press
  */
 const ContextMenu = ({ handleMenuPress, id }) => {
@@ -34,6 +34,10 @@ const ContextMenu = ({ handleMenuPress, id }) => {
         }}>
         <MenuOption value="edit">
           <Text style={[style.text, { color: theme.text }]}>Edit</Text>
+        </MenuOption>
+
+        <MenuOption value="duplicate">
+          <Text style={[style.text, { color: theme.text }]}>Duplicate</Text>
         </MenuOption>
 
         <MenuOption value="delete">
