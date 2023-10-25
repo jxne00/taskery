@@ -1,9 +1,11 @@
-# taskery
+<h1 align="center"> taskery 👥 </h1>
 
-A unique task manager mobile app that brings together task management and social interaction, fueling your productivity through peer motivation and social accountability 👥.
+A task manager mobile app that brings together task management and social interaction, fueling your productivity through peer motivation and social accountability.
 
 🛠️ Developed using React Native, managed by Expo.
+
 🛠️ Authentication handled using Firebase, while Firestore is used for data storage.
+
 🛠️ Redux Toolkit with Redux Thunk (middleware) for efficient data management
 
 ## Features
