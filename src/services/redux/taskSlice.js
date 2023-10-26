@@ -33,28 +33,32 @@ export const fetchTasks = createAsyncThunk(
 export const addTask = createAsyncThunk(
   'tasks/addTask',
   async ({ userId, taskDetails }) => {
-    try {
-      // create a copy for firestore update
-      // because firestore date has to be a timestamp
-      const dataForStore = { ...updatedData };
-
-      if (dataForStore.deadline) {
-        // convert js date to firestore timestamp
-        dataForStore.deadline = toTimestamp(dataForStore.deadline);
-      }
-
-      const doc = await db
-        .collection('users')
-        .doc(userId)
-        .collection('tasks')
-        .add(dataForStore);
-
-      console.log('(AsyncThunk) new task added!');
-
-      return { ...taskDetails, id: doc.id };
-    } catch (err) {
-      alert(err.message);
+    if (!userId) {
+      alert('Please log in to add a task!');
+      return;
     }
+
+    // create a copy for firestore update
+    // because firestore date has to be a timestamp
+    const dataForStore = { ...taskDetails };
+
+    if (dataForStore.deadline) {
+      // convert js date to firestore timestamp
+      dataForStore.deadline = toTimestamp(dataForStore.deadline);
+    }
+
+    const docRef = await db
+      .collection('users')
+      .doc(userId)
+      .collection('tasks')
+      .add(dataForStore)
+      .catch((err) => {
+        alert(err.message);
+      });
+
+    console.log('(AsyncThunk) new task added!');
+
+    return { ...taskDetails, id: docRef.id };
   },
 );
 
@@ -111,12 +115,24 @@ const tasksSlice = createSlice({
       })
 
       // add new task to redux store
+      .addCase(addTask.pending, (state) => {
+        state.isLoading = true;
+      })
       .addCase(addTask.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.data.push(action.payload);
+      })
+      .addCase(addTask.rejected, (state, action) => {
+        state.isLoading = false;
+        alert(action.error.message);
       })
 
       // update existing task in redux store
+      .addCase(updateTask.pending, (state) => {
+        state.isLoading = true;
+      })
       .addCase(updateTask.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.data = state.data.map((task) =>
           task.id === action.payload.id ? action.payload : task,
         );

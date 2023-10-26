@@ -106,7 +106,12 @@ const Home = () => {
       const displayText = view.charAt(0).toUpperCase() + view.slice(1);
       const bgColor =
         selectedPeriod === view ? theme.orange : theme.backgroundSec;
-      const textColor = selectedPeriod === view ? theme.text : theme.textLight;
+      const textColor =
+        selectedPeriod === view
+          ? themeType === 'light'
+            ? '#fff'
+            : theme.text
+          : theme.textLight;
 
       return (
         <TouchableOpacity

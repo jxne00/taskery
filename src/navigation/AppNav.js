@@ -23,8 +23,9 @@ const HomeTabs = () => {
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: theme.navBackground,
-          borderTopColor: theme.navInactive,
+          backgroundColor: theme.background,
+          borderTopColor: theme.text,
+          paddingTop: 6,
         },
         // set the icon for each tab
         tabBarIcon: ({ focused, color, size }) => {
@@ -32,19 +33,19 @@ const HomeTabs = () => {
           switch (route.name) {
             case 'HomeTab':
               iconName = 'home';
-              color = focused ? theme.navActive : theme.navInactive;
+              color = focused ? theme.text : theme.navInactive;
               break;
             case 'SessionTab':
               iconName = 'bulb1';
-              color = focused ? theme.navActive : theme.navInactive;
+              color = focused ? theme.text : theme.navInactive;
               break;
             case 'CommunityTab':
               iconName = 'earth';
-              color = focused ? theme.navActive : theme.navInactive;
+              color = focused ? theme.text : theme.navInactive;
               break;
             case 'ProfileTab':
               iconName = 'user';
-              color = focused ? theme.navActive : theme.navInactive;
+              color = focused ? theme.text : theme.navInactive;
               break;
             default:
               break;
@@ -52,7 +53,7 @@ const HomeTabs = () => {
           return <AntDesign name={iconName} size={size} color={color} />;
         },
         // text label color
-        tabBarActiveTintColor: theme.navActive,
+        tabBarActiveTintColor: theme.text,
         tabBarInactiveTintColor: theme.navInactive,
         // set the label for each tab
         tabBarLabel: ({ color }) => {
@@ -74,7 +75,14 @@ const HomeTabs = () => {
               break;
           }
           return (
-            <Text style={{ color: color, fontSize: 12 }}>{labelName}</Text>
+            <Text
+              style={{
+                color: color,
+                fontSize: 11,
+                fontFamily: 'Inter-Medium',
+              }}>
+              {labelName}
+            </Text>
           );
         },
       })}>
