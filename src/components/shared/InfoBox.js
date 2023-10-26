@@ -3,7 +3,7 @@ import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 /**
- * an info icon that shows a modal with text when clicked
+ * An info icon that shows a modal with text when clicked
  *
  * @param {string} title title of the popup
  * @param {string} text text to display in the popup

@@ -22,26 +22,6 @@ const HeaderDivider = ({ color, text, height, margin }) => {
   );
 };
 
-/**
- * basic divider line
- * `-----------------------`
- *
- * @param color color of divider line
- * @param height height of divider line
- * @param margin vertical margin of divider
- */
-const Divider = ({ color, height, margin }) => {
-  return (
-    <View
-      style={{
-        height: height,
-        backgroundColor: color,
-        marginVertical: margin,
-      }}
-    />
-  );
-};
-
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
@@ -59,4 +39,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export { HeaderDivider, Divider };
+export default HeaderDivider;

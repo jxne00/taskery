@@ -3,7 +3,7 @@ import {
   fetchProfileSuccess,
   fetchProfileFailure,
 } from './profileReducer';
-import { db } from '../firebase/config';
+import { db } from '../../firebase/config';
 
 /**
  * fetch user's profile from firestore

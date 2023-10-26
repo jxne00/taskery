@@ -12,7 +12,8 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { AntDesign } from '@expo/vector-icons';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { addTask, updateTask } from '../../../services/redux/taskSlice';
 
 import DropDownPicker from 'react-native-dropdown-picker';
 // import ColorPicker from 'reanimated-color-picker';
@@ -20,20 +21,20 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import useGlobalStyles from '../../../theme/globalStyles';
 import { useTheme } from '../../../theme/ThemeContext';
 
-import { addTask, updateTask } from '../../../services/redux/taskActions';
-
 import DeadlinePicker from './DatePicker';
-import { HeaderDivider, Divider } from '../../../components/shared/Elements';
+import HeaderDivider from '../../../components/shared/HeaderDivider';
+import Spacer from '../../../components/shared/Spacer';
 
 /**
- * modal to create a new task
- * @param {boolean} modalVisible - visibility of modal
- * @param {function} setShowTaskModal - modal visibility setter
- * @param {string} userId - current user's id
- * @param {object} editTask - details of task to be edited
- * @param {function} setEditTask - setter for editTask
+ * A modal to create a new task or edit existing task.
+ *
+ * @param modalVisible - visibility of modal
+ * @param setShowTaskModal - modal visibility setter
+ * @param userId - current user's id
+ * @param editTask - details of task to be edited
+ * @param setEditTask - setter for editTask
  */
-const TaskDetails = (props) => {
+const CreateTask = (props) => {
   const { modalVisible, setShowTaskModal, userId, editTask, setEditTask } =
     props;
   const dispatch = useDispatch();
@@ -96,7 +97,7 @@ const TaskDetails = (props) => {
     const taskDetails = {
       title,
       details,
-      deadline: deadline.getTime(), // in milliseconds
+      deadline: deadline.getTime(), // to milliseconds
       subtasks,
       category: selectedCategory,
       tags,
@@ -105,6 +106,7 @@ const TaskDetails = (props) => {
     // create or update task
     if (editTask) {
       // update task & redux state
+      console.log('updating task with id: ', editTask.id);
       dispatch(updateTask(userId, editTask.id, taskDetails));
     } else {
       // add task to firestore & update redux state
@@ -244,7 +246,7 @@ const TaskDetails = (props) => {
               placeholderTextColor={theme.textLight}
             />
 
-            <View style={{ height: 20 }} />
+            <Spacer />
 
             {/* ===== deadline section ===== */}
             <DeadlinePicker
@@ -254,7 +256,7 @@ const TaskDetails = (props) => {
               setDate={setdeadline}
             />
 
-            <View style={{ height: 30 }} />
+            <Spacer height={30} />
 
             {/* ===== task details ===== */}
             <TextInput
@@ -309,7 +311,7 @@ const TaskDetails = (props) => {
               />
             </View>
 
-            <View style={{ height: 20 }} />
+            <Spacer />
 
             <HeaderDivider
               color={theme.textLight}
@@ -452,7 +454,6 @@ const styles = StyleSheet.create({
   },
   cancelTxt: {
     fontSize: 20,
-    fontWeight: 'bold',
     marginLeft: 'auto',
     color: '#eb523b',
     fontFamily: 'Inter-SemiBold',
@@ -491,17 +492,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     paddingVertical: 2,
-    fontWeight: 'bold',
     color: '#fff',
     fontFamily: 'Inter-Bold',
   },
 
   // ======= subtask styles =======
   subtaskTitle: {
-    fontSize: 20,
+    fontSize: 18,
     marginBottom: 12,
     marginTop: 20,
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'Inter-SemiBold',
   },
   addSubtask: {
     flexDirection: 'row',
@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   subtask: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: 'Inter-Regular',
   },
 
@@ -592,4 +592,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TaskDetails;
+export default CreateTask;

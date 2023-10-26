@@ -14,49 +14,77 @@ import { useTheme } from '../../theme/ThemeContext';
 import useGlobalStyles from '../../theme/globalStyles';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTasks } from '../../services/redux/taskActions';
-import { fetchProfile } from '../../services/redux/profileActions';
+import { fetchUser } from '../../services/redux/userSlice';
+import { fetchTasks } from '../../services/redux/taskSlice';
+
 import { auth } from '../../services/firebase/config';
 
 import Tasklist from './TaskList/Tasklist';
-import TaskDetails from './CreateTask/TaskDetails';
+import CreateTask from './CreateTask/CreateTask';
+
+// import {
+//   selectTasksForToday,
+//   selectTasksForWeek,
+//   selectTasksForMonth,
+// } from '../../services/redux/taskSelector';
 
 /** The home screen that displays a list of tasks */
 const Home = () => {
   const { theme, themeType } = useTheme();
   const global = useGlobalStyles();
-  const dispatch = useDispatch(); // redux dispatch
+
+  // get data from redux store
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.data);
+  const tasks = useSelector((state) => state.tasks.data);
+  const taskIsLoading = useSelector((state) => state.tasks.isLoading);
+  const taskError = useSelector((state) => state.tasks.error);
 
   const [showTaskModal, setShowTaskModal] = useState(false);
-  const [editTask, setEditTask] = useState(null);
+  const [taskToEdit, setTaskToEdit] = useState(null);
 
-  const userId = auth.currentUser?.uid; // current user's id
+  // task view options (today, week, month, all, range)
+  const [selectedPeriod, setSelectedPeriod] = useState('today');
+  // date range for custom period view
+  // const [customPeriod, setCustomPeriod] = useState({ from: null, to: null });
 
-  // get tasks and profile state from redux store
-  const { tasks, isLoading, error } = useSelector((state) => state.tasks);
-  // const { profileData } = useSelector((state) => state.profile);
+  const userId = auth.currentUser?.uid;
 
+  // get tasks and user state from redux store
   useEffect(() => {
-    if (!userId) return;
-
-    // dispatch fetch tasks and profile to redux store
-    const unsubscribeTasks = dispatch(fetchTasks(userId));
-    const unsubscribeProfile = dispatch(fetchProfile(userId));
-
-    // unsubscribe listeners on unmount
-    return () => {
-      unsubscribeTasks();
-      unsubscribeProfile();
-    };
+    if (userId) {
+      dispatch(fetchUser(userId));
+      dispatch(fetchTasks(userId));
+    }
   }, [userId, dispatch]);
+
+  console.log('(Home.js) fetched tasks:', JSON.stringify(tasks, null, 2));
+
+  // get tasks based on selected period
+  // const { tasks, isLoading, error } = useSelector((state) => {
+  //   switch (selectedPeriod) {
+  //     case 'today':
+  //       return selectTasksForToday(state);
+  //     case 'week':
+  //       return selectTasksForWeek(state);
+  //     case 'month':
+  //       return selectTasksForMonth(state);
+  //     case 'all':
+  //       return state.tasks;
+  //     // case 'range':
+  //     //   return selectTasksForCustomRange(state, customPeriod.from, customPeriod.to);
+  //     default:
+  //       return state.tasks;
+  //   }
+  // });
 
   /** go to create task screen with pre-filled details */
   const handleEdit = (id) => {
-    const task = tasks[id];
+    // get details of task to edit
+    const taskDetail = tasks.find((task) => task.id === id);
 
-    // show create task modal
     setShowTaskModal(true);
-    setEditTask(task);
+    setTaskToEdit(taskDetail);
   };
 
   /** delete task */
@@ -65,26 +93,71 @@ const Home = () => {
     console.log('(TODO!!!) delete task with id: ', id);
   };
 
-  /** display loading indicator while fetching tasks */
-  const showLoading = () => {
+  /** change selected period */
+  const selectedPeriodChange = (view) => {
+    setSelectedPeriod(view);
+    console.log('selected period: ', view);
+  };
+
+  /** display buttons for selecting view period */
+  const PeriodViewOptions = () => {
+    const optionButton = (view) => {
+      // capitalize first letter
+      const displayText = view.charAt(0).toUpperCase() + view.slice(1);
+      const bgColor =
+        selectedPeriod === view ? theme.orange : theme.backgroundSec;
+      const textColor = selectedPeriod === view ? theme.text : theme.textLight;
+
+      return (
+        <TouchableOpacity
+          style={[styles.periodViewButton, { backgroundColor: bgColor }]}
+          onPress={() => selectedPeriodChange(view)}>
+          <Text style={[styles.periodViewText, { color: textColor }]}>
+            {displayText}
+          </Text>
+        </TouchableOpacity>
+      );
+    };
+
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color={theme.textLight} />
+      <View style={styles.row}>
+        {optionButton('today')}
+        {optionButton('week')}
+        {optionButton('month')}
+        {optionButton('all')}
+        {optionButton('range')}
       </View>
     );
   };
 
+  const SetTitle = () => {
+    switch (selectedPeriod) {
+      case 'today':
+        return "Today's Tasks";
+      case 'week':
+        return "This Week's Tasks";
+      case 'month':
+        return "This Month's Tasks";
+      case 'all':
+        return 'All Tasks';
+      case 'range':
+        return 'Tasks for selected range';
+      default:
+        return 'Tasks';
+    }
+  };
+
   // display error message if error
-  if (error) {
+  if (taskError) {
     return (
-      <View style={styles.centered}>
-        <Text style={{ color: theme.red }}>{error}</Text>
+      <View style={[styles.centered, { backgroundColor: theme.red }]}>
+        <Text style={{ color: theme.text }}>{taskError}</Text>
       </View>
     );
   }
 
   // display message if no tasks
-  if (!tasks) {
+  if (!taskIsLoading && !tasks) {
     return (
       <View style={styles.centered}>
         <Text style={{ color: theme.textLight }}>No tasks add yet!</Text>
@@ -97,8 +170,11 @@ const Home = () => {
       <View style={[global.container, styles.container]}>
         {/* Header row */}
         <View style={styles.row}>
-          <Text style={[styles.appName, { color: theme.appName }]}>
-            taskery
+          <Text style={[styles.welcomeText, { color: theme.textLight }]}>
+            Hello,{' '}
+          </Text>
+          <Text style={[styles.welcomeText, { color: theme.orange }]}>
+            {user?.name}
           </Text>
 
           <MaterialIcons
@@ -111,9 +187,14 @@ const Home = () => {
           />
         </View>
 
+        {/* buttons for selecting view period */}
+        <PeriodViewOptions />
+
         {/* List of tasks */}
         <View style={styles.titleRow}>
-          <Text style={[global.text, styles.tasksTitle]}>Tasks</Text>
+          <Text style={[global.text, styles.tasksTitle]}>
+            <SetTitle /> ({tasks.length})
+          </Text>
 
           <View
             style={[
@@ -139,11 +220,13 @@ const Home = () => {
           </View>
         </View>
 
-        {isLoading ? (
-          showLoading()
+        {taskIsLoading ? (
+          <View style={styles.centered}>
+            <ActivityIndicator size="large" color={theme.textLight} />
+          </View>
         ) : (
           <Tasklist
-            tasklist={Object.values(tasks)}
+            tasklist={tasks}
             handleEdit={handleEdit}
             handleDelete={handleDelete}
           />
@@ -172,12 +255,12 @@ const Home = () => {
         </TouchableOpacity>
 
         {/* "task details" modal */}
-        <TaskDetails
+        <CreateTask
           modalVisible={showTaskModal}
           setShowTaskModal={setShowTaskModal}
           userId={userId}
-          editTask={editTask}
-          setEditTask={setEditTask}
+          editTask={taskToEdit}
+          setEditTask={setTaskToEdit}
         />
 
         <CustomStatusBar />
@@ -207,8 +290,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginBottom: 6,
   },
-  appName: {
-    fontSize: 28,
+  welcomeText: {
+    fontSize: 22,
     fontFamily: 'PoetsenOne-Regular',
   },
   tasksTitle: {
@@ -231,6 +314,17 @@ const styles = StyleSheet.create({
   addTaskTxt: {
     fontSize: 18,
     marginRight: 5,
+    fontFamily: 'Inter-SemiBold',
+  },
+
+  // period view options
+  periodViewButton: {
+    borderRadius: 8,
+    padding: 10,
+    marginHorizontal: 5,
+  },
+  periodViewText: {
+    fontSize: 16,
     fontFamily: 'Inter-SemiBold',
   },
 });

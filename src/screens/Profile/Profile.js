@@ -17,7 +17,7 @@ import useGlobalStyles from '../../theme/globalStyles';
 import CustomStatusBar from '../../components/shared/StatusBar';
 
 import { auth, db } from '../../services/firebase/config';
-import { fetchProfile } from '../../services/redux/profileActions';
+import { fetchUser } from '../../services/redux/userSlice';
 import { toDateDisplay } from '../../components/helper/timeConverters';
 
 /** The profile screen displaying user's profile info */
@@ -26,13 +26,14 @@ const Profile = ({ navigation }) => {
   const global = useGlobalStyles();
 
   // get profile data from redux store
-  const { profileData, profileIsLoading, error } = useSelector(
-    (state) => state.profile,
-  );
+  const user = useSelector((state) => state.user.data);
+  const userStatus = useSelector((state) => state.user.status);
+  const userError = useSelector((state) => state.user.error);
+
   const dispatch = useDispatch();
   const userId = auth.currentUser?.uid;
 
-  const [isPublic, setIsPublic] = useState(profileData?.is_public);
+  const [isPublic, setIsPublic] = useState(user?.is_public);
 
   // const [data, setData] = useState(null);
   // const [avatar, setAvatar] = useState(null);
@@ -50,18 +51,12 @@ const Profile = ({ navigation }) => {
   };
 
   useEffect(() => {
-    if (!userId) return;
-
-    // dispatch fetchprofile to redux store
-    const unsubscribeProfile = dispatch(fetchProfile(userId));
-
-    return () => {
-      // unsubscribe listener on unmount
-      unsubscribeProfile();
-    };
+    if (userId) {
+      dispatch(fetchUser(userId));
+    }
   }, [userId, dispatch]);
 
-  if (profileIsLoading) {
+  if (userStatus === 'loading') {
     return (
       <View style={[global.container, styles.loading]}>
         <ActivityIndicator size="large" color={theme.primary} />
@@ -75,8 +70,8 @@ const Profile = ({ navigation }) => {
         {/* avatar image */}
         <Image
           source={
-            profileData?.avatar_path
-              ? avatarImages[profileData.avatar_path]
+            user?.avatar_path
+              ? avatarImages[user.avatar_path]
               : require('../../assets/avatars/a1.png')
           }
           style={styles.avatar}
@@ -97,18 +92,16 @@ const Profile = ({ navigation }) => {
         />
 
         {/* name */}
-        <Text style={[global.text, styles.profileName]}>
-          {profileData?.name}
-        </Text>
+        <Text style={[global.text, styles.profileName]}>{user?.name}</Text>
 
         {/* profile visibility */}
         <Text style={[global.text, styles.profileVisibility]}>
-          {profileData?.is_public ? 'Public' : 'Private'}
+          {user?.is_public ? 'Public' : 'Private'}
         </Text>
 
         {/* creation date */}
         <Text style={[global.text, styles.profileCreationDate]}>
-          Member since: {toDateDisplay(profileData?.created_at)}
+          Member since: {toDateDisplay(user?.created_at)}
         </Text>
 
         <CustomStatusBar />
