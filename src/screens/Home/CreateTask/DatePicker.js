@@ -27,8 +27,6 @@ const DeadlinePicker = ({ openPicker, setOpenPicker, date, setDate }) => {
 
   return (
     <>
-      <Text style={[styles.label, { color: theme.text }]}>Deadline</Text>
-
       <View style={[styles.pickerRow, { borderBottomColor: theme.textLight }]}>
         <Text style={[styles.dateText, { color: theme.text }]}>
           {date.toLocaleDateString()}
@@ -60,14 +58,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderBottomWidth: 1,
-    paddingBottom: 8,
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontFamily: 'Inter-SemiBold',
-    marginBottom: 4,
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 8,
   },
   dateText: {
     fontSize: 18,

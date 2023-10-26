@@ -19,7 +19,7 @@ import { fetchTasks } from '../../services/redux/taskSlice';
 
 import { auth } from '../../services/firebase/config';
 
-import Tasklist from './TaskList/Tasklist';
+import TaskList from './TaskList/Tasklist';
 import CreateTask from './CreateTask/CreateTask';
 
 // import {
@@ -141,7 +141,7 @@ const Home = () => {
       case 'all':
         return 'All Tasks';
       case 'range':
-        return 'Tasks for selected range';
+        return 'Tasks in range';
       default:
         return 'Tasks';
     }
@@ -170,11 +170,10 @@ const Home = () => {
       <View style={[global.container, styles.container]}>
         {/* Header row */}
         <View style={styles.row}>
-          <Text style={[styles.welcomeText, { color: theme.textLight }]}>
-            Hello,{' '}
-          </Text>
-          <Text style={[styles.welcomeText, { color: theme.orange }]}>
-            {user?.name}
+          <Text style={styles.welcomeText}>
+            <Text style={{ color: theme.textLight }}>Hello, </Text>
+            <Text style={{ color: theme.orange }}>{user?.name}</Text>
+            <Text style={{ color: theme.textLight }}>!</Text>
           </Text>
 
           <MaterialIcons
@@ -225,7 +224,7 @@ const Home = () => {
             <ActivityIndicator size="large" color={theme.textLight} />
           </View>
         ) : (
-          <Tasklist
+          <TaskList
             tasklist={tasks}
             handleEdit={handleEdit}
             handleDelete={handleDelete}
@@ -234,10 +233,7 @@ const Home = () => {
 
         {/* button to create new task */}
         <TouchableOpacity
-          style={[
-            styles.addTaskBtn,
-            { backgroundColor: themeType === 'light' ? '#a13030' : '#EC6565' },
-          ]}
+          style={[styles.addTaskBtn, { backgroundColor: theme.orange }]}
           onPress={() => setShowTaskModal(true)}>
           <Text
             style={[
@@ -296,7 +292,7 @@ const styles = StyleSheet.create({
   },
   tasksTitle: {
     flex: 1,
-    fontSize: 26,
+    fontSize: 24,
     fontFamily: 'Inter-Bold',
   },
   calendarIcon: {

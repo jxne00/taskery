@@ -1,10 +1,14 @@
 import React from 'react';
 import { View, FlatList, Text, StyleSheet } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 
 import { useTheme } from '../../../theme/ThemeContext';
-import ContextMenu from './ContextMenu';
-
 import { toDateDisplay } from '../../../components/helper/timeConverters';
 
 /**
@@ -13,19 +17,23 @@ import { toDateDisplay } from '../../../components/helper/timeConverters';
  * @param {function} handleEdit - handle editing of task
  * @param {function} handleDelete - handle deleting of task
  */
-const Tasklist = ({ tasklist, handleEdit, handleDelete }) => {
+const TaskList = ({ tasklist, handleEdit, handleDelete }) => {
   const { theme } = useTheme();
 
   const handleMenuPress = (value, id) => {
-    if (value === 'edit') {
-      handleEdit(id);
-    }
-    if (value === 'delete') {
-      handleDelete(id);
-    }
-    if (value === 'duplicate') {
-      // TODO implement duplicate task
-      console.log('duplicate pressed');
+    switch (value) {
+      case 'edit':
+        handleEdit(id);
+        break;
+      case 'delete':
+        handleDelete(id);
+        break;
+      case 'duplicate':
+        // TODO implement duplicate task
+        console.log('duplicate pressed');
+        break;
+      default:
+        break;
     }
   };
 
@@ -82,7 +90,38 @@ const Tasklist = ({ tasklist, handleEdit, handleDelete }) => {
         )}
 
         {/* context menu */}
-        <ContextMenu handleMenuPress={handleMenuPress} id={item.id} />
+        <Menu onSelect={(value) => handleMenuPress(value, item.id)}>
+          <MenuTrigger>
+            <Ionicons name="ellipsis-vertical" size={20} color={theme.text} />
+          </MenuTrigger>
+
+          <MenuOptions
+            optionsContainerStyle={{
+              backgroundColor: theme.background,
+              borderColor: theme.text,
+              borderWidth: 1,
+              borderRadius: 5,
+              paddingVertical: 5,
+            }}>
+            <MenuOption value="edit">
+              <Text style={[styles.MenuOptionText, { color: theme.text }]}>
+                Edit
+              </Text>
+            </MenuOption>
+
+            <MenuOption value="duplicate">
+              <Text style={[styles.MenuOptionText, { color: theme.text }]}>
+                Duplicate
+              </Text>
+            </MenuOption>
+
+            <MenuOption value="delete">
+              <Text style={[styles.MenuOptionText, { color: theme.text }]}>
+                Delete
+              </Text>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>
       </View>
     </View>
   );
@@ -151,6 +190,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
   },
+  MenuOptionText: {
+    fontSize: 16,
+    fontFamily: 'Inter-Medium',
+    textAlign: 'center',
+  },
 });
 
-export default Tasklist;
+export default TaskList;

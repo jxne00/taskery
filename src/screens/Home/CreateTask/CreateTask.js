@@ -95,27 +95,30 @@ const CreateTask = (props) => {
 
     // details of task
     const taskDetails = {
-      title,
-      details,
-      deadline: deadline.getTime(), // to milliseconds
-      subtasks,
+      title: title,
+      details: details,
+      deadline: deadline.getTime(), // in milliseconds
+      subtasks: subtasks,
       category: selectedCategory,
-      tags,
+      tags: tags,
     };
 
-    // create or update task
     if (editTask) {
-      // update task & redux state
-      console.log('updating task with id: ', editTask.id);
-      dispatch(updateTask(userId, editTask.id, taskDetails));
+      // update task
+      dispatch(
+        updateTask({
+          userId,
+          taskId: editTask.id,
+          updatedData: taskDetails,
+        }),
+      );
     } else {
-      // add task to firestore & update redux state
+      // create new task
       dispatch(addTask(userId, taskDetails));
     }
 
     setIsLoading(false);
 
-    // reset all states
     resetStates();
     setShowTaskModal(false);
   };
@@ -229,7 +232,7 @@ const CreateTask = (props) => {
           {/* header */}
           <View style={styles.row}>
             <Text style={[global.text, styles.header]}>
-              {editTask ? 'Edit Task' : 'New Task'}
+              {editTask ? 'Edit task' : 'Create task'}
             </Text>
             <Text style={styles.cancelTxt} onPress={handleCancelPress}>
               Cancel
@@ -238,17 +241,24 @@ const CreateTask = (props) => {
 
           <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
             {/* ===== task title ===== */}
+            <Text style={[styles.boxLabel, { color: theme.text }]}>Title</Text>
             <TextInput
               value={title}
-              style={[global.text, styles.titleInput]}
+              style={[
+                styles.titleInput,
+                { borderColor: theme.text, color: theme.text },
+              ]}
               onChangeText={setTitle}
-              placeholder={'Title'}
+              placeholder={'Title of your task'}
               placeholderTextColor={theme.textLight}
             />
 
             <Spacer />
 
             {/* ===== deadline section ===== */}
+            <Text style={[styles.boxLabel, { color: theme.text }]}>
+              Deadline
+            </Text>
             <DeadlinePicker
               openPicker={datePickerOpen}
               setOpenPicker={setDatePickerOpen}
@@ -256,24 +266,36 @@ const CreateTask = (props) => {
               setDate={setdeadline}
             />
 
-            <Spacer height={30} />
+            <Spacer />
 
             {/* ===== task details ===== */}
+            <Text style={[styles.boxLabel, { color: theme.text }]}>
+              Details
+            </Text>
             <TextInput
               value={details}
-              style={[global.text, styles.detailsInput]}
+              style={[
+                styles.detailsInput,
+                {
+                  color: theme.text,
+                  borderColor: theme.text,
+                },
+              ]}
               multiline={true}
               onChangeText={setDetails}
               placeholder={'Add any other task details here (optional)'}
               placeholderTextColor={theme.textLight}
             />
 
-            {/* ===== subtasks section ===== */}
+            <Spacer />
 
+            {/* ===== subtasks section ===== */}
+            <Text style={[styles.boxLabel, { color: theme.text }]}>
+              Subtasks
+            </Text>
             {subtasks.length > 0 && (
               // display added subtasks only if there are
               <>
-                <Text style={[global.text, styles.subtaskTitle]}>Subtasks</Text>
                 {subtasks.map((sub, index) => (
                   <View key={index} style={styles.row}>
                     <AntDesign
@@ -313,15 +335,11 @@ const CreateTask = (props) => {
 
             <Spacer />
 
-            <HeaderDivider
-              color={theme.textLight}
-              text={'Category'}
-              height={2}
-              margin={30}
-            />
-
             {/* ===== category section ===== */}
             <>
+              <Text style={[styles.boxLabel, { color: theme.text }]}>
+                Category
+              </Text>
               <View style={styles.row}>
                 {/* add a new category */}
                 <AntDesign
@@ -361,14 +379,11 @@ const CreateTask = (props) => {
               </View>
             </>
 
-            <HeaderDivider
-              color={theme.textLight}
-              text={'Tags'}
-              height={2}
-              margin={30}
-            />
+            <Spacer />
 
             {/* ===== tags section ===== */}
+            <Text style={[styles.boxLabel, { color: theme.text }]}>Tags</Text>
+
             <View style={styles.tagsContainer}>
               {/* add new tag */}
               <View style={styles.tagRow}>
@@ -449,7 +464,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   header: {
-    fontSize: 28,
+    fontSize: 26,
     fontFamily: 'Inter-Bold',
   },
   cancelTxt: {
@@ -460,22 +475,24 @@ const styles = StyleSheet.create({
   },
   titleInput: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 12,
+    padding: 14,
+    borderRadius: 20,
+    fontSize: 18,
+    fontFamily: 'Inter-Medium',
+  },
+  boxLabel: {
     fontSize: 18,
     fontFamily: 'Inter-SemiBold',
+    paddingBottom: 10,
   },
   detailsInput: {
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 10,
-    borderRadius: 5,
-    marginBottom: 14,
+    borderRadius: 8,
     height: 140,
     textAlignVertical: 'top',
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'Inter-Regular',
   },
 
@@ -497,12 +514,6 @@ const styles = StyleSheet.create({
   },
 
   // ======= subtask styles =======
-  subtaskTitle: {
-    fontSize: 18,
-    marginBottom: 12,
-    marginTop: 20,
-    fontFamily: 'Inter-SemiBold',
-  },
   addSubtask: {
     flexDirection: 'row',
     alignItems: 'center',
