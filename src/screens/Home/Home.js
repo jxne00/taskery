@@ -22,11 +22,12 @@ import { auth } from '../../services/firebase/config';
 import TaskList from './TaskList/Tasklist';
 import CreateTask from './CreateTask/CreateTask';
 
-// import {
-//   selectTasksForToday,
-//   selectTasksForWeek,
-//   selectTasksForMonth,
-// } from '../../services/redux/taskSelector';
+import {
+  selectAllTasks,
+  selectTasksForToday,
+  selectTasksForWeek,
+  selectTasksForMonth,
+} from '../../services/redux/taskSelectors';
 
 /** The home screen that displays a list of tasks */
 const Home = () => {
@@ -36,9 +37,6 @@ const Home = () => {
   // get data from redux store
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.data);
-  const tasks = useSelector((state) => state.tasks.data);
-  const taskIsLoading = useSelector((state) => state.tasks.isLoading);
-  const taskError = useSelector((state) => state.tasks.error);
 
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState(null);
@@ -50,6 +48,38 @@ const Home = () => {
 
   const userId = auth.currentUser?.uid;
 
+  // get the tasks to display based on selected period
+  const { tasks, isLoading, error } = useSelector((state) => {
+    let taskData;
+    switch (selectedPeriod) {
+      case 'today':
+        taskData = selectTasksForToday(state);
+        break;
+      case 'week':
+        taskData = selectTasksForWeek(state);
+        break;
+      case 'month':
+        taskData = selectTasksForMonth(state);
+        break;
+      case 'all':
+        taskData = selectAllTasks(state);
+        break;
+      default:
+        taskData = state.tasks.data;
+        break;
+    }
+
+    return {
+      tasks: taskData,
+      isLoading: state.tasks.isLoading,
+      error: state.tasks.error,
+    };
+  });
+
+  if (error) {
+    alert(error);
+  }
+
   // get tasks and user state from redux store
   useEffect(() => {
     if (userId) {
@@ -57,27 +87,6 @@ const Home = () => {
       dispatch(fetchTasks(userId));
     }
   }, [userId, dispatch]);
-
-  console.log('(Home.js) fetched tasks:', JSON.stringify(tasks, null, 2));
-
-  // get tasks based on selected period
-  // const { tasks, isLoading, error } = useSelector((state) => {
-  //   switch (selectedPeriod) {
-  //     case 'today':
-  //       return selectTasksForToday(state);
-  //     case 'week':
-  //       return selectTasksForWeek(state);
-  //     case 'month':
-  //       return selectTasksForMonth(state);
-  //     case 'all':
-  //       return state.tasks;
-  //     // case 'range':
-  //     //   return selectTasksForCustomRange(state, customPeriod.from, customPeriod.to);
-  //     default:
-  //       return state.tasks;
-  //   }
-  // });
-
   /** go to create task screen with pre-filled details */
   const handleEdit = (id) => {
     // get details of task to edit
@@ -91,12 +100,6 @@ const Home = () => {
   const handleDelete = (id) => {
     // TODO delete task
     console.log('(TODO!!!) delete task with id: ', id);
-  };
-
-  /** change selected period */
-  const selectedPeriodChange = (view) => {
-    setSelectedPeriod(view);
-    console.log('selected period: ', view);
   };
 
   /** display buttons for selecting view period */
@@ -116,7 +119,7 @@ const Home = () => {
       return (
         <TouchableOpacity
           style={[styles.periodViewButton, { backgroundColor: bgColor }]}
-          onPress={() => selectedPeriodChange(view)}>
+          onPress={() => setSelectedPeriod(view)}>
           <Text style={[styles.periodViewText, { color: textColor }]}>
             {displayText}
           </Text>
@@ -125,11 +128,12 @@ const Home = () => {
     };
 
     return (
+      // TODO show badge with task count for each button
       <View style={styles.row}>
+        {optionButton('all')}
         {optionButton('today')}
         {optionButton('week')}
         {optionButton('month')}
-        {optionButton('all')}
         {optionButton('range')}
       </View>
     );
@@ -151,24 +155,6 @@ const Home = () => {
         return 'Tasks';
     }
   };
-
-  // display error message if error
-  if (taskError) {
-    return (
-      <View style={[styles.centered, { backgroundColor: theme.red }]}>
-        <Text style={{ color: theme.text }}>{taskError}</Text>
-      </View>
-    );
-  }
-
-  // display message if no tasks
-  if (!taskIsLoading && !tasks) {
-    return (
-      <View style={styles.centered}>
-        <Text style={{ color: theme.textLight }}>No tasks add yet!</Text>
-      </View>
-    );
-  }
 
   return (
     <SafeAreaView style={global.container}>
@@ -224,11 +210,21 @@ const Home = () => {
           </View>
         </View>
 
-        {taskIsLoading ? (
+        {isLoading && (
           <View style={styles.centered}>
             <ActivityIndicator size="large" color={theme.textLight} />
           </View>
-        ) : (
+        )}
+
+        {!isLoading && tasks.length === 0 && (
+          <View style={styles.centered}>
+            <Text style={[global.text, { color: theme.text }]}>
+              No tasks to show
+            </Text>
+          </View>
+        )}
+
+        {!isLoading && tasks.length > 0 && (
           <TaskList
             tasklist={tasks}
             handleEdit={handleEdit}
