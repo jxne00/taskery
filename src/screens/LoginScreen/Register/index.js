@@ -12,7 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 
 import styles from './styles';
-import { auth } from '../../../services/firebase/firebaseConfig';
+import { auth } from '../../../services/firebase';
 
 /** The registration screen to create new user account */
 const Register = ({ navigation }) => {

@@ -16,7 +16,7 @@ import InfoBox from '../../../components/InfoBox';
 
 import styles from './styles';
 
-import { auth, db } from '../../../services/firebase/firebaseConfig';
+import { auth, db } from '../../../services/firebase';
 
 /**
  * The onboarding screen for setting up the user's profile details

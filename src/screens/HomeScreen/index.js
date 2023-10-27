@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../../services/redux/userSlice';
 import { fetchTasks } from '../../services/redux/taskSlice';
 
-import { auth } from '../../services/firebase/firebaseConfig';
+import { auth } from '../../services/firebase';
 
 import TaskList from './TaskList';
 import CreateTask from './CreateTask';

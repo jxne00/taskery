@@ -9,7 +9,7 @@ import {
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useDispatch } from 'react-redux';
-import { auth } from '../../../services/firebase/firebaseConfig';
+import { auth } from '../../../services/firebase';
 
 import CustomStatusBar from '../../../components/StatusBar';
 import InfoBox from '../../../components/InfoBox';

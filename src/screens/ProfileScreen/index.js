@@ -16,7 +16,7 @@ import { useTheme } from '../../theme/ThemeContext';
 import useGlobalStyles from '../../theme/globalStyles';
 import CustomStatusBar from '../../components/StatusBar';
 
-import { auth, db } from '../../services/firebase/firebaseConfig';
+import { auth, db } from '../../services/firebase';
 import { fetchUser } from '../../services/redux/userSlice';
 import { toDateDisplay } from '../../components/timeConverters';
 
