@@ -10,19 +10,19 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { AntDesign } from '@expo/vector-icons';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addTask, updateTask } from '../../../services/redux/taskSlice';
-
-// import ColorPicker from 'reanimated-color-picker';
 
 import useGlobalStyles from '../../../theme/globalStyles';
 import { useTheme } from '../../../theme/ThemeContext';
 
-import DeadlinePicker from './DeadlineSection';
-import CategoryModal from './CategoryModal';
-
 import Spacer from '../../../components/Spacer';
-import styles from '../styles';
+import styles from './styles';
+
+import CategoryModal from './components/Category';
+import CompletionComponent from './components/Completion';
+import DeadlinePicker from './components/Deadline';
+import TagComponent from './components/Tags';
 
 /**
  * A modal to create a new task or edit existing task.
@@ -36,10 +36,9 @@ import styles from '../styles';
 const CreateTask = (props) => {
   const { modalVisible, setShowTaskModal, userId, editTask, setEditTask } =
     props;
-  const dispatch = useDispatch();
-
   const { theme, themeType } = useTheme();
   const global = useGlobalStyles();
+  const dispatch = useDispatch();
 
   // task title & details
   const [title, setTitle] = useState('');
@@ -67,9 +66,9 @@ const CreateTask = (props) => {
   const presetColors = ['#0000ff', '#008080', '#ff0000', '#ee82ee', '#ffff00'];
   const [selectedColor, setSelectedColor] = useState(presetColors[0]);
 
-  // set initial values if on 'edit' mode
   useEffect(() => {
-    if (editTask) {
+    // set initial values if on 'editTask' mode
+    const prefillDetails = () => {
       setTitle(editTask.title);
       editTask.details && setDetails(editTask.details);
       setdeadline(new Date(editTask.deadline));
@@ -77,10 +76,14 @@ const CreateTask = (props) => {
       editTask.subtasks && setSubtasks(editTask.subtasks);
       editTask.category && setSelectedCategory(editTask.category);
       editTask.tags && setTags(editTask.tags);
+    };
+
+    if (editTask) {
+      prefillDetails();
     }
   }, [editTask]);
 
-  /** handle adding of task */
+  /** handle create or update task */
   const handleSubmit = async () => {
     if (!title) {
       // title cannot be null
@@ -159,7 +162,7 @@ const CreateTask = (props) => {
     setSubtasks(tempSubtasks);
   };
 
-  // close modal & reset all states
+  // close modal & reset all states when 'cancel' pressed
   const handleCancelPress = () => {
     resetStates();
     if (editTask) {
@@ -233,38 +236,11 @@ const CreateTask = (props) => {
 
             {/* ===== completion status section ===== */}
             <Text style={[styles.boxLabel, { color: theme.text }]}>Status</Text>
-            <View style={styles.completionRow}>
-              <TouchableOpacity
-                onPress={() => setIsCompleted(false)}
-                style={[
-                  styles.completionBtn,
-                  { borderWidth: isCompleted ? 1 : 3 },
-                ]}>
-                <AntDesign name={'close'} size={20} color={theme.text} />
-                <Text
-                  style={[
-                    styles.completionText,
-                    { fontFamily: isCompleted ? 'Inter-Medium' : 'Inter-Bold' },
-                  ]}>
-                  Not done
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setIsCompleted(true)}
-                style={[
-                  styles.completionBtn,
-                  { borderWidth: isCompleted ? 3 : 1 },
-                ]}>
-                <AntDesign name={'check'} size={20} color={theme.text} />
-                <Text
-                  style={[
-                    styles.completionText,
-                    { fontFamily: isCompleted ? 'Inter-Bold' : 'Inter-Medium' },
-                  ]}>
-                  Completed
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <CompletionComponent
+              isCompleted={isCompleted}
+              setIsCompleted={setIsCompleted}
+              theme={theme}
+            />
 
             <Spacer />
 
@@ -378,57 +354,17 @@ const CreateTask = (props) => {
 
             <View
               style={[styles.sectionContainer, { borderColor: theme.text }]}>
-              <View style={styles.tagsContainer}>
-                {/* tag color choices */}
-                <View style={styles.colorContainer}>
-                  {presetColors.map((color, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      style={[styles.colorOption, { backgroundColor: color }]}
-                      onPress={() => setSelectedColor(color)}>
-                      {selectedColor === color && <Text>✔</Text>}
-                    </TouchableOpacity>
-                  ))}
-                </View>
-
-                {/* add new tag */}
-                <View style={styles.tagRow}>
-                  <TextInput
-                    value={tag}
-                    onChangeText={setTag}
-                    placeholder="Add Tag"
-                    placeholderTextColor={theme.textLight}
-                    style={styles.tagInput}
-                    autoCapitalize="none"
-                    autoComplete="off"
-                  />
-                  <Text
-                    onPress={addTag}
-                    style={[global.text, styles.addTagBtn]}>
-                    Add
-                  </Text>
-                </View>
-
-                {/* list of added tags */}
-                {tags.map((t, index) => (
-                  <View key={index} style={styles.row}>
-                    <AntDesign
-                      name={'closecircle'}
-                      size={24}
-                      color={theme.btnRed}
-                      style={styles.Xicon}
-                      onPress={() => removeTag(index)}
-                    />
-                    <View
-                      style={[
-                        styles.tag,
-                        { backgroundColor: t.color, marginRight: 10 },
-                      ]}
-                    />
-                    <Text style={global.text}>{t.name}</Text>
-                  </View>
-                ))}
-              </View>
+              <TagComponent
+                tag={tag}
+                setTag={setTag}
+                tags={tags}
+                selectedColor={selectedColor}
+                setSelectedColor={setSelectedColor}
+                presetColors={presetColors}
+                addTag={addTag}
+                removeTag={removeTag}
+                theme={theme}
+              />
             </View>
           </KeyboardAwareScrollView>
 

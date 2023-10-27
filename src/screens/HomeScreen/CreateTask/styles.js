@@ -46,27 +46,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Regular',
   },
 
-  // ======= completion styles =======
-  completionRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginHorizontal: 10,
-  },
-  completionBtn: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
-    borderRadius: 8,
-    borderWidth: 1,
-    width: '49%',
-  },
-  completionText: {
-    fontSize: 16,
-    marginLeft: 5,
-    fontFamily: 'Inter-Regular',
-  },
-
   // ======= button styles =======
   createBtn: {
     backgroundColor: '#84345a',
@@ -113,52 +92,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Inter-Medium',
     marginLeft: 20,
-  },
-
-  // ======= tag styles =======
-  tagsContainer: {
-    marginBottom: 10,
-  },
-  tagRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  tagInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    borderRadius: 5,
-    fontSize: 16,
-    flex: 1,
-    fontFamily: 'Inter-Regular',
-  },
-  addTagBtn: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#d4d4d4',
-    backgroundColor: '#1e1c1c',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-
-  colorContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    marginBottom: 14,
-  },
-  colorOption: {
-    width: 25,
-    height: 25,
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 10,
-  },
-
-  tag: {
-    padding: 10,
-    borderRadius: 5,
   },
 });
 

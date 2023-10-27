@@ -1,4 +1,3 @@
-import react, { useState } from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 
 const CategoryModal = (props) => {

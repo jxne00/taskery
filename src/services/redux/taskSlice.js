@@ -7,6 +7,7 @@ export const fetchTasks = createAsyncThunk(
   'tasks/fetchTasks',
   async (userId) => {
     try {
+      console.log(': (AsyncThunk) fetching tasks!');
       const tasksRef = db.collection('users').doc(userId).collection('tasks');
       const snapshot = await tasksRef.get();
       const tasks = [];
@@ -20,8 +21,8 @@ export const fetchTasks = createAsyncThunk(
         }
 
         tasks.push({ ...data, id: doc.id });
-        console.log('(AsyncThunk) tasks fetched!');
       });
+
       return tasks;
     } catch (err) {
       alert(err);

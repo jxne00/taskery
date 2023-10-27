@@ -11,7 +11,7 @@ import {
 import { useTheme } from '../../../theme/ThemeContext';
 import { toDateDisplay } from '../../../components/timeConverters';
 
-import styles from '../styles';
+import styles from './styles';
 
 /**
  * a flatlist of tasks with its details

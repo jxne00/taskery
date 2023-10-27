@@ -1,61 +1,47 @@
 import { createSelector } from '@reduxjs/toolkit';
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
 
+dayjs.extend(isBetween);
+
+const EMPTY_ARRAY = [];
+
+/** selector for all tasks */
 const selectAllTasks = (state) => state.tasks.data;
 
+/** selector for tasks due today */
 const selectTasksForToday = createSelector([selectAllTasks], (tasks) => {
-  const today = new Date();
+  const startOfDay = dayjs().startOf('day');
+  const endOfDay = dayjs().endOf('day');
 
-  const todayTasks = tasks.filter((task) => {
-    const taskDate = new Date(task.deadline);
-    return taskDate.toDateString() === today.toDateString();
+  return tasks.filter((task) => {
+    const taskDate = dayjs(task.deadline);
+    return taskDate.isBetween(startOfDay, endOfDay, null, '[]');
   });
-
-  return todayTasks.length ? todayTasks : [];
 });
 
+/** selector for tasks due this week */
 const selectTasksForWeek = createSelector([selectAllTasks], (tasks) => {
-  const today = new Date();
-  const endOfWeek = new Date(today);
+  const startOfWeek = dayjs().startOf('week');
+  const endOfWeek = dayjs().endOf('week');
 
-  endOfWeek.setDate(today.getDate() + 7);
-
-  const weekTasks = tasks.filter((task) => {
-    const taskDate = new Date(task.deadline);
-    return taskDate >= today && taskDate <= endOfWeek;
+  return tasks.filter((task) => {
+    const taskDate = dayjs(task.deadline);
+    return taskDate.isBetween(startOfWeek, endOfWeek, null, '[]');
   });
-
-  return weekTasks.length ? weekTasks : [];
 });
 
-// TODO month view
+/** selector for tasks due this month */
 const selectTasksForMonth = createSelector([selectAllTasks], (tasks) => {
-  const today = new Date();
-  const endOfMonth = new Date(today);
+  const monthStart = dayjs().startOf('month');
+  const monthEnd = dayjs().endOf('month');
 
-  endOfMonth.setMonth(today.getMonth() + 1);
-
-  const monthTasks = tasks.filter((task) => {
-    const taskDate = new Date(task.deadline);
-    return taskDate >= today && taskDate <= endOfMonth;
+  return tasks.filter((task) => {
+    const taskDate = dayjs(task.deadline);
+    return taskDate.isBetween(monthStart, monthEnd, null, '[]');
   });
-
-  return monthTasks.length ? monthTasks : [];
 });
 
-// export const selectCompletedTasks = createSelector(
-//   (state) => state.tasks,
-//   (tasks) => tasks.filter((task) => task.completed),
-// );
-
-// const selectTasksForRange = (from, to) =>
-//   createSelector([selectAllTasks], (tasks) => {
-//     const fromDate = new Date(from);
-//     const toDate = new Date(to);
-//     return tasks.filter((task) => {
-//       const taskDate = new Date(task.deadline);
-//       return taskDate >= fromDate && taskDate <= toDate;
-//     });
-//   });
 
 export {
   selectAllTasks,

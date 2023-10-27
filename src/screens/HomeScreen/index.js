@@ -34,10 +34,7 @@ import {
 const Home = () => {
   const { theme, themeType } = useTheme();
   const global = useGlobalStyles();
-
-  // get data from redux store
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.data);
 
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState(null);
@@ -49,37 +46,25 @@ const Home = () => {
 
   const userId = auth.currentUser?.uid;
 
-  // get the tasks to display based on selected period
-  const { tasks, isLoading, error } = useSelector((state) => {
-    let taskData;
+  const user = useSelector((state) => state.user.data);
+
+  // get the tasks based on selected period
+  const tasks = useSelector((state) => {
     switch (selectedPeriod) {
       case 'today':
-        taskData = selectTasksForToday(state);
-        break;
+        return selectTasksForToday(state);
       case 'week':
-        taskData = selectTasksForWeek(state);
-        break;
+        return selectTasksForWeek(state);
       case 'month':
-        taskData = selectTasksForMonth(state);
-        break;
+        return selectTasksForMonth(state);
       case 'all':
-        taskData = selectAllTasks(state);
-        break;
+        return selectAllTasks(state);
       default:
-        taskData = state.tasks.data;
-        break;
+        return selectAllTasks(state);
     }
-
-    return {
-      tasks: taskData,
-      isLoading: state.tasks.isLoading,
-      error: state.tasks.error,
-    };
   });
-
-  if (error) {
-    alert(error);
-  }
+  const isLoading = useSelector((state) => state.tasks.isLoading);
+  const error = useSelector((state) => state.tasks.error);
 
   // get tasks and user state from redux store
   useEffect(() => {
@@ -88,6 +73,7 @@ const Home = () => {
       dispatch(fetchTasks(userId));
     }
   }, [userId, dispatch]);
+
   /** go to create task screen with pre-filled details */
   const handleEdit = (id) => {
     // get details of task to edit
@@ -128,6 +114,9 @@ const Home = () => {
       );
     };
 
+    if (error) {
+      alert(error);
+    }
     return (
       // TODO show badge with task count for each button
       <View style={styles.row}>
