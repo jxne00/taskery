@@ -7,10 +7,11 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { AntDesign } from '@expo/vector-icons';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addTask, updateTask } from '../../../services/redux/taskSlice';
 
 import useGlobalStyles from '../../../theme/globalStyles';
@@ -27,11 +28,11 @@ import TagComponent from './components/Tags';
 /**
  * A modal to create a new task or edit existing task.
  *
- * @param modalVisible - visibility of modal
- * @param setShowTaskModal - modal visibility setter
- * @param userId - current user's id
- * @param editTask - details of task to be edited
- * @param setEditTask - setter for editTask
+ * @param modalVisible visibility of modal
+ * @param setShowTaskModal modal visibility setter
+ * @param userId current user's id
+ * @param editTask details of task to be edited (only on edit)
+ * @param setEditTask setter for editTask (only on edit)
  */
 const CreateTask = (props) => {
   const { modalVisible, setShowTaskModal, userId, editTask, setEditTask } =
@@ -40,25 +41,24 @@ const CreateTask = (props) => {
   const global = useGlobalStyles();
   const dispatch = useDispatch();
 
+  const isLoading = editTask
+    ? useSelector((state) => state.tasks.loading.updateTask)
+    : useSelector((state) => state.tasks.loading.addTask);
+
   // task title & details
   const [title, setTitle] = useState('');
   const [details, setDetails] = useState('');
-
   // deadline
   const [deadline, setdeadline] = useState(new Date());
   const [datePickerOpen, setDatePickerOpen] = useState(false);
-
   // completion status
   const [isCompleted, setIsCompleted] = useState(false);
-
   // subtasks
   const [subtasks, setSubtasks] = useState([]);
   const [currentSubtask, setCurrentSubtask] = useState('');
-
   // category
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
-
   // tags
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState([]);
@@ -86,12 +86,11 @@ const CreateTask = (props) => {
   /** handle create or update task */
   const handleSubmit = async () => {
     if (!title) {
-      // title cannot be null
       Alert.alert('Title cannot be empty', 'Please set a title.');
       return;
     }
 
-    // details of task
+    // full details of task
     const taskDetails = {
       title: title,
       details: details,
@@ -102,27 +101,18 @@ const CreateTask = (props) => {
       tags: tags,
     };
 
-    if (editTask) {
-      // update task
-      dispatch(
-        updateTask({
-          userId,
-          taskId: editTask.id,
-          updatedData: taskDetails,
-        }),
-      );
-    } else {
-      // create new task
-      dispatch(
-        addTask({
-          userId,
-          taskDetails,
-        }),
-      );
-    }
+    // add or update task
+    const action = editTask
+      ? updateTask({ userId, taskId: editTask.id, taskDetails })
+      : addTask({ userId, taskDetails });
 
-    resetStates();
-    setShowTaskModal(false);
+    // dispatch action & close modal only after done
+    dispatch(action).then(() => {
+      if (!isLoading) {
+        resetStates();
+        setShowTaskModal(false);
+      }
+    });
   };
 
   // add a new (unique) tag to the list
@@ -165,9 +155,7 @@ const CreateTask = (props) => {
   // close modal & reset all states when 'cancel' pressed
   const handleCancelPress = () => {
     resetStates();
-    if (editTask) {
-      setEditTask(null);
-    }
+    if (editTask) setEditTask(null);
     setShowTaskModal(false);
   };
 
@@ -191,6 +179,15 @@ const CreateTask = (props) => {
     <Modal visible={modalVisible} animationType="slide" transparent={true}>
       <SafeAreaView style={global.container}>
         <View style={[global.container, styles.container]}>
+          {isLoading && (
+            <View style={styles.loadingOverlay}>
+              <ActivityIndicator size="large" color={'#fff'} />
+              <Text style={styles.loadingText}>
+                {editTask ? 'Updating...' : 'Creating...'}
+              </Text>
+            </View>
+          )}
+
           <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
             {/* header */}
             <View style={styles.row}>
@@ -277,7 +274,11 @@ const CreateTask = (props) => {
               <View style={styles.addSubtask}>
                 <TextInput
                   value={currentSubtask}
-                  style={[global.text, styles.subtaskInput]}
+                  style={[
+                    global.text,
+                    styles.subtaskInput,
+                    { borderColor: theme.text },
+                  ]}
                   onChangeText={setCurrentSubtask}
                   placeholder={'Add a subtask'}
                   placeholderTextColor={theme.textLight}
@@ -371,9 +372,18 @@ const CreateTask = (props) => {
           <Spacer />
 
           {/* ===== submit button ===== */}
-          <TouchableOpacity style={styles.createBtn} onPress={handleSubmit}>
+          <TouchableOpacity
+            style={styles.createBtn}
+            onPress={handleSubmit}
+            disabled={isLoading}>
             <Text style={styles.createBtnText}>
-              {editTask ? 'Update' : 'Create'}
+              {!isLoading
+                ? editTask
+                  ? 'Update'
+                  : 'Create'
+                : editTask
+                ? 'Updating...'
+                : 'Creating...'}
             </Text>
           </TouchableOpacity>
         </View>

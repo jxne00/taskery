@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList, Text } from 'react-native';
+import { View, FlatList, Text, TouchableOpacity } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import {
   Menu,
@@ -7,10 +7,11 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleCompletion } from '../../../services/redux/taskSlice';
+import { auth } from '../../../services/firebase';
 import { useTheme } from '../../../theme/ThemeContext';
 import { toDateDisplay } from '../../../components/timeConverters';
-
 import styles from './styles';
 
 /**
@@ -21,6 +22,13 @@ import styles from './styles';
  */
 const TaskList = ({ tasklist, handleEdit, handleDelete }) => {
   const { theme } = useTheme();
+
+  const userId = auth.currentUser?.uid;
+
+  const dispatch = useDispatch();
+  const toggleIsLoading = useSelector(
+    (state) => state.tasks.loading.updateStatus,
+  );
 
   const handleMenuPress = (value, id) => {
     switch (value) {
@@ -39,19 +47,36 @@ const TaskList = ({ tasklist, handleEdit, handleDelete }) => {
     }
   };
 
-  // render flatlist item
+  //TODO figure out best way to set loading screen
+  const handleStatusToggle = (id, is_complete) => {
+    dispatch(toggleCompletion({ userId, taskId: id, is_complete }));
+  };
+
+  /** each task item in the flatlist */
   const renderTask = ({ item }) => (
     <View style={[styles.taskContainer, { borderColor: theme.textLight }]}>
       <View style={styles.toprow}>
         {/* task completion status */}
-        <Text style={[styles.taskStatus, { color: theme.textLight }]}>
-          <AntDesign
-            name={item.status ? 'checkcircle' : 'closecircle'}
-            size={16}
-            color={item.status ? theme.green : theme.appName}
-          />{' '}
-          {item.status ? 'Completed' : 'Not Done'}
-        </Text>
+        <TouchableOpacity
+          style={[styles.taskStatusBtn, { borderColor: theme.textLight }]}
+          onPress={() => handleStatusToggle(item.id, item.is_complete)}>
+          <View
+            style={[
+              styles.colorCircle,
+              {
+                backgroundColor: item.is_complete ? theme.green : theme.orange,
+              },
+            ]}
+          />
+
+          <Text style={[styles.statusText, { color: theme.textLight }]}>
+            {toggleIsLoading
+              ? 'Loading...'
+              : item.is_complete
+              ? 'Completed'
+              : 'Not Done'}
+          </Text>
+        </TouchableOpacity>
 
         {/* deadline */}
         <Text style={[styles.taskDeadline, { color: theme.textLight }]}>
@@ -91,20 +116,17 @@ const TaskList = ({ tasklist, handleEdit, handleDelete }) => {
           </View>
         )}
 
-        {/* context menu */}
+        {/* context menu with 'edit', 'delete', 'duplicate' options */}
         <Menu onSelect={(value) => handleMenuPress(value, item.id)}>
           <MenuTrigger>
             <Ionicons name="ellipsis-vertical" size={20} color={theme.text} />
           </MenuTrigger>
 
           <MenuOptions
-            optionsContainerStyle={{
-              backgroundColor: theme.background,
-              borderColor: theme.text,
-              borderWidth: 1,
-              borderRadius: 5,
-              paddingVertical: 5,
-            }}>
+            optionsContainerStyle={[
+              styles.optionsContainer,
+              { backgroundColor: theme.background, borderColor: theme.text },
+            ]}>
             <MenuOption value="edit">
               <Text style={[styles.MenuOptionText, { color: theme.text }]}>
                 Edit

@@ -6,24 +6,36 @@ const CompletionComponent = ({ isCompleted, setIsCompleted, theme }) => {
     <View style={styles.completionRow}>
       <TouchableOpacity
         onPress={() => setIsCompleted(false)}
-        style={[styles.completionBtn, { borderWidth: isCompleted ? 1 : 3 }]}>
+        style={[
+          styles.completionBtn,
+          { borderWidth: isCompleted ? 1 : 3, borderColor: theme.textLight },
+        ]}>
         <AntDesign name={'close'} size={20} color={theme.text} />
         <Text
           style={[
             styles.completionText,
-            { fontFamily: isCompleted ? 'Inter-Medium' : 'Inter-Bold' },
+            {
+              fontFamily: isCompleted ? 'Inter-Medium' : 'Inter-Bold',
+              color: theme.text,
+            },
           ]}>
           Not done
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => setIsCompleted(true)}
-        style={[styles.completionBtn, { borderWidth: isCompleted ? 3 : 1 }]}>
+        style={[
+          styles.completionBtn,
+          { borderWidth: isCompleted ? 3 : 1, borderColor: theme.textLight },
+        ]}>
         <AntDesign name={'check'} size={20} color={theme.text} />
         <Text
           style={[
             styles.completionText,
-            { fontFamily: isCompleted ? 'Inter-Bold' : 'Inter-Medium' },
+            {
+              fontFamily: isCompleted ? 'Inter-Bold' : 'Inter-Medium',
+              color: theme.text,
+            },
           ]}>
           Completed
         </Text>

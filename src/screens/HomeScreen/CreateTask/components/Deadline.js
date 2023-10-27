@@ -27,7 +27,7 @@ const DeadlinePicker = ({ openPicker, setOpenPicker, date, setDate }) => {
 
   return (
     <>
-      <View style={[styles.pickerRow, { borderBottomColor: theme.textLight }]}>
+      <View style={[styles.pickerRow, { borderColor: theme.text }]}>
         <Text style={[styles.dateText, { color: theme.text }]}>
           {date.toLocaleDateString()}
         </Text>

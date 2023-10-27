@@ -4,8 +4,6 @@ import isBetween from 'dayjs/plugin/isBetween';
 
 dayjs.extend(isBetween);
 
-const EMPTY_ARRAY = [];
-
 /** selector for all tasks */
 const selectAllTasks = (state) => state.tasks.data;
 
@@ -42,6 +40,17 @@ const selectTasksForMonth = createSelector([selectAllTasks], (tasks) => {
   });
 });
 
+// TODO selectTasksForRange - for tasks due within a given range
+
+// TODO selectTasksByTag - for tasks with a given tag
+
+// TODO selectTasksByCateory - for tasks in a category
+
+// TODO selectTasksByCompletion - completed, incomplete, overdue
+
+// TODO selectTasksBySearch - search by title, description, tag, category, or all
+
+// TODO selectTasksBySort - sort by deadline, title, category, tag, or none
 
 export {
   selectAllTasks,

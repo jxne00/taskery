@@ -93,6 +93,20 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Medium',
     marginLeft: 20,
   },
+
+  // ======= loading styles =======
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 22,
+    fontFamily: 'Inter-Medium',
+    color: '#cecece',
+  },
 });
 
 export default styles;

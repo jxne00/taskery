@@ -66,11 +66,11 @@ export const addTask = createAsyncThunk(
 /** update existing task in firestore */
 export const updateTask = createAsyncThunk(
   'tasks/updateTask',
-  async ({ userId, taskId, updatedData }) => {
+  async ({ userId, taskId, taskDetails }) => {
     try {
       // create a copy for firestore update
       // because firestore date has to be a timestamp
-      const dataForStore = { ...updatedData };
+      const dataForStore = { ...taskDetails };
 
       if (dataForStore.deadline) {
         // convert deadline to firestore timestamp
@@ -86,7 +86,52 @@ export const updateTask = createAsyncThunk(
 
       console.log('(AsyncThunk) task updated!');
 
-      return { ...updatedData, id: taskId };
+      return { ...taskDetails, id: taskId };
+    } catch (err) {
+      alert(err.message);
+    }
+  },
+);
+
+/** delete task from firestore */
+export const deleteTask = createAsyncThunk(
+  'tasks/deleteTask',
+  async ({ userId, taskId }) => {
+    try {
+      await db
+        .collection('users')
+        .doc(userId)
+        .collection('tasks')
+        .doc(taskId)
+        .delete();
+
+      console.log('(AsyncThunk) task deleted!');
+
+      return taskId;
+    } catch (err) {
+      alert(err.message);
+    }
+  },
+);
+
+/** toggle completion status of a task */
+export const toggleCompletion = createAsyncThunk(
+  'tasks/toggleCompletion',
+  async ({ userId, taskId, is_complete }) => {
+    try {
+      const newStatus = !is_complete;
+      await db
+        .collection('users')
+        .doc(userId)
+        .collection('tasks')
+        .doc(taskId)
+        .update({
+          is_complete: newStatus,
+        });
+
+      console.log('(AsyncThunk) task status toggled!');
+
+      return { taskId, is_complete: newStatus };
     } catch (err) {
       alert(err.message);
     }
@@ -97,46 +142,83 @@ const tasksSlice = createSlice({
   name: 'tasks',
   initialState: {
     data: [],
-    isLoading: false,
+    loading: {
+      // loading states for each thunk
+      fetchTasks: false,
+      addTask: false,
+      updateTask: false,
+      deleteTask: false,
+      updateStatus: false,
+    },
     error: null,
+    filters: {
+      status: 'all', // 'all', 'completed', 'incomplete', 'overdue'
+      searchBy: 'all', // 'all', 'title', 'description'
+      searchTerm: '',
+      sortBy: 'deadline', // 'deadline', 'title'
+      sortOrder: 'asc', // 'asc', 'desc'
+    },
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // ======= store fetched tasks ======= //
       .addCase(fetchTasks.pending, (state) => {
-        state.isLoading = true;
+        state.loading.fetchTasks = true;
       })
       .addCase(fetchTasks.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.loading.fetchTasks = false;
         state.data = action.payload;
       })
       .addCase(fetchTasks.rejected, (state, action) => {
-        state.isLoading = false;
+        state.loading.fetchTasks = false;
         state.error = action.error.message;
       })
 
-      // add new task to redux store
+      // =========== add new task =========== //
       .addCase(addTask.pending, (state) => {
-        state.isLoading = true;
+        state.loading.addTask = true;
       })
       .addCase(addTask.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.loading.addTask = false;
         state.data.push(action.payload);
       })
       .addCase(addTask.rejected, (state, action) => {
-        state.isLoading = false;
+        state.loading.addTask = false;
         alert(action.error.message);
       })
 
-      // update existing task in redux store
+      // ============ update task ============ //
       .addCase(updateTask.pending, (state) => {
-        state.isLoading = true;
+        state.loading.updateTask = true;
       })
       .addCase(updateTask.fulfilled, (state, action) => {
-        state.isLoading = false;
         state.data = state.data.map((task) =>
           task.id === action.payload.id ? action.payload : task,
         );
+        state.loading.updateTask = false;
+      })
+
+      // ============= delete task ============= //
+      .addCase(deleteTask.pending, (state) => {
+        state.loading.deleteTask = true;
+      })
+      .addCase(deleteTask.fulfilled, (state, action) => {
+        state.loading.deleteTask = false;
+        state.data = state.data.filter((task) => task.id !== action.payload);
+      })
+
+      // ======== toggle completion status ======== //
+      .addCase(toggleCompletion.pending, (state) => {
+        state.loading.updateStatus = true;
+      })
+      .addCase(toggleCompletion.fulfilled, (state, action) => {
+        state.loading.updateStatus = false;
+
+        const task = state.data.find(
+          (task) => task.id === action.payload.taskId,
+        );
+        if (task) task.is_complete = action.payload.is_complete;
       });
   },
 });

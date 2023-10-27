@@ -41,12 +41,12 @@ const Home = () => {
 
   // task view options (today, week, month, all, range)
   const [selectedPeriod, setSelectedPeriod] = useState('today');
-  // date range for custom period view
-  // const [customPeriod, setCustomPeriod] = useState({ from: null, to: null });
+  const [customPeriod, setCustomPeriod] = useState({ from: null, to: null });
 
   const userId = auth.currentUser?.uid;
 
   const user = useSelector((state) => state.user.data);
+  const userLoading = useSelector((state) => state.user.isLoading);
 
   // get the tasks based on selected period
   const tasks = useSelector((state) => {
@@ -63,7 +63,7 @@ const Home = () => {
         return selectAllTasks(state);
     }
   });
-  const isLoading = useSelector((state) => state.tasks.isLoading);
+  const fetchIsLoading = useSelector((state) => state.tasks.loading.fetchTasks);
   const error = useSelector((state) => state.tasks.error);
 
   // get tasks and user state from redux store
@@ -114,9 +114,6 @@ const Home = () => {
       );
     };
 
-    if (error) {
-      alert(error);
-    }
     return (
       // TODO show badge with task count for each button
       <View style={styles.row}>
@@ -151,11 +148,15 @@ const Home = () => {
       <View style={[global.container, styles.container]}>
         {/* Header row */}
         <View style={styles.row}>
-          <Text style={styles.welcomeText}>
-            <Text style={{ color: theme.textLight }}>Hello, </Text>
-            <Text style={{ color: theme.orange }}>{user?.name}</Text>
-            <Text style={{ color: theme.textLight }}>!</Text>
-          </Text>
+          {!userLoading ? (
+            <Text style={styles.welcomeText}>
+              <Text style={{ color: theme.textLight }}>Hello, </Text>
+              <Text style={{ color: theme.orange }}>{user?.name}</Text>
+              <Text style={{ color: theme.textLight }}>!</Text>
+            </Text>
+          ) : (
+            <ActivityIndicator size="small" color={theme.textLight} />
+          )}
 
           <MaterialIcons
             name="today"
@@ -200,21 +201,24 @@ const Home = () => {
           </View>
         </View>
 
-        {isLoading && (
+        {/* show loading while fetching tasks */}
+        {fetchIsLoading && (
           <View style={styles.centered}>
             <ActivityIndicator size="large" color={theme.textLight} />
           </View>
         )}
 
-        {!isLoading && tasks.length === 0 && (
+        {/* show message if no tasks */}
+        {!fetchIsLoading && tasks.length === 0 && (
           <View style={styles.centered}>
             <Text style={[global.text, { color: theme.text }]}>
-              No tasks to show
+              No tasks due!
             </Text>
           </View>
         )}
 
-        {!isLoading && tasks.length > 0 && (
+        {/* list of tasks */}
+        {!fetchIsLoading && tasks.length > 0 && (
           <TaskList
             tasklist={tasks}
             handleEdit={handleEdit}
@@ -222,7 +226,7 @@ const Home = () => {
           />
         )}
 
-        {/* button to create new task */}
+        {/* create new task */}
         <TouchableOpacity
           style={[styles.addTaskBtn, { backgroundColor: theme.orange }]}
           onPress={() => setShowTaskModal(true)}>
@@ -241,7 +245,7 @@ const Home = () => {
           />
         </TouchableOpacity>
 
-        {/* "task details" modal */}
+        {/* modal for creating new task */}
         <CreateTask
           modalVisible={showTaskModal}
           setShowTaskModal={setShowTaskModal}

@@ -46,7 +46,12 @@ const TagComponent = (props) => {
           autoCapitalize="none"
           autoComplete="off"
         />
-        <Text onPress={addTag} style={[global.text, styles.addTagBtn]}>
+        <Text
+          onPress={addTag}
+          style={[
+            styles.addTagBtn,
+            { color: theme.background, backgroundColor: theme.textLight },
+          ]}>
           Add
         </Text>
       </View>
@@ -55,16 +60,14 @@ const TagComponent = (props) => {
       {tags.map((t, index) => (
         <View key={index} style={styles.row}>
           <AntDesign
-            name={'closecircle'}
+            name={'close'}
             size={24}
-            color={theme.btnRed}
+            color={theme.red}
             style={styles.Xicon}
             onPress={() => removeTag(index)}
           />
-          <View
-            style={[styles.tag, { backgroundColor: t.color, marginRight: 10 }]}
-          />
-          <Text style={global.text}>{t.name}</Text>
+          <View style={[styles.tag, { backgroundColor: t.color }]} />
+          <Text style={[styles.tagText, { color: theme.text }]}>{t.name}</Text>
         </View>
       ))}
     </View>
@@ -91,11 +94,9 @@ const styles = StyleSheet.create({
   },
   addTagBtn: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#d4d4d4',
-    backgroundColor: '#1e1c1c',
     paddingVertical: 10,
     paddingHorizontal: 20,
+    fontFamily: 'Inter-Medium',
   },
 
   colorContainer: {
@@ -115,6 +116,7 @@ const styles = StyleSheet.create({
   tag: {
     padding: 10,
     borderRadius: 5,
+    marginRight: 10,
   },
 
   row: {
@@ -125,6 +127,10 @@ const styles = StyleSheet.create({
 
   Xicon: {
     marginRight: 12,
+  },
+  tagText: {
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
   },
 });
 

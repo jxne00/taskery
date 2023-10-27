@@ -15,10 +15,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  taskStatus: {
-    fontSize: 14,
-    fontFamily: 'Inter-SemiBold',
-  },
   taskDeadline: {
     fontSize: 14,
     fontFamily: 'Inter-Medium',
@@ -54,10 +50,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
   },
+
+  // context menu styles
+  optionsContainer: {
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingVertical: 5,
+  },
   MenuOptionText: {
     fontSize: 16,
     fontFamily: 'Inter-Medium',
     textAlign: 'center',
+  },
+
+  // completion status button
+  taskStatusBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 18,
+    borderWidth: 1,
+  },
+  colorCircle: {
+    width: 12,
+    height: 12,
+    borderRadius: 8,
+    marginRight: 5,
+  },
+  statusText: {
+    fontSize: 14,
+    fontFamily: 'Inter-SemiBold',
   },
 });
 

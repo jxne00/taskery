@@ -28,7 +28,9 @@ const CategoryModal = (props) => {
             styles.innerContainer,
             { backgroundColor: theme.background },
           ]}>
-          <Text style={styles.title}>Select Category:</Text>
+          <Text style={[styles.title, { color: theme.text }]}>
+            Select Category:
+          </Text>
 
           {/* display button for each category */}
           <View styles={styles.row}>
@@ -39,13 +41,16 @@ const CategoryModal = (props) => {
                 style={[
                   styles.btn,
                   {
+                    borderColor: theme.textLight,
                     backgroundColor:
                       selectedCategory && selectedCategory === category.value
                         ? theme.orange
                         : theme.background,
                   },
                 ]}>
-                <Text style={styles.btnText}>{category.name}</Text>
+                <Text style={[styles.btnText, { color: theme.text }]}>
+                  {category.name}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -54,10 +59,12 @@ const CategoryModal = (props) => {
           <TouchableOpacity
             style={[
               styles.btn,
-              { backgroundColor: theme.blue, alignSelf: 'flex-end' },
+              { backgroundColor: theme.green, alignSelf: 'flex-end' },
             ]}
             onPress={() => setShowCategoryModal(false)}>
-            <Text style={[styles.closeBtnText, { color: '#fff' }]}>Done</Text>
+            <Text style={[styles.closeBtnText, { color: theme.text }]}>
+              Done
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
