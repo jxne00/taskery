@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import store from './src/services/redux/store';
 
 import { ThemeProvider } from './src/theme/ThemeContext';
-import AppNavigator from './src/navigation/AppNav';
+import AppNavigator from './src/navigation/AppNavigator';
 
 const App = () => {
   // load fonts from assets

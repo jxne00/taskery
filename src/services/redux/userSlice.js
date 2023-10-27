@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { db } from '../firebase/config';
+import { db } from '../firebase/firebaseConfig';
 
 /** fetch user's profile data from firestore */
 export const fetchUser = createAsyncThunk('user/fetchUser', async (userId) => {

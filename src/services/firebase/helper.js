@@ -1,7 +1,7 @@
 // helper fuctions for firebase related stuff
 
 import firebase from 'firebase/compat/app';
-import { auth, db, storage } from './config';
+import { auth, db, storage } from './firebaseConfig';
 
 /**
  * fetch avatar urls from firebase storage

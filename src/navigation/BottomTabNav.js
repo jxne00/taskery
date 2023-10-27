@@ -1,21 +1,15 @@
-import React from 'react';
 import { Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
 import { useTheme } from '../theme/ThemeContext';
 
-import Session from '../screens/Session/Session';
-
-import AuthStack from './AuthStack';
-import { HomeStack, CommunityStack, ProfileStack } from './MainStack';
+import { HomeStack, CommunityStack, ProfileStack } from './StackNavigator';
+import Session from '../screens/SessionScreen';
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
 
 /** bottom tab navigator of main screens */
-const HomeTabs = () => {
+const BottomTabNav = () => {
   const { theme } = useTheme();
 
   return (
@@ -94,21 +88,4 @@ const HomeTabs = () => {
   );
 };
 
-/** the main navigator of the app */
-const AppNavigator = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="AuthStack"
-        screenOptions={{
-          headerShown: false,
-          gestureEnabled: false, // prevent swipe to go back
-        }}>
-        <Stack.Screen name="AuthStack" component={AuthStack} />
-        <Stack.Screen name="HomeTabs" component={HomeTabs} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-};
-
-export default AppNavigator;
+export default BottomTabNav;

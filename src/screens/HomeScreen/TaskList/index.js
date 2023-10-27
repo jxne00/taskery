@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList, Text, StyleSheet } from 'react-native';
+import { View, FlatList, Text } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import {
   Menu,
@@ -9,7 +9,9 @@ import {
 } from 'react-native-popup-menu';
 
 import { useTheme } from '../../../theme/ThemeContext';
-import { toDateDisplay } from '../../../components/helper/timeConverters';
+import { toDateDisplay } from '../../../components/timeConverters';
+
+import styles from '../styles';
 
 /**
  * a flatlist of tasks with its details
@@ -135,66 +137,5 @@ const TaskList = ({ tasklist, handleEdit, handleDelete }) => {
     />
   );
 };
-
-const styles = StyleSheet.create({
-  flatlist: {
-    width: '94%',
-  },
-  taskContainer: {
-    padding: 10,
-    borderWidth: 1,
-    marginVertical: 6,
-    borderRadius: 6,
-  },
-  toprow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  taskStatus: {
-    fontSize: 14,
-    fontFamily: 'Inter-SemiBold',
-  },
-  taskDeadline: {
-    fontSize: 14,
-    fontFamily: 'Inter-Medium',
-  },
-  taskTitle: {
-    marginTop: 6,
-    fontSize: 17,
-    fontFamily: 'Inter-SemiBold',
-  },
-  taskDetail: {
-    fontSize: 14,
-    fontFamily: 'Inter-Regular',
-  },
-  tagContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-  },
-  tagBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 4,
-    marginRight: 6,
-    borderRadius: 6,
-  },
-  tagText: {
-    fontSize: 14,
-    marginLeft: 5,
-    fontFamily: 'Inter-SemiBold',
-  },
-  btmRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  MenuOptionText: {
-    fontSize: 16,
-    fontFamily: 'Inter-Medium',
-    textAlign: 'center',
-  },
-});
 
 export default TaskList;

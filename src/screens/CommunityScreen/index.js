@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 
-import CustomStatusBar from '../../components/shared/StatusBar';
+import CustomStatusBar from '../../components/StatusBar';
 import { useTheme } from '../../theme/ThemeContext';
 import useGlobalStyles from '../../theme/globalStyles';
 

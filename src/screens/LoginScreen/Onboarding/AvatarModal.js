@@ -14,14 +14,11 @@ import {
 import { MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
-import { fetchAvatarUrls } from '../../services/firebase/helper';
+import { fetchAvatarUrls } from '../../../services/firebase/helper';
 
 /**
- * an avatar image that shows a modal when clicked.
- * users can choose from default avatar images
- * or upload one from their device.
- *
- * @param {object} props modalVisible, setModalVisible, chosenAvatar, setChosenAvatar
+ * An avatar image that shows a modal when clicked.
+ * Choose from default avatars or upload from device.
  */
 const AvatarModal = ({ chosenAvatar, setChosenAvatar }) => {
   const [avatarUrls, setAvatarUrls] = useState([]);

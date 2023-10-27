@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { db } from '../firebase/config';
+import { db } from '../firebase/firebaseConfig';
 import { toTimestamp } from '../firebase/helper';
 
 /** fetch user's tasks from firestore */

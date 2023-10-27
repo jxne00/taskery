@@ -3,8 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 
-import { useTheme } from '../../theme/ThemeContext';
-import useGlobalStyles from '../../theme/globalStyles';
+import { useTheme } from '../../../theme/ThemeContext';
+import useGlobalStyles from '../../../theme/globalStyles';
 
 /**
  * a playlist component to play sound from a list of sounds
@@ -15,10 +15,10 @@ const Playlist = () => {
 
   // tracks from: https://pixabay.com/sound-effects/
   const tracks = [
-    { name: 'White Noise', file: require('../../assets/sound/whitenoise.mp3') },
-    { name: 'Nature', file: require('../../assets/sound/nature.mp3') },
-    { name: 'Cafe', file: require('../../assets/sound/cafe-ambience.mp3') },
-    { name: 'Birds Chirp', file: require('../../assets/sound/bird-chirp.mp3') },
+    { name: 'White Noise', file: require('../../../assets/sound/whitenoise.mp3') },
+    { name: 'Nature', file: require('../../../assets/sound/nature.mp3') },
+    { name: 'Cafe', file: require('../../../assets/sound/cafe-ambience.mp3') },
+    { name: 'Birds Chirp', file: require('../../../assets/sound/bird-chirp.mp3') },
   ];
 
   const [sound, setSound] = useState(null);

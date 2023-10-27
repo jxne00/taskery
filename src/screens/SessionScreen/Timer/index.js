@@ -10,10 +10,10 @@ import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 
-import { useTheme } from '../../theme/ThemeContext';
-import useGlobalStyles from '../../theme/globalStyles';
+import { useTheme } from '../../../theme/ThemeContext';
+import useGlobalStyles from '../../../theme/globalStyles';
 
-import { secondsToHMS } from '../../components/helper/timeConverters';
+import { secondsToHMS } from '../../../components/timeConverters';
 
 const ONE_SECOND = 1000;
 
@@ -82,7 +82,7 @@ const Timer = () => {
   const playAlarm = async () => {
     // sound from: https://pixabay.com/sound-effects/
     const { sound } = await Audio.Sound.createAsync(
-      require('../../assets/sound/clock-alarm.mp3'),
+      require('../../../assets/sound/clock-alarm.mp3'),
     );
     setSound(sound);
 

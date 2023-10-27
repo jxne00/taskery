@@ -14,11 +14,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useTheme } from '../../theme/ThemeContext';
 import useGlobalStyles from '../../theme/globalStyles';
-import CustomStatusBar from '../../components/shared/StatusBar';
+import CustomStatusBar from '../../components/StatusBar';
 
-import { auth, db } from '../../services/firebase/config';
+import { auth, db } from '../../services/firebase/firebaseConfig';
 import { fetchUser } from '../../services/redux/userSlice';
-import { toDateDisplay } from '../../components/helper/timeConverters';
+import { toDateDisplay } from '../../components/timeConverters';
 
 /** The profile screen displaying user's profile info */
 const Profile = ({ navigation }) => {

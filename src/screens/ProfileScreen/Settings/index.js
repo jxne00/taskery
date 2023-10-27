@@ -9,12 +9,13 @@ import {
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useDispatch } from 'react-redux';
-import { auth } from '../../services/firebase/config';
+import { auth } from '../../../services/firebase/firebaseConfig';
 
-import CustomStatusBar from '../../components/shared/StatusBar';
-import { useTheme } from '../../theme/ThemeContext';
-import useGlobalStyles from '../../theme/globalStyles';
-import InfoBox from '../../components/shared/InfoBox';
+import CustomStatusBar from '../../../components/StatusBar';
+import InfoBox from '../../../components/InfoBox';
+
+import { useTheme } from '../../../theme/ThemeContext';
+import useGlobalStyles from '../../../theme/globalStyles';
 
 /** The settings screen to manage app & account settings */
 const Settings = ({ navigation, userId, isPublic, setIsPublic }) => {

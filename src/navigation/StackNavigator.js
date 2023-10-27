@@ -1,15 +1,39 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { MenuProvider } from 'react-native-popup-menu';
 
-import Home from '../screens/Home/Home';
-import Profile from '../screens/Profile/Profile';
-import Community from '../screens/Community/Community';
+// auth screens
+import Login from '../screens/LoginScreen';
+import Register from '../screens/LoginScreen/Register';
+import Onboarding from '../screens/LoginScreen/Onboarding';
 
-import Settings from '../screens/Profile/Settings';
+// main screens
+import Home from '../screens/HomeScreen';
+import Profile from '../screens/ProfileScreen';
+import Community from '../screens/CommunityScreen';
+import Settings from '../screens/ProfileScreen/Settings';
 
+const StackA = createStackNavigator();
 const StackH = createStackNavigator();
 const StackP = createStackNavigator();
 const StackC = createStackNavigator();
+
+/**
+ * navigation stack for auth screens (Login, Register, Onboarding)
+ */
+const AuthStack = () => {
+  return (
+    <StackA.Navigator
+      initialRouteName="Login"
+      screenOptions={{
+        headerShown: false,
+        gestureEnabled: false, // prevent swipe to go back
+      }}>
+      <StackA.Screen name="Login" component={Login} />
+      <StackA.Screen name="Register" component={Register} />
+      <StackA.Screen name="Onboarding" component={Onboarding} />
+    </StackA.Navigator>
+  );
+};
 
 /** navigation stack for home screen */
 const HomeStack = () => {
@@ -54,4 +78,4 @@ const ProfileStack = () => {
   );
 };
 
-export { HomeStack, CommunityStack, ProfileStack };
+export { AuthStack, HomeStack, CommunityStack, ProfileStack };
