@@ -35,8 +35,7 @@ import TagComponent from './components/Tags';
  * @param setEditTask setter for editTask (only on edit)
  */
 const CreateTask = (props) => {
-  const { modalVisible, setShowTaskModal, userId, editTask, setEditTask } =
-    props;
+  const { modalVisible, setShowTaskModal, userId, editTask, setEditTask } = props;
   const { theme, themeType } = useTheme();
   const global = useGlobalStyles();
   const dispatch = useDispatch();
@@ -121,9 +120,7 @@ const CreateTask = (props) => {
       setTags([...tags, { name: tag, color: selectedColor }]);
       setTag('');
     } else {
-      Alert.alert('Error adding tag', 'This tag already exists.', [
-        { text: 'OK' },
-      ]);
+      Alert.alert('Error adding tag', 'This tag already exists.', [{ text: 'OK' }]);
     }
   };
 
@@ -137,10 +134,7 @@ const CreateTask = (props) => {
   // add details of each new subtasks to array
   const createSubTask = () => {
     if (currentSubtask) {
-      setSubtasks([
-        ...subtasks,
-        { description: currentSubtask, completed: false },
-      ]);
+      setSubtasks([...subtasks, { description: currentSubtask, completed: false }]);
       setCurrentSubtask('');
     }
   };
@@ -219,9 +213,7 @@ const CreateTask = (props) => {
             <Spacer />
 
             {/* ===== deadline section ===== */}
-            <Text style={[styles.boxLabel, { color: theme.text }]}>
-              Deadline
-            </Text>
+            <Text style={[styles.boxLabel, { color: theme.text }]}>Deadline</Text>
             <DeadlinePicker
               openPicker={datePickerOpen}
               setOpenPicker={setDatePickerOpen}
@@ -242,9 +234,7 @@ const CreateTask = (props) => {
             <Spacer />
 
             {/* ===== task details ===== */}
-            <Text style={[styles.boxLabel, { color: theme.text }]}>
-              Details
-            </Text>
+            <Text style={[styles.boxLabel, { color: theme.text }]}>Details</Text>
             <TextInput
               value={details}
               style={[
@@ -265,11 +255,8 @@ const CreateTask = (props) => {
             <Spacer />
 
             {/* ===== subtasks section ===== */}
-            <Text style={[styles.boxLabel, { color: theme.text }]}>
-              Subtasks
-            </Text>
-            <View
-              style={[styles.sectionContainer, { borderColor: theme.text }]}>
+            <Text style={[styles.boxLabel, { color: theme.text }]}>Subtasks</Text>
+            <View style={[styles.sectionContainer, { borderColor: theme.text }]}>
               {/* adding a new subtask */}
               <View style={styles.addSubtask}>
                 <TextInput
@@ -320,11 +307,8 @@ const CreateTask = (props) => {
 
             {/* ===== category section ===== */}
 
-            <Text style={[styles.boxLabel, { color: theme.text }]}>
-              Category
-            </Text>
-            <View
-              style={[styles.sectionContainer, { borderColor: theme.text }]}>
+            <Text style={[styles.boxLabel, { color: theme.text }]}>Category</Text>
+            <View style={[styles.sectionContainer, { borderColor: theme.text }]}>
               <View style={styles.row}>
                 {/* add a new category */}
                 <AntDesign
@@ -353,8 +337,7 @@ const CreateTask = (props) => {
             {/* ===== tags section ===== */}
             <Text style={[styles.boxLabel, { color: theme.text }]}>Tags</Text>
 
-            <View
-              style={[styles.sectionContainer, { borderColor: theme.text }]}>
+            <View style={[styles.sectionContainer, { borderColor: theme.text }]}>
               <TagComponent
                 tag={tag}
                 setTag={setTag}

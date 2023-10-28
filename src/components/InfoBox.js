@@ -29,11 +29,7 @@ const InfoBox = ({ title, text, iconColor, bgColor }) => {
           onStartShouldSetResponder={() => setModalVisible(false)}>
           <View style={[styles.tooltip, { backgroundColor: bgColor }]}>
             <View style={styles.row}>
-              <Ionicons
-                name="information-circle-sharp"
-                size={22}
-                color="#000000"
-              />
+              <Ionicons name="information-circle-sharp" size={22} color="#000000" />
 
               <Text style={styles.title}>{title}</Text>
             </View>

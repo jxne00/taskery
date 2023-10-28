@@ -74,11 +74,7 @@ const Settings = ({ navigation, is_public, userId }) => {
               </Text>
 
               <FontAwesome
-                name={
-                  themeMode === mode.toLowerCase()
-                    ? 'check-square-o'
-                    : 'square-o'
-                }
+                name={themeMode === mode.toLowerCase() ? 'check-square-o' : 'square-o'}
                 size={22}
                 color={theme.text}
                 onPress={() => setThemeMode(mode.toLowerCase())}
@@ -100,9 +96,7 @@ const Settings = ({ navigation, is_public, userId }) => {
               iconColor={theme.text}
               bgColor={themeType === 'light' ? '#FDF3EC' : '#d0d0d0'}
             />
-            <Text style={[global.text, styles.optionText]}>
-              Account Privacy
-            </Text>
+            <Text style={[global.text, styles.optionText]}>Account Privacy</Text>
 
             {isLoading ? (
               <ActivityIndicator size="small" color={theme.textLight} />

@@ -12,9 +12,7 @@ const THEME_ASYNC_KEY = 'theme';
 const ThemeProvider = ({ children }) => {
   const deviceTheme = Appearance.getColorScheme();
   const [themeMode, setThemeMode] = useState('system');
-  const [theme, setTheme] = useState(
-    deviceTheme === 'dark' ? darkTheme : lightTheme,
-  );
+  const [theme, setTheme] = useState(deviceTheme === 'dark' ? darkTheme : lightTheme);
   const [themeType, setThemeType] = useState('light');
 
   useEffect(() => {
@@ -76,8 +74,7 @@ const ThemeProvider = ({ children }) => {
   }, [themeMode, deviceTheme]);
 
   return (
-    <ThemeContext.Provider
-      value={{ theme, themeMode, setThemeMode, themeType }}>
+    <ThemeContext.Provider value={{ theme, themeMode, setThemeMode, themeType }}>
       {children}
     </ThemeContext.Provider>
   );

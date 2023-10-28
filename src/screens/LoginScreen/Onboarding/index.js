@@ -39,10 +39,7 @@ const Onboarding = ({ navigation }) => {
 
         <Text style={styles.subtitle}>Set up your profile to get started.</Text>
 
-        <AvatarModal
-          chosenAvatar={chosenAvatar}
-          setChosenAvatar={setChosenAvatar}
-        />
+        <AvatarModal chosenAvatar={chosenAvatar} setChosenAvatar={setChosenAvatar} />
 
         <View style={styles.inputContainer}>
           {/* name input */}
@@ -70,9 +67,7 @@ const Onboarding = ({ navigation }) => {
           />
 
           {/* button */}
-          <TouchableOpacity
-            style={styles.nextBtn}
-            onPress={() => handleNextPress()}>
+          <TouchableOpacity style={styles.nextBtn} onPress={() => handleNextPress()}>
             {isLoading ? (
               <ActivityIndicator size="small" color="#ffffff" />
             ) : (

@@ -3,32 +3,29 @@ import { db } from '../firebase';
 import { toTimestamp } from '../firebase/helper';
 
 /** fetch user's tasks from firestore */
-export const fetchTasks = createAsyncThunk(
-  'tasks/fetchTasks',
-  async (userId) => {
-    try {
-      console.log(': (AsyncThunk) fetching tasks!');
-      const tasksRef = db.collection('users').doc(userId).collection('tasks');
-      const snapshot = await tasksRef.get();
-      const tasks = [];
+export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async (userId) => {
+  try {
+    console.log(': (AsyncThunk) fetching tasks!');
+    const tasksRef = db.collection('users').doc(userId).collection('tasks');
+    const snapshot = await tasksRef.get();
+    const tasks = [];
 
-      snapshot.forEach((doc) => {
-        const data = doc.data();
+    snapshot.forEach((doc) => {
+      const data = doc.data();
 
-        if (data.deadline) {
-          // convert firestore timestamp to milliseconds
-          data.deadline = data.deadline.toMillis();
-        }
+      if (data.deadline) {
+        // convert firestore timestamp to milliseconds
+        data.deadline = data.deadline.toMillis();
+      }
 
-        tasks.push({ ...data, id: doc.id });
-      });
+      tasks.push({ ...data, id: doc.id });
+    });
 
-      return tasks;
-    } catch (err) {
-      alert(err);
-    }
-  },
-);
+    return tasks;
+  } catch (err) {
+    alert(err);
+  }
+});
 
 /** add a new task to firestore */
 export const addTask = createAsyncThunk(
@@ -98,12 +95,7 @@ export const deleteTask = createAsyncThunk(
   'tasks/deleteTask',
   async ({ userId, taskId }) => {
     try {
-      await db
-        .collection('users')
-        .doc(userId)
-        .collection('tasks')
-        .doc(taskId)
-        .delete();
+      await db.collection('users').doc(userId).collection('tasks').doc(taskId).delete();
 
       console.log('(AsyncThunk) task deleted!');
 
@@ -120,14 +112,9 @@ export const toggleCompletion = createAsyncThunk(
   async ({ userId, taskId, is_complete }) => {
     try {
       const newStatus = !is_complete;
-      await db
-        .collection('users')
-        .doc(userId)
-        .collection('tasks')
-        .doc(taskId)
-        .update({
-          is_complete: newStatus,
-        });
+      await db.collection('users').doc(userId).collection('tasks').doc(taskId).update({
+        is_complete: newStatus,
+      });
 
       console.log('(AsyncThunk) task status toggled!');
 
@@ -215,9 +202,7 @@ const tasksSlice = createSlice({
       .addCase(toggleCompletion.fulfilled, (state, action) => {
         state.loading.updateStatus = false;
 
-        const task = state.data.find(
-          (task) => task.id === action.payload.taskId,
-        );
+        const task = state.data.find((task) => task.id === action.payload.taskId);
         if (task) task.is_complete = action.payload.is_complete;
       });
   },

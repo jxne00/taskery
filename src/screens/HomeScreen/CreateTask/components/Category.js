@@ -23,14 +23,8 @@ const CategoryModal = (props) => {
       visible={showCategoryModal}
       onRequestClose={() => setShowCategoryModal(false)}>
       <View style={styles.container}>
-        <View
-          style={[
-            styles.innerContainer,
-            { backgroundColor: theme.background },
-          ]}>
-          <Text style={[styles.title, { color: theme.text }]}>
-            Select Category:
-          </Text>
+        <View style={[styles.innerContainer, { backgroundColor: theme.background }]}>
+          <Text style={[styles.title, { color: theme.text }]}>Select Category:</Text>
 
           {/* display button for each category */}
           <View styles={styles.row}>
@@ -62,9 +56,7 @@ const CategoryModal = (props) => {
               { backgroundColor: theme.green, alignSelf: 'flex-end' },
             ]}
             onPress={() => setShowCategoryModal(false)}>
-            <Text style={[styles.closeBtnText, { color: theme.text }]}>
-              Done
-            </Text>
+            <Text style={[styles.closeBtnText, { color: theme.text }]}>Done</Text>
           </TouchableOpacity>
         </View>
       </View>

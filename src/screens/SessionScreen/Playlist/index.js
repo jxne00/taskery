@@ -47,9 +47,7 @@ const Playlist = () => {
       }
 
       // load & play the sound
-      const { sound: newSound } = await Audio.Sound.createAsync(
-        tracks[index].file,
-      );
+      const { sound: newSound } = await Audio.Sound.createAsync(tracks[index].file);
       setSound(newSound);
       setActiveIndex(index);
 

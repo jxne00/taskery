@@ -186,9 +186,7 @@ const Home = () => {
       {/* show message if no tasks */}
       {!fetchIsLoading && tasks.length === 0 && (
         <View style={styles.centered}>
-          <Text style={[global.text, { color: theme.text }]}>
-            No tasks due!
-          </Text>
+          <Text style={[global.text, { color: theme.text }]}>No tasks due!</Text>
         </View>
       )}
 

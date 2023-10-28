@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
@@ -93,9 +87,7 @@ const Timer = () => {
   /** reset hours, minutes, seconds back to default */
   const resetTimer = () => {
     setTimeLeft(
-      parseInt(hrsInput) * 3600 +
-        parseInt(minsInput) * 60 +
-        parseInt(secsInput),
+      parseInt(hrsInput) * 3600 + parseInt(minsInput) * 60 + parseInt(secsInput),
     );
   };
 
@@ -117,9 +109,7 @@ const Timer = () => {
 
       // get total in seconds
       setTimeLeft(
-        parseInt(hrsInput) * 3600 +
-          parseInt(minsInput) * 60 +
-          parseInt(secsInput),
+        parseInt(hrsInput) * 3600 + parseInt(minsInput) * 60 + parseInt(secsInput),
       );
 
       setIsInputMode(false);
@@ -160,9 +150,7 @@ const Timer = () => {
             onChangeText={(text) => setMinsInput(text)}
           />
         ) : (
-          <Text style={[styles.timeInput, { color: theme.text }]}>
-            {minutes}
-          </Text>
+          <Text style={[styles.timeInput, { color: theme.text }]}>{minutes}</Text>
         )}
 
         <Text style={styles.timeInput}>:</Text>
@@ -175,9 +163,7 @@ const Timer = () => {
             onChangeText={(text) => setSecsInput(text)}
           />
         ) : (
-          <Text style={[styles.timeInput, { color: theme.text }]}>
-            {seconds}
-          </Text>
+          <Text style={[styles.timeInput, { color: theme.text }]}>{seconds}</Text>
         )}
       </View>
 

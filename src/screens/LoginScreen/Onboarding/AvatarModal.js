@@ -146,19 +146,13 @@ const AvatarModal = ({ chosenAvatar, setChosenAvatar }) => {
             <View style={styles.tabRow}>
               <TouchableOpacity
                 onPress={() => setCurrentTab('default')}
-                style={[
-                  styles.tab,
-                  currentTab === 'default' && styles.activeTab,
-                ]}>
+                style={[styles.tab, currentTab === 'default' && styles.activeTab]}>
                 <Text style={styles.tabText}>Default</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 onPress={() => setCurrentTab('upload')}
-                style={[
-                  styles.tab,
-                  currentTab === 'upload' && styles.activeTab,
-                ]}>
+                style={[styles.tab, currentTab === 'upload' && styles.activeTab]}>
                 <Text style={styles.tabText}>Upload</Text>
               </TouchableOpacity>
             </View>
@@ -171,9 +165,7 @@ const AvatarModal = ({ chosenAvatar, setChosenAvatar }) => {
                 {/* display default avatar images from firebase storage */}
                 <View style={styles.avatarsRow}>
                   {avatarUrls.map((url, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      onPress={() => setCurrent(index)}>
+                    <TouchableOpacity key={index} onPress={() => setCurrent(index)}>
                       <Image
                         source={{ uri: url }}
                         style={[

@@ -81,11 +81,7 @@ const Login = ({ navigation }) => {
         <KeyboardAvoidingView behavior="padding" style={styles.inputContainer}>
           {/* email input */}
           <Text style={styles.inputLabel}>Email:</Text>
-          <View
-            style={[
-              styles.inputBox,
-              focusedBox === 'email' && styles.focusedBox,
-            ]}>
+          <View style={[styles.inputBox, focusedBox === 'email' && styles.focusedBox]}>
             <Ionicons name="person" size={20} color="#919090" />
             <TextInput
               value={email}
@@ -99,9 +95,7 @@ const Login = ({ navigation }) => {
               onChangeText={(text) => setEmail(text)}
               onFocus={() => setFocusedBox('email')}
               onBlur={() => setFocusedBox('')}
-              onSubmitEditing={() =>
-                passwordRef.current && passwordRef.current.focus()
-              }
+              onSubmitEditing={() => passwordRef.current && passwordRef.current.focus()}
               returnKeyType="next"
             />
           </View>
@@ -111,10 +105,7 @@ const Login = ({ navigation }) => {
           {/* password input */}
           <Text style={styles.inputLabel}>Password:</Text>
           <View
-            style={[
-              styles.inputBox,
-              focusedBox === 'password' && styles.focusedBox,
-            ]}>
+            style={[styles.inputBox, focusedBox === 'password' && styles.focusedBox]}>
             <Ionicons name="md-lock-closed" size={20} color="#919090" />
 
             <TextInput

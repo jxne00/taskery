@@ -59,9 +59,7 @@ const Profile = ({ navigation }) => {
   const renderPost = ({ item }) => {
     return (
       <View style={[styles.postContainer, { borderColor: theme.textLight }]}>
-        <Text style={[styles.postTitle, { color: theme.text }]}>
-          {item.title}
-        </Text>
+        <Text style={[styles.postTitle, { color: theme.text }]}>{item.title}</Text>
 
         {item.caption && (
           <Text style={[styles.postCaption, { color: theme.text }]}>
@@ -80,9 +78,7 @@ const Profile = ({ navigation }) => {
               color={theme.red}
               style={{ marginRight: 3 }}
             />
-            <Text style={[global.text, { color: theme.text }]}>
-              {item.likes}
-            </Text>
+            <Text style={[global.text, { color: theme.text }]}>{item.likes}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -140,8 +136,7 @@ const Profile = ({ navigation }) => {
             <Text style={[global.text, styles.profileName]}>{user?.name}</Text>
 
             {/* profile visibility */}
-            <View
-              style={[styles.visContainer, { borderColor: theme.textLight }]}>
+            <View style={[styles.visContainer, { borderColor: theme.textLight }]}>
               <Ionicons
                 name={user?.is_public ? 'md-lock-open' : 'md-lock-closed'}
                 size={16}
@@ -161,9 +156,7 @@ const Profile = ({ navigation }) => {
           </>
         )}
 
-        <View
-          style={[styles.horizontalLine, { backgroundColor: theme.textLight }]}
-        />
+        <View style={[styles.horizontalLine, { backgroundColor: theme.textLight }]} />
 
         {/* user's posts */}
         <FlatList
@@ -172,9 +165,7 @@ const Profile = ({ navigation }) => {
           keyExtractor={(item) => item.id.toString()}
           style={{ width: '100%' }}
           ListHeaderComponent={
-            <Text style={[styles.postSectionHeader, { color: theme.text }]}>
-              Posts
-            </Text>
+            <Text style={[styles.postSectionHeader, { color: theme.text }]}>Posts</Text>
           }
         />
 

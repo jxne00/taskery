@@ -1,12 +1,7 @@
 import React from 'react';
 import { View, FlatList, Text, TouchableOpacity } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-} from 'react-native-popup-menu';
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleCompletion } from '../../../services/redux/taskSlice';
 import { auth } from '../../../services/firebase';
@@ -26,9 +21,7 @@ const TaskList = ({ tasklist, handleEdit, handleDelete }) => {
   const userId = auth.currentUser?.uid;
 
   const dispatch = useDispatch();
-  const toggleIsLoading = useSelector(
-    (state) => state.tasks.loading.updateStatus,
-  );
+  const toggleIsLoading = useSelector((state) => state.tasks.loading.updateStatus);
 
   const handleMenuPress = (value, id) => {
     switch (value) {
@@ -85,15 +78,11 @@ const TaskList = ({ tasklist, handleEdit, handleDelete }) => {
         </Text>
       </View>
 
-      <Text style={[styles.taskTitle, { color: theme.text }]}>
-        {item.title}
-      </Text>
+      <Text style={[styles.taskTitle, { color: theme.text }]}>{item.title}</Text>
 
       {/* details of task */}
       {item.details && (
-        <Text style={[styles.taskDetail, { color: theme.text }]}>
-          {item.details}
-        </Text>
+        <Text style={[styles.taskDetail, { color: theme.text }]}>{item.details}</Text>
       )}
 
       <View style={styles.btmRow}>
@@ -103,14 +92,9 @@ const TaskList = ({ tasklist, handleEdit, handleDelete }) => {
             {item.tags.map((tag) => (
               <View
                 key={tag.name}
-                style={[
-                  styles.tagBox,
-                  { backgroundColor: theme.backgroundSec },
-                ]}>
+                style={[styles.tagBox, { backgroundColor: theme.backgroundSec }]}>
                 <AntDesign name="tag" size={16} color={tag.color} />
-                <Text style={[styles.tagText, { color: theme.text }]}>
-                  {tag.name}
-                </Text>
+                <Text style={[styles.tagText, { color: theme.text }]}>{tag.name}</Text>
               </View>
             ))}
           </View>
@@ -128,9 +112,7 @@ const TaskList = ({ tasklist, handleEdit, handleDelete }) => {
               { backgroundColor: theme.background, borderColor: theme.text },
             ]}>
             <MenuOption value="edit">
-              <Text style={[styles.MenuOptionText, { color: theme.text }]}>
-                Edit
-              </Text>
+              <Text style={[styles.MenuOptionText, { color: theme.text }]}>Edit</Text>
             </MenuOption>
 
             <MenuOption value="duplicate">
@@ -140,9 +122,7 @@ const TaskList = ({ tasklist, handleEdit, handleDelete }) => {
             </MenuOption>
 
             <MenuOption value="delete">
-              <Text style={[styles.MenuOptionText, { color: theme.text }]}>
-                Delete
-              </Text>
+              <Text style={[styles.MenuOptionText, { color: theme.text }]}>Delete</Text>
             </MenuOption>
           </MenuOptions>
         </Menu>
