@@ -15,13 +15,9 @@ const useGlobalStyles = () => {
       fontSize: 16,
       fontFamily: 'Inter-Regular',
     },
-    blueBtn: {
-      backgroundColor: theme.btnBlue,
-      color: '#fff',
-    },
-    blackBtn: {
-      backgroundColor: theme.btnBlack,
-      color: '#fff',
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
     },
   });
 };

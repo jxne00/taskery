@@ -1,5 +1,9 @@
+import { SafeAreaView } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { MenuProvider } from 'react-native-popup-menu';
+
+import { useTheme } from '../theme/ThemeContext';
+import CustomStatusBar from '../components/StatusBar';
 
 // auth screens
 import Login from '../screens/LoginScreen';
@@ -37,17 +41,22 @@ const AuthStack = () => {
 
 /** navigation stack for home screen */
 const HomeStack = () => {
+  const { theme } = useTheme();
+
   return (
-    <MenuProvider>
-      <StackH.Navigator
-        initialRouteName="Home"
-        screenOptions={{
-          headerShown: false,
-          gestureEnabled: false, // prevent swipe to go back
-        }}>
-        <StackH.Screen name="Home" component={Home} />
-      </StackH.Navigator>
-    </MenuProvider>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
+      <MenuProvider>
+        <StackH.Navigator
+          initialRouteName="Home"
+          screenOptions={{
+            headerShown: false,
+            gestureEnabled: false, // prevent swipe to go back
+          }}>
+          <StackH.Screen name="Home" component={Home} />
+        </StackH.Navigator>
+      </MenuProvider>
+      <CustomStatusBar />
+    </SafeAreaView>
   );
 };
 

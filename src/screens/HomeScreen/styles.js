@@ -15,46 +15,44 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 20,
   },
-  titleRow: {
-    flexDirection: 'row',
-    alignContent: 'center',
-    marginHorizontal: 20,
-    marginBottom: 6,
+  filterRow: {
+    marginLeft: 'auto',
+    marginRight: 5,
   },
+
   welcomeText: {
     fontSize: 22,
     fontFamily: 'PoetsenOne-Regular',
   },
-  tasksTitle: {
+  ViewTitleText: {
     flex: 1,
     fontSize: 24,
     fontFamily: 'Inter-Bold',
   },
-  calendarIcon: {
-    marginLeft: 'auto',
-  },
+
+  // create task
   addTaskBtn: {
     position: 'absolute',
     bottom: 20,
-    right: 20,
+    right: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 8,
+    borderRadius: 15,
     padding: 10,
   },
-  addTaskTxt: {
+  addTaskText: {
     fontSize: 18,
     marginRight: 5,
     fontFamily: 'Inter-SemiBold',
   },
 
   // period view options
-  periodViewButton: {
+  periodBtn: {
     borderRadius: 8,
-    padding: 10,
+    padding: 8,
     marginHorizontal: 5,
   },
-  periodViewText: {
+  periodBtnText: {
     fontSize: 16,
     fontFamily: 'Inter-SemiBold',
   },

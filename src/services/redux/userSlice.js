@@ -15,6 +15,20 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async (userId) => {
   return data;
 });
 
+/** update user's visibility */
+export const updateVisibility = createAsyncThunk(
+  'user/updateVisibility',
+  async ({ userId, updated }) => {
+    try {
+      await db.collection('users').doc(userId).update({ is_public: updated });
+
+      return updated;
+    } catch (err) {
+      alert(err);
+    }
+  },
+);
+
 const userSlice = createSlice({
   name: 'user',
   initialState: {
@@ -25,6 +39,7 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // fetch user profile data
       .addCase(fetchUser.pending, (state) => {
         state.isLoading = true;
       })
@@ -33,6 +48,19 @@ const userSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(fetchUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+
+      // update visibility
+      .addCase(updateVisibility.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateVisibility.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.data.is_public = action.payload;
+      })
+      .addCase(updateVisibility.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });

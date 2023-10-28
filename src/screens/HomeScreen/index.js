@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Text,
-  View,
-  SafeAreaView,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
+import { Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
-import CustomStatusBar from '../../components/StatusBar';
 import { useTheme } from '../../theme/ThemeContext';
 import useGlobalStyles from '../../theme/globalStyles';
 
@@ -74,11 +67,9 @@ const Home = () => {
     }
   }, [userId, dispatch]);
 
-  /** go to create task screen with pre-filled details */
+  /** show createTask screen with pre-filled details */
   const handleEdit = (id) => {
-    // get details of task to edit
     const taskDetail = tasks.find((task) => task.id === id);
-
     setShowTaskModal(true);
     setTaskToEdit(taskDetail);
   };
@@ -90,32 +81,69 @@ const Home = () => {
   };
 
   /** display buttons for selecting view period */
-  const PeriodViewOptions = () => {
-    const optionButton = (view) => {
-      // capitalize first letter
-      const displayText = view.charAt(0).toUpperCase() + view.slice(1);
-      const bgColor =
-        selectedPeriod === view ? theme.orange : theme.backgroundSec;
-      const textColor =
-        selectedPeriod === view
-          ? themeType === 'light'
-            ? '#fff'
-            : theme.text
-          : theme.textLight;
-
-      return (
-        <TouchableOpacity
-          style={[styles.periodViewButton, { backgroundColor: bgColor }]}
-          onPress={() => setSelectedPeriod(view)}>
-          <Text style={[styles.periodViewText, { color: textColor }]}>
-            {displayText}
-          </Text>
-        </TouchableOpacity>
-      );
-    };
+  const optionButton = (view) => {
+    // capitalize first letter
+    const displayText = view.charAt(0).toUpperCase() + view.slice(1);
+    const isSelected = selectedPeriod === view;
 
     return (
-      // TODO show badge with task count for each button
+      <TouchableOpacity
+        style={[
+          styles.periodBtn,
+          { backgroundColor: isSelected ? theme.blue : theme.gray },
+        ]}
+        onPress={() => setSelectedPeriod(view)}>
+        <Text
+          style={[
+            styles.periodBtnText,
+            {
+              color: isSelected
+                ? themeType === 'light'
+                  ? '#fff'
+                  : theme.text
+                : theme.textLight,
+            },
+          ]}>
+          {displayText}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
+  // title for each selected period
+  const titles = {
+    today: "Today's Tasks",
+    week: "This Week's Tasks",
+    month: "This Month's Tasks",
+    all: 'All Tasks',
+    range: 'Tasks in range',
+  };
+
+  return (
+    <View style={[global.container, styles.container]}>
+      {/* Header row */}
+      <View style={styles.row}>
+        {!userLoading ? (
+          <Text style={styles.welcomeText}>
+            <Text style={{ color: theme.text }}>Hello, </Text>
+            <Text style={{ color: theme.blue }}>{user?.name}</Text>
+            <Text style={{ color: theme.text }}>!</Text>
+          </Text>
+        ) : (
+          <ActivityIndicator size="small" color={theme.textLight} />
+        )}
+
+        <MaterialIcons
+          name="today"
+          size={30}
+          color={theme.text}
+          style={{ marginLeft: 'auto' }}
+          // TODO implement calendar function
+          onPress={() => console.log('calendar (TODO!!!)')}
+        />
+      </View>
+
+      {/* buttons to select view period */}
       <View style={styles.row}>
         {optionButton('all')}
         {optionButton('today')}
@@ -123,140 +151,84 @@ const Home = () => {
         {optionButton('month')}
         {optionButton('range')}
       </View>
-    );
-  };
 
-  const SetTitle = () => {
-    switch (selectedPeriod) {
-      case 'today':
-        return "Today's Tasks";
-      case 'week':
-        return "This Week's Tasks";
-      case 'month':
-        return "This Month's Tasks";
-      case 'all':
-        return 'All Tasks';
-      case 'range':
-        return 'Tasks in range';
-      default:
-        return 'Tasks';
-    }
-  };
+      {/* task list title */}
+      <View style={styles.row}>
+        <Text style={[styles.ViewTitleText, { color: theme.text }]}>
+          {titles[selectedPeriod] || 'Tasks'} ({tasks.length})
+        </Text>
 
-  return (
-    <SafeAreaView style={global.container}>
-      <View style={[global.container, styles.container]}>
-        {/* Header row */}
-        <View style={styles.row}>
-          {!userLoading ? (
-            <Text style={styles.welcomeText}>
-              <Text style={{ color: theme.textLight }}>Hello, </Text>
-              <Text style={{ color: theme.orange }}>{user?.name}</Text>
-              <Text style={{ color: theme.textLight }}>!</Text>
-            </Text>
-          ) : (
-            <ActivityIndicator size="small" color={theme.textLight} />
-          )}
-
+        {/* filter & sort */}
+        <View style={[global.row, styles.filterRow]}>
           <MaterialIcons
-            name="today"
-            size={30}
-            color={theme.text}
-            style={styles.calendarIcon}
-            // TODO implement calendar function
-            onPress={() => console.log('calendar (TODO!!!)')}
-          />
-        </View>
-
-        {/* buttons for selecting view period */}
-        <PeriodViewOptions />
-
-        {/* List of tasks */}
-        <View style={styles.titleRow}>
-          <Text style={[global.text, styles.tasksTitle]}>
-            <SetTitle /> ({tasks.length})
-          </Text>
-
-          <View
-            style={[
-              styles.titleRow,
-              {
-                marginLeft: 'auto',
-                marginRight: 10,
-              },
-            ]}>
-            <MaterialIcons
-              name="filter-list-alt"
-              size={28}
-              color={theme.textLight}
-              // TODO implement filter function
-              onPress={() => console.log('filter (TODO!!!)')}
-            />
-            <MaterialIcons
-              name="sort"
-              size={24}
-              color={theme.textLight} // TODO implement sort function
-              onPress={() => console.log('sort (TODO!!!)')}
-            />
-          </View>
-        </View>
-
-        {/* show loading while fetching tasks */}
-        {fetchIsLoading && (
-          <View style={styles.centered}>
-            <ActivityIndicator size="large" color={theme.textLight} />
-          </View>
-        )}
-
-        {/* show message if no tasks */}
-        {!fetchIsLoading && tasks.length === 0 && (
-          <View style={styles.centered}>
-            <Text style={[global.text, { color: theme.text }]}>
-              No tasks due!
-            </Text>
-          </View>
-        )}
-
-        {/* list of tasks */}
-        {!fetchIsLoading && tasks.length > 0 && (
-          <TaskList
-            tasklist={tasks}
-            handleEdit={handleEdit}
-            handleDelete={handleDelete}
-          />
-        )}
-
-        {/* create new task */}
-        <TouchableOpacity
-          style={[styles.addTaskBtn, { backgroundColor: theme.orange }]}
-          onPress={() => setShowTaskModal(true)}>
-          <Text
-            style={[
-              styles.addTaskTxt,
-              { color: themeType === 'light' ? theme.navActive : theme.text },
-            ]}>
-            New Task
-          </Text>
-
-          <MaterialIcons
-            name="add-task"
+            name="filter-list-alt"
             size={26}
-            color={themeType === 'light' ? theme.navActive : theme.text}
+            color={theme.text}
+            // TODO implement filter function
+            onPress={() => console.log('filter (TODO!!!)')}
           />
-        </TouchableOpacity>
-
-        {/* modal for creating new task */}
-        <CreateTask
-          modalVisible={showTaskModal}
-          setShowTaskModal={setShowTaskModal}
-          userId={userId}
-          editTask={taskToEdit}
-          setEditTask={setTaskToEdit}
-        />
-
-        <CustomStatusBar />
+          <MaterialIcons
+            name="sort"
+            size={26}
+            color={theme.text} // TODO implement sort function
+            onPress={() => console.log('sort (TODO!!!)')}
+          />
+        </View>
       </View>
-    </SafeAreaView>
+
+      {/* show loading while fetching tasks */}
+      {fetchIsLoading && (
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color={theme.textLight} />
+        </View>
+      )}
+
+      {/* show message if no tasks */}
+      {!fetchIsLoading && tasks.length === 0 && (
+        <View style={styles.centered}>
+          <Text style={[global.text, { color: theme.text }]}>
+            No tasks due!
+          </Text>
+        </View>
+      )}
+
+      {/* list of tasks */}
+      {!fetchIsLoading && tasks.length > 0 && (
+        <TaskList
+          tasklist={tasks}
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
+        />
+      )}
+
+      {/* create new task */}
+      <TouchableOpacity
+        style={[styles.addTaskBtn, { backgroundColor: theme.blue }]}
+        onPress={() => setShowTaskModal(true)}>
+        <Text
+          style={[
+            styles.addTaskText,
+            { color: themeType === 'light' ? '#fff' : theme.text },
+          ]}>
+          New Task
+        </Text>
+
+        <MaterialIcons
+          name="add-task"
+          size={26}
+          color={themeType === 'light' ? theme.navActive : theme.text}
+        />
+      </TouchableOpacity>
+
+      {/* modal for creating new task */}
+      <CreateTask
+        modalVisible={showTaskModal}
+        setShowTaskModal={setShowTaskModal}
+        userId={userId}
+        editTask={taskToEdit}
+        setEditTask={setTaskToEdit}
+      />
+    </View>
   );
 };
 

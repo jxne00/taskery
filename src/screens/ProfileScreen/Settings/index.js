@@ -5,11 +5,13 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { auth } from '../../../services/firebase';
+import { updateVisibility } from '../../../services/redux/userSlice';
 
 import CustomStatusBar from '../../../components/StatusBar';
 import InfoBox from '../../../components/InfoBox';
@@ -18,27 +20,31 @@ import { useTheme } from '../../../theme/ThemeContext';
 import useGlobalStyles from '../../../theme/globalStyles';
 
 /** The settings screen to manage app & account settings */
-const Settings = ({ navigation, userId, isPublic, setIsPublic }) => {
+const Settings = ({ navigation, is_public, userId }) => {
   const { theme, themeMode, setThemeMode, themeType } = useTheme();
   const global = useGlobalStyles();
   const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.user.isLoading);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedPrivacy, setSelectedPrivacy] = useState(is_public);
+
+  useEffect(() => {
+    // update visibility
+    if (userId && selectedPrivacy !== is_public) {
+      dispatch(updateVisibility({ userId, updated: selectedPrivacy }));
+    }
+  }, [userId, selectedPrivacy]);
 
   // signout user using firebase
   const handleSignout = async () => {
     try {
       await auth.signOut();
-      dispatch({ type: 'LOGOUT' });
       navigation.navigate('Login');
     } catch (err) {
-      console.log('Error signing out: ', err);
+      alert('Error signing out: ', err);
     }
   };
-
-  useEffect(() => {
-    // TODO: update 'is_public' in firestore
-  }, [userId, isPublic]);
 
   return (
     <SafeAreaView style={global.container}>
@@ -49,9 +55,7 @@ const Settings = ({ navigation, userId, isPublic, setIsPublic }) => {
           size={28}
           color={theme.text}
           style={styles.backBtn}
-          onPress={() => {
-            navigation.goBack();
-          }}
+          onPress={() => navigation.goBack()}
         />
 
         <Text style={[global.text, styles.title]}>Settings</Text>
@@ -100,29 +104,38 @@ const Settings = ({ navigation, userId, isPublic, setIsPublic }) => {
               Account Privacy
             </Text>
 
-            <DropDownPicker
-              items={[
-                { label: 'Public', value: true },
-                { label: 'Private', value: false },
-              ]}
-              defaultValue={isPublic}
-              placeholder={isPublic ? 'Public' : 'Private'}
-              containerStyle={{ width: 100 }}
-              style={{ backgroundColor: theme.navActive }}
-              itemStyle={{
-                justifyContent: 'flex-start',
-              }}
-              open={dropdownOpen}
-              setOpen={setDropdownOpen}
-              setValue={setIsPublic}
-            />
+            {isLoading ? (
+              <ActivityIndicator size="small" color={theme.textLight} />
+            ) : (
+              // TODO fix dropdown picker or use toggle w alert
+              <DropDownPicker
+                items={[
+                  { label: 'Public', value: true },
+                  { label: 'Private', value: false },
+                ]}
+                defaultValue={selectedPrivacy}
+                placeholder={is_public ? 'Public' : 'Private'}
+                containerStyle={{ width: 100 }}
+                style={{ backgroundColor: theme.navActive }}
+                itemStyle={{ justifyContent: 'flex-start' }}
+                open={dropdownOpen}
+                setOpen={setDropdownOpen}
+                setValue={setSelectedPrivacy}
+              />
+            )}
           </View>
         </View>
 
         <TouchableOpacity
-          style={[styles.signOutBtn, { backgroundColor: theme.btnBlack }]}
+          style={[styles.signOutBtn, { backgroundColor: theme.blue }]}
           onPress={handleSignout}>
-          <Text style={styles.signOutTxt}>Sign Out</Text>
+          <Text
+            style={[
+              styles.signOutTxt,
+              { color: themeType === 'light' ? '#fff' : theme.text },
+            ]}>
+            Sign Out
+          </Text>
         </TouchableOpacity>
 
         <CustomStatusBar />
@@ -173,7 +186,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   signOutTxt: {
-    color: '#fff',
     padding: 10,
     fontSize: 18,
     fontFamily: 'Inter-SemiBold',
