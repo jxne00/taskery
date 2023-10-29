@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, FlatList, Text, TouchableOpacity } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { toggleCompletion } from '../../../services/redux/taskSlice';
 import { auth } from '../../../services/firebase';
 import { useTheme } from '../../../theme/ThemeContext';
@@ -10,18 +11,18 @@ import { toDateDisplay } from '../../../components/timeConverters';
 import styles from './styles';
 
 /**
- * a flatlist of tasks with its details
- * @param {array} tasklist - list of tasks
- * @param {function} handleEdit - handle editing of task
- * @param {function} handleDelete - handle deleting of task
+ * A flatlist of tasks with its details
+ * @param tasklist - list of tasks
+ * @param handleEdit - handle editing of task
+ * @param handleDelete - handle deleting of task
  */
 const TaskList = ({ tasklist, handleEdit, handleDelete }) => {
   const { theme } = useTheme();
-
+  const dispatch = useDispatch();
   const userId = auth.currentUser?.uid;
 
-  const dispatch = useDispatch();
   const toggleIsLoading = useSelector((state) => state.tasks.loading.updateStatus);
+  const [togglingID, setTogglingID] = useState(null);
 
   const handleMenuPress = (value, id) => {
     switch (value) {
@@ -40,9 +41,12 @@ const TaskList = ({ tasklist, handleEdit, handleDelete }) => {
     }
   };
 
-  //TODO figure out best way to set loading screen
+  /** toggles task completion status */
   const handleStatusToggle = (id, is_complete) => {
-    dispatch(toggleCompletion({ userId, taskId: id, is_complete }));
+    setTogglingID(id);
+    dispatch(toggleCompletion({ userId, taskId: id, is_complete })).then(() =>
+      setTogglingID(null),
+    );
   };
 
   /** each task item in the flatlist */
@@ -63,7 +67,7 @@ const TaskList = ({ tasklist, handleEdit, handleDelete }) => {
           />
 
           <Text style={[styles.statusText, { color: theme.textLight }]}>
-            {toggleIsLoading
+            {toggleIsLoading && togglingID === item.id
               ? 'Loading...'
               : item.is_complete
               ? 'Completed'

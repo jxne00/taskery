@@ -5,25 +5,21 @@ import {
   View,
   SafeAreaView,
   Image,
-  Alert,
   ActivityIndicator,
-  FlatList,
-  TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
-import { useDispatch, useSelector } from 'react-redux';
 
 import { useTheme } from '../../theme/ThemeContext';
 import useGlobalStyles from '../../theme/globalStyles';
 import CustomStatusBar from '../../components/StatusBar';
 
-import { auth, db } from '../../services/firebase';
-import { fetchUser } from '../../services/redux/userSlice';
+import { useFetchUser } from '../../hooks/useFetchUser';
+import { auth } from '../../services/firebase';
 import { toDateDisplay } from '../../components/timeConverters';
 
 // TODO replace dummyPosts with actual data
 import dummyPosts from './dummyPosts';
+import PostsList from './PostsList';
 
 /** The profile screen displaying user's profile info */
 const Profile = ({ navigation }) => {
@@ -31,11 +27,8 @@ const Profile = ({ navigation }) => {
   const global = useGlobalStyles();
 
   // get profile data from redux store
-  const user = useSelector((state) => state.user.data);
-  const isLoading = useSelector((state) => state.user.isLoading);
-  const error = useSelector((state) => state.user.error);
+  const { user, ProfileIsLoading, userError } = useFetchUser();
 
-  const dispatch = useDispatch();
   const userId = auth.currentUser?.uid;
 
   const avatarImages = {
@@ -50,56 +43,10 @@ const Profile = ({ navigation }) => {
     'a8.png': require('../../assets/avatars/a8.png'),
   };
 
-  useEffect(() => {
-    if (userId) {
-      dispatch(fetchUser(userId));
-    }
-  }, [userId, dispatch]);
-
-  const renderPost = ({ item }) => {
-    return (
-      <View style={[styles.postContainer, { borderColor: theme.textLight }]}>
-        <Text style={[styles.postTitle, { color: theme.text }]}>{item.title}</Text>
-
-        {item.caption && (
-          <Text style={[styles.postCaption, { color: theme.text }]}>
-            {item.caption}
-          </Text>
-        )}
-
-        <View style={{ height: 20 }} />
-
-        {/* likes and comments */}
-        <View style={styles.statRow}>
-          <TouchableOpacity style={global.row}>
-            <Ionicons
-              name="md-heart-outline"
-              size={20}
-              color={theme.red}
-              style={{ marginRight: 3 }}
-            />
-            <Text style={[global.text, { color: theme.text }]}>{item.likes}</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={global.row}
-            // TODO: show comments
-            onPress={() => {
-              console.log('TODO: show comments');
-            }}>
-            <Text style={[global.text, { color: theme.textLight }]}>
-              {item.comments} {item.comments === 1 ? 'comment' : 'comments'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
-
   return (
     <SafeAreaView style={global.container}>
       <View style={[global.container, styles.container]}>
-        {isLoading && (
+        {ProfileIsLoading && (
           <ActivityIndicator
             size="large"
             color={theme.text}
@@ -107,7 +54,7 @@ const Profile = ({ navigation }) => {
           />
         )}
 
-        {!isLoading && (
+        {!ProfileIsLoading && (
           <>
             {/* avatar image */}
             <Image
@@ -120,7 +67,7 @@ const Profile = ({ navigation }) => {
             />
 
             <Ionicons
-              name="settings"
+              name="settings-outline"
               size={28}
               style={styles.settingsIcon}
               color={theme.text}
@@ -159,15 +106,7 @@ const Profile = ({ navigation }) => {
         <View style={[styles.horizontalLine, { backgroundColor: theme.textLight }]} />
 
         {/* user's posts */}
-        <FlatList
-          data={dummyPosts}
-          renderItem={(item) => renderPost(item)}
-          keyExtractor={(item) => item.id.toString()}
-          style={{ width: '100%' }}
-          ListHeaderComponent={
-            <Text style={[styles.postSectionHeader, { color: theme.text }]}>Posts</Text>
-          }
-        />
+        <PostsList data={dummyPosts} />
 
         <CustomStatusBar />
       </View>
@@ -219,37 +158,6 @@ const styles = StyleSheet.create({
   horizontalLine: {
     width: '98%',
     height: 1,
-    marginTop: 10,
-  },
-
-  // posts
-  postSectionHeader: {
-    fontSize: 22,
-    fontFamily: 'Inter-Bold',
-    marginLeft: 13,
-    marginTop: 20,
-  },
-  postContainer: {
-    marginVertical: 10,
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    width: '95%',
-    alignSelf: 'center',
-  },
-  postTitle: {
-    fontSize: 18,
-    fontFamily: 'Inter-SemiBold',
-    paddingBottom: 5,
-  },
-  postCaption: {
-    fontSize: 16,
-    fontFamily: 'Inter-Regular',
-  },
-  statRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     marginTop: 10,
   },
 });

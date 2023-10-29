@@ -13,6 +13,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { AntDesign } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTask, updateTask } from '../../../services/redux/taskSlice';
+import { auth } from '../../../services/firebase';
 
 import useGlobalStyles from '../../../theme/globalStyles';
 import { useTheme } from '../../../theme/ThemeContext';
@@ -30,15 +31,16 @@ import TagComponent from './components/Tags';
  *
  * @param modalVisible visibility of modal
  * @param setShowTaskModal modal visibility setter
- * @param userId current user's id
  * @param editTask details of task to be edited (only on edit)
  * @param setEditTask setter for editTask (only on edit)
  */
 const CreateTask = (props) => {
-  const { modalVisible, setShowTaskModal, userId, editTask, setEditTask } = props;
+  const { modalVisible, setShowTaskModal, editTask, setEditTask } = props;
   const { theme, themeType } = useTheme();
   const global = useGlobalStyles();
   const dispatch = useDispatch();
+
+  const userId = auth.currentUser?.uid;
 
   const isLoading = editTask
     ? useSelector((state) => state.tasks.loading.updateTask)

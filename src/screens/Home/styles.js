@@ -56,6 +56,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Inter-SemiBold',
   },
+
+  // range picker
+  rangePickButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    padding: 8,
+    borderRadius: 8,
+    width: 120,
+  },
 });
 
 export default styles;

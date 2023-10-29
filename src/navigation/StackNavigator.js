@@ -6,15 +6,15 @@ import { useTheme } from '../theme/ThemeContext';
 import CustomStatusBar from '../components/StatusBar';
 
 // auth screens
-import Login from '../screens/LoginScreen';
-import Register from '../screens/LoginScreen/Register';
-import Onboarding from '../screens/LoginScreen/Onboarding';
+import Login from '../screens/Login';
+import Register from '../screens/Login/Register';
+import Onboarding from '../screens/Login/Onboarding';
 
 // main screens
-import Home from '../screens/HomeScreen';
-import Profile from '../screens/ProfileScreen';
-import Community from '../screens/CommunityScreen';
-import Settings from '../screens/ProfileScreen/Settings';
+import Home from '../screens/Home';
+import Profile from '../screens/Profile';
+import Community from '../screens/Community';
+import Settings from '../screens/Profile/Settings';
 
 const StackA = createStackNavigator();
 const StackH = createStackNavigator();

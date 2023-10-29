@@ -20,9 +20,7 @@ const ThemeProvider = ({ children }) => {
     const getSavedTheme = async () => {
       try {
         const storedTheme = await AsyncStorage.getItem(THEME_ASYNC_KEY);
-        if (storedTheme) {
-          setThemeMode(storedTheme);
-        }
+        if (storedTheme) setThemeMode(storedTheme);
       } catch (err) {
         alert('Failed to get saved theme (async storage)');
       }
@@ -34,6 +32,8 @@ const ThemeProvider = ({ children }) => {
   // update theme whenever themeMode or deviceTheme changes
   useEffect(() => {
     const updateTheme = async (newTheme) => {
+      const currentDeviceTheme = Appearance.getColorScheme();
+
       switch (newTheme) {
         case 'light':
           setTheme(lightTheme);
@@ -44,8 +44,8 @@ const ThemeProvider = ({ children }) => {
           setThemeType('dark');
           break;
         case 'system':
-          setTheme(deviceTheme === 'dark' ? darkTheme : lightTheme);
-          setThemeType(deviceTheme);
+          setTheme(currentDeviceTheme === 'dark' ? darkTheme : lightTheme);
+          setThemeType(currentDeviceTheme);
           break;
         default:
           setTheme(lightTheme);
@@ -71,7 +71,7 @@ const ThemeProvider = ({ children }) => {
 
     // cleanup on unmount
     return () => subscription.remove();
-  }, [themeMode, deviceTheme]);
+  }, [themeMode]);
 
   return (
     <ThemeContext.Provider value={{ theme, themeMode, setThemeMode, themeType }}>

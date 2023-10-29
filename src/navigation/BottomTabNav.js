@@ -4,7 +4,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { useTheme } from '../theme/ThemeContext';
 
 import { HomeStack, CommunityStack, ProfileStack } from './StackNavigator';
-import Session from '../screens/SessionScreen';
+import Session from '../screens/Session';
 
 const Tab = createBottomTabNavigator();
 

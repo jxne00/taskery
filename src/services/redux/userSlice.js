@@ -3,6 +3,7 @@ import { db } from '../firebase';
 
 /** fetch user's profile data from firestore */
 export const fetchUser = createAsyncThunk('user/fetchUser', async (userId) => {
+  console.log(': (AsyncThunk) fetching user 👤!');
   const userRef = db.collection('users').doc(userId);
   const doc = await userRef.get();
   const data = doc.data();

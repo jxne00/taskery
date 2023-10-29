@@ -1,71 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { useTheme } from '../../theme/ThemeContext';
+import DatePick from '../../components/DatePick';
 import useGlobalStyles from '../../theme/globalStyles';
-
 import styles from './styles';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchUser } from '../../services/redux/userSlice';
-import { fetchTasks } from '../../services/redux/taskSlice';
-
-import { auth } from '../../services/firebase';
+import useFetchTasks from '../../hooks/useFetchTasks';
+import useFetchUser from '../../hooks/useFetchUser';
 
 import TaskList from './TaskList';
 import CreateTask from './CreateTask';
-
-import {
-  selectAllTasks,
-  selectTasksForToday,
-  selectTasksForWeek,
-  selectTasksForMonth,
-} from '../../services/redux/taskSelectors';
 
 /** The home screen that displays a list of tasks */
 const Home = () => {
   const { theme, themeType } = useTheme();
   const global = useGlobalStyles();
-  const dispatch = useDispatch();
+
+  // task view options (today, week, month, all, range)
+  const [chosenTimeFrame, setChosenTimeFrame] = useState('today');
+  const [customPeriod, setCustomPeriod] = useState({ from: null, to: null });
+  const [openDatePicker, setOpenDatePicker] = useState(false);
+  const [activePickerInput, setActivePickerInput] = useState(null); // 'from' or 'to'
+  const [confirmRange, setConfirmRange] = useState(false);
+
+  // fetch data from redux store
+  const { user, userLoading } = useFetchUser();
+  const { tasks, fetchIsLoading, fetchTasksError } = useFetchTasks(chosenTimeFrame);
 
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState(null);
-
-  // task view options (today, week, month, all, range)
-  const [selectedPeriod, setSelectedPeriod] = useState('today');
-  const [customPeriod, setCustomPeriod] = useState({ from: null, to: null });
-
-  const userId = auth.currentUser?.uid;
-
-  const user = useSelector((state) => state.user.data);
-  const userLoading = useSelector((state) => state.user.isLoading);
-
-  // get the tasks based on selected period
-  const tasks = useSelector((state) => {
-    switch (selectedPeriod) {
-      case 'today':
-        return selectTasksForToday(state);
-      case 'week':
-        return selectTasksForWeek(state);
-      case 'month':
-        return selectTasksForMonth(state);
-      case 'all':
-        return selectAllTasks(state);
-      default:
-        return selectAllTasks(state);
-    }
-  });
-  const fetchIsLoading = useSelector((state) => state.tasks.loading.fetchTasks);
-  const error = useSelector((state) => state.tasks.error);
-
-  // get tasks and user state from redux store
-  useEffect(() => {
-    if (userId) {
-      dispatch(fetchUser(userId));
-      dispatch(fetchTasks(userId));
-    }
-  }, [userId, dispatch]);
 
   /** show createTask screen with pre-filled details */
   const handleEdit = (id) => {
@@ -80,11 +45,33 @@ const Home = () => {
     console.log('(TODO!!!) delete task with id: ', id);
   };
 
+  /** set the active picker "to" or "from" */
+  const handleOpenDatePicker = (input) => {
+    setActivePickerInput(input);
+    setOpenDatePicker(true);
+  };
+
+  /** set range value */
+  const handlePickerConfirm = (date) => {
+    if (activePickerInput === 'from') {
+      setCustomPeriod({ ...customPeriod, from: date });
+    } else if (activePickerInput === 'to') {
+      setCustomPeriod({ ...customPeriod, to: date });
+    }
+    handlePickerCancel();
+  };
+
+  /** close date picker */
+  const handlePickerCancel = () => {
+    setActivePickerInput(null);
+    setOpenDatePicker(false);
+  };
+
   /** display buttons for selecting view period */
   const optionButton = (view) => {
     // capitalize first letter
     const displayText = view.charAt(0).toUpperCase() + view.slice(1);
-    const isSelected = selectedPeriod === view;
+    const isSelected = chosenTimeFrame === view;
 
     return (
       <TouchableOpacity
@@ -92,7 +79,7 @@ const Home = () => {
           styles.periodBtn,
           { backgroundColor: isSelected ? theme.blue : theme.gray },
         ]}
-        onPress={() => setSelectedPeriod(view)}>
+        onPress={() => setChosenTimeFrame(view)}>
         <Text
           style={[
             styles.periodBtnText,
@@ -152,10 +139,60 @@ const Home = () => {
         {optionButton('range')}
       </View>
 
+      {/* choosing date range */}
+      {chosenTimeFrame === 'range' && (
+        <View style={styles.row}>
+          <TouchableOpacity
+            style={[styles.rangePickButton, { borderColor: theme.text }]}
+            onPress={() => handleOpenDatePicker('from')}>
+            <MaterialIcons name="date-range" size={20} color={theme.text} />
+            <Text style={[styles.periodBtnText, { color: theme.text, paddingLeft: 5 }]}>
+              {customPeriod.from ? customPeriod.from.toLocaleDateString() : 'From'}
+            </Text>
+          </TouchableOpacity>
+
+          <Text
+            style={[styles.periodBtnText, { color: theme.text, marginHorizontal: 10 }]}>
+            to
+          </Text>
+
+          <TouchableOpacity
+            style={[styles.rangePickButton, { borderColor: theme.text }]}
+            onPress={() => handleOpenDatePicker('to')}>
+            <MaterialIcons name="date-range" size={20} color={theme.text} />
+            <Text style={[styles.periodBtnText, { color: theme.text, paddingLeft: 5 }]}>
+              {customPeriod.to ? customPeriod.to.toLocaleDateString() : 'To'}
+            </Text>
+          </TouchableOpacity>
+
+          {/* confirm selected range */}
+          <TouchableOpacity
+            style={[styles.periodBtn, { backgroundColor: theme.blue }]}
+            // TODO fix range timeframe option
+            onPress={() => setConfirmRange(true)}>
+            <Text
+              style={[
+                styles.periodBtnText,
+                { color: themeType === 'light' ? '#fff' : theme.text },
+              ]}>
+              Confirm
+            </Text>
+          </TouchableOpacity>
+
+          <DatePick
+            openDatePicker={openDatePicker}
+            setOpenDatePicker={setOpenDatePicker}
+            handleConfirm={handlePickerConfirm}
+            handleCancel={handlePickerCancel}
+            date={activePickerInput === 'from' ? customPeriod.from : customPeriod.to}
+          />
+        </View>
+      )}
+
       {/* task list title */}
       <View style={styles.row}>
         <Text style={[styles.ViewTitleText, { color: theme.text }]}>
-          {titles[selectedPeriod] || 'Tasks'} ({tasks.length})
+          {titles[chosenTimeFrame] || 'Tasks'} ({tasks.length})
         </Text>
 
         {/* filter & sort */}
@@ -222,7 +259,6 @@ const Home = () => {
       <CreateTask
         modalVisible={showTaskModal}
         setShowTaskModal={setShowTaskModal}
-        userId={userId}
         editTask={taskToEdit}
         setEditTask={setTaskToEdit}
       />
