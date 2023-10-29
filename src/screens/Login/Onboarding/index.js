@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   View,
@@ -11,12 +11,10 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import AvatarModal from './AvatarModal';
+import SetAvatar from './SetAvatar';
+import { auth, db, storage } from '../../../services/firebase';
 import InfoBox from '../../../components/InfoBox';
-
 import styles from './styles';
-
-import { auth, db } from '../../../services/firebase';
 
 /**
  * The onboarding screen for setting up the user's profile details
@@ -26,10 +24,71 @@ const Onboarding = ({ navigation }) => {
   const [name, setName] = useState('');
   const [chosenAvatar, setChosenAvatar] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null);
 
-  const handleNextPress = () => {
-    // TODO store onboarding details to firestore
-    console.log('todo: store details to firestore');
+  const userId = auth.currentUser.uid;
+
+  /** store the user's profile detail into firestore */
+  const finishOnboarding = () => {
+    if (name.length === 0) {
+      setErrorMsg('Please set a name, nickname or alias');
+      return;
+    }
+
+    setIsLoading(true);
+
+    if (chosenAvatar) {
+      // store image & get download url
+      const avatarUrl = storeAvatar();
+
+      // update user document in firestore
+      avatarUrl
+        .then((url) => {
+          if (url) {
+            db.collection('users')
+              .doc(userId)
+              .set({
+                name,
+                avatar_path: url,
+              })
+              .then(() => {
+                setIsLoading(false);
+                // go to home screen on success
+                navigation.navigate('HomeTabs');
+              });
+          } else {
+            db.collection('users')
+              .doc(userId)
+              .set({
+                name,
+              })
+              .then(() => {
+                setIsLoading(false);
+                // go to home screen on success
+                navigation.navigate('HomeTabs');
+              });
+          }
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          Alert.alert('Error setting up profile: ', err.message);
+        });
+    }
+  };
+
+  /** store user's avatar image to firebase storage */
+  const storeAvatar = async () => {
+    // store in storage path 'usersAvatar/{userId}'
+    const storageRef = storage.ref(`usersAvatar/${userId}`);
+
+    // convert to blob and upload
+    const response = await fetch(chosenAvatar);
+    const blob = await response.blob();
+    await storageRef.put(blob);
+
+    // return download url
+    const url = await storageRef.getDownloadURL();
+    return url;
   };
 
   return (
@@ -39,7 +98,7 @@ const Onboarding = ({ navigation }) => {
 
         <Text style={styles.subtitle}>Set up your profile to get started.</Text>
 
-        <AvatarModal chosenAvatar={chosenAvatar} setChosenAvatar={setChosenAvatar} />
+        <SetAvatar chosenAvatar={chosenAvatar} setChosenAvatar={setChosenAvatar} />
 
         <View style={styles.inputContainer}>
           {/* name input */}
@@ -48,7 +107,7 @@ const Onboarding = ({ navigation }) => {
             <InfoBox
               title={'Privacy Notice'}
               text={
-                'Your profile name and avatar will be visible to other users in the community.\nYou can change these details anytime you want later in the Settings.'
+                'Your profile name and avatar will be visible to other users in the community. You can edit these details anytime you want in the Settings later.'
               }
               iconColor={'#3c3c3c'}
               bgColor={'#c7c7c7'}
@@ -66,8 +125,11 @@ const Onboarding = ({ navigation }) => {
             onChangeText={(text) => setName(text)}
           />
 
+          {/* error message */}
+          {errorMsg && <Text style={styles.errorMsg}>{errorMsg}</Text>}
+
           {/* button */}
-          <TouchableOpacity style={styles.nextBtn} onPress={() => handleNextPress()}>
+          <TouchableOpacity style={styles.nextBtn} onPress={finishOnboarding}>
             {isLoading ? (
               <ActivityIndicator size="small" color="#ffffff" />
             ) : (

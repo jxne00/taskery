@@ -66,6 +66,15 @@ const styles = StyleSheet.create({
     marginRight: 10,
     fontFamily: 'Inter-SemiBold',
   },
+
+  errorMsg: {
+    fontSize: 16,
+    color: '#a10101',
+    backgroundColor: '#fbe0e0',
+    padding: 8,
+    marginTop: 20,
+    fontFamily: 'Inter-Regular',
+  },
 });
 
 export default styles;

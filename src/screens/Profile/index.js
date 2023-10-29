@@ -13,7 +13,7 @@ import { useTheme } from '../../theme/ThemeContext';
 import useGlobalStyles from '../../theme/globalStyles';
 import CustomStatusBar from '../../components/StatusBar';
 
-import { useFetchUser } from '../../hooks/useFetchUser';
+import useFetchUser from '../../hooks/useFetchUser';
 import { auth } from '../../services/firebase';
 import { toDateDisplay } from '../../components/timeConverters';
 
@@ -31,18 +31,6 @@ const Profile = ({ navigation }) => {
 
   const userId = auth.currentUser?.uid;
 
-  const avatarImages = {
-    // map avatar file names to their respective paths
-    'a1.png': require('../../assets/avatars/a1.png'),
-    'a2.png': require('../../assets/avatars/a2.png'),
-    'a3.png': require('../../assets/avatars/a3.png'),
-    'a4.png': require('../../assets/avatars/a4.png'),
-    'a5.png': require('../../assets/avatars/a5.png'),
-    'a6.png': require('../../assets/avatars/a6.png'),
-    'a7.png': require('../../assets/avatars/a7.png'),
-    'a8.png': require('../../assets/avatars/a8.png'),
-  };
-
   return (
     <SafeAreaView style={global.container}>
       <View style={[global.container, styles.container]}>
@@ -58,12 +46,11 @@ const Profile = ({ navigation }) => {
           <>
             {/* avatar image */}
             <Image
-              source={
-                user?.avatar_path
-                  ? avatarImages[user.avatar_path]
-                  : require('../../assets/avatars/a1.png')
-              }
-              style={styles.avatar}
+              source={{ uri: user.avatar_path }}
+              style={[
+                styles.avatar,
+                !user.avatar_path && { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+              ]}
             />
 
             <Ionicons

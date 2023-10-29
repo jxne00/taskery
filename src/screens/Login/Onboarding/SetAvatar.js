@@ -7,64 +7,70 @@ import {
   Image,
   ImageBackground,
   Modal,
-  ActivityIndicator,
   Dimensions,
   Platform,
 } from 'react-native';
 import { MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
-import { fetchAvatarUrls } from '../../../services/firebase/helper';
+import { storage } from '../../../services/firebase';
 
 /**
  * An avatar image that shows a modal when clicked.
  * Choose from default avatars or upload from device.
  */
-const AvatarModal = ({ chosenAvatar, setChosenAvatar }) => {
+const SetAvatar = ({ chosenAvatar, setChosenAvatar }) => {
   const [avatarUrls, setAvatarUrls] = useState([]);
-  const [current, setCurrent] = useState(0); // avatar that user clicks on
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [current, setCurrent] = useState(0); // index of pressed avatar
 
   const [currentTab, setCurrentTab] = useState('default'); // 'default' or 'upload'
-  const [image, setImage] = useState(null); // image uploaded from device
+  const [image, setImage] = useState(null); // image from device
 
-  // fetch avatar urls from firebase storage
+  const [modalVisible, setModalVisible] = useState(false);
+
   useEffect(() => {
-    const fetchUrls = async () => {
-      setIsLoading(true);
+    /** fetch avatar urls from firebase storage */
+    const fetchAvatarUrls = async () => {
+      let avatars = [];
 
-      try {
-        const urls = await fetchAvatarUrls();
-        setAvatarUrls(urls);
-      } catch (err) {
-        alert('Error fetching avatar images', err.message);
+      // get files name a1.png - a8.png from "/avatars" folder
+      for (let i = 1; i <= 8; i++) {
+        const path = `avatars/a${i}.png`;
+        const url = await storage.ref(path).getDownloadURL();
+        avatars.push(url);
       }
 
-      setIsLoading(false);
+      setAvatarUrls(avatars);
     };
 
-    fetchUrls();
+    fetchAvatarUrls().catch((err) => {
+      alert('Error fetching avatar urls: ', err);
+    });
   }, []);
 
-  // set a random avatar as the default
+  /** set a random avatar as the default */
   const getRandAvatar = () => {
     const rand = Math.floor(Math.random() * avatarUrls.length);
     setCurrent(rand);
   };
 
-  // set the chosen avatar
-  const handleSubmit = () => {
-    setChosenAvatar(current);
+  /** set the chosen avatar */
+  const handleConfirm = () => {
+    if (currentTab === 'default' && avatarUrls[current]) {
+      setChosenAvatar(avatarUrls[current]);
+    }
+    if (currentTab === 'upload' && image) {
+      setChosenAvatar(image);
+    }
 
     setCurrent(0);
     setModalVisible(false);
   };
 
-  // close modal without setting avatar
+  /** close modal without setting avatar */
   const handleCancel = () => {
     setCurrent(0);
+    setImage(null);
     setModalVisible(false);
   };
 
@@ -79,7 +85,7 @@ const AvatarModal = ({ chosenAvatar, setChosenAvatar }) => {
 
     // set image to user's uploaded image
     if (!result.canceled) {
-      setImage(result.uri);
+      setImage(result.assets[0].uri);
     }
   };
 
@@ -107,34 +113,38 @@ const AvatarModal = ({ chosenAvatar, setChosenAvatar }) => {
     });
 
     if (!result.canceled) {
-      setImage(result.uri);
+      setImage(result.assets[0].uri);
     }
   };
 
   return (
     <View style={styles.container}>
       {/* image of selected avatar */}
-      {isLoading ? (
-        <ActivityIndicator size="small" color="#000000" />
-      ) : (
-        <ImageBackground
-          source={{
-            uri: avatarUrls[chosenAvatar],
-          }}
-          style={[
-            styles.avatarImage,
-            !chosenAvatar && { backgroundColor: 'rgba(0, 0, 0, 0.4)' },
-          ]}>
-          <MaterialCommunityIcons
-            name="image-edit-outline"
-            size={26}
-            style={styles.editAvatarBtn}
-            onPress={() => setModalVisible(true)}
-          />
-        </ImageBackground>
-      )}
+      <ImageBackground
+        source={{ uri: chosenAvatar }}
+        style={[
+          styles.avatarImage,
+          !chosenAvatar && { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+        ]}>
+        <MaterialCommunityIcons
+          name={chosenAvatar ? 'image-edit' : 'image-plus'}
+          size={26}
+          style={styles.editAvatarBtn}
+          onPress={() => setModalVisible(true)}
+        />
 
-      {/* modal to select new avatar */}
+        {chosenAvatar && (
+          // button to delete avatar image
+          <MaterialCommunityIcons
+            name="delete-outline"
+            size={26}
+            style={styles.deleteAvatarBtn}
+            onPress={() => setChosenAvatar(null)}
+          />
+        )}
+      </ImageBackground>
+
+      {/* ==== modal to select new avatar ==== */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -142,14 +152,15 @@ const AvatarModal = ({ chosenAvatar, setChosenAvatar }) => {
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
-            {/* buttons to set the tab to display */}
             <View style={styles.tabRow}>
+              {/* 'default' tab button */}
               <TouchableOpacity
                 onPress={() => setCurrentTab('default')}
                 style={[styles.tab, currentTab === 'default' && styles.activeTab]}>
                 <Text style={styles.tabText}>Default</Text>
               </TouchableOpacity>
 
+              {/* 'upload' tab button */}
               <TouchableOpacity
                 onPress={() => setCurrentTab('upload')}
                 style={[styles.tab, currentTab === 'upload' && styles.activeTab]}>
@@ -157,12 +168,12 @@ const AvatarModal = ({ chosenAvatar, setChosenAvatar }) => {
               </TouchableOpacity>
             </View>
 
-            {/* if "default" tab is selected, show a list a avatars to choose from */}
+            {/* show a list of preset avatars on 'default' tabs */}
             {currentTab === 'default' && (
               <>
                 <Text style={styles.title}>Select Avatar:</Text>
 
-                {/* display default avatar images from firebase storage */}
+                {/* display a list of default avatar images */}
                 <View style={styles.avatarsRow}>
                   {avatarUrls.map((url, index) => (
                     <TouchableOpacity key={index} onPress={() => setCurrent(index)}>
@@ -184,25 +195,10 @@ const AvatarModal = ({ chosenAvatar, setChosenAvatar }) => {
                   style={{ marginTop: 20 }}
                   onPress={getRandAvatar}
                 />
-
-                {/* cancel & confirm buttons */}
-                <View style={styles.modalButtons}>
-                  <TouchableOpacity
-                    style={[styles.buttonContainer, styles.cancelBg]}
-                    onPress={handleCancel}>
-                    <Text style={styles.btnText}>Cancel</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={[styles.buttonContainer, styles.confirmBg]}
-                    onPress={handleSubmit}>
-                    <Text style={styles.btnText}>Set Avatar</Text>
-                  </TouchableOpacity>
-                </View>
               </>
             )}
 
-            {/* if "upload" tab is selected, show a button to upload an image from device */}
+            {/* show device image upload or camera on 'upload' tab */}
             {currentTab === 'upload' && (
               <>
                 <Text style={styles.title}>Upload Avatar:</Text>
@@ -210,17 +206,10 @@ const AvatarModal = ({ chosenAvatar, setChosenAvatar }) => {
                 <View style={styles.imageBox}>
                   {image ? (
                     // show image if there is one
-                    <Image
-                      source={{ uri: image }}
-                      style={{ width: '100%', height: '100%' }}
-                    />
+                    <Image source={{ uri: image }} style={styles.uploadedImage} />
                   ) : (
                     // show 'upload' or 'camera' icon if there is no image
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                      }}>
+                    <View style={styles.iconRow}>
                       {/* icon to select image from gallery */}
                       <MaterialCommunityIcons
                         name="upload"
@@ -249,23 +238,23 @@ const AvatarModal = ({ chosenAvatar, setChosenAvatar }) => {
                     onPress={() => setImage(null)}
                   />
                 )}
-
-                {/* cancel & confirm buttons */}
-                <View style={{ flexDirection: 'row' }}>
-                  <TouchableOpacity
-                    onPress={() => setModalVisible(false)}
-                    style={[styles.buttonContainer, styles.cancelBg]}>
-                    <Text style={styles.btnText}>Cancel</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    onPress={handleSubmit}
-                    style={[styles.buttonContainer, styles.confirmBg]}>
-                    <Text style={styles.btnText}>Confirm</Text>
-                  </TouchableOpacity>
-                </View>
               </>
             )}
+
+            {/* cancel & confirm buttons */}
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                onPress={handleCancel}
+                style={[styles.buttonContainer, { backgroundColor: '#5f5f5f' }]}>
+                <Text style={styles.btnText}>Cancel</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={handleConfirm}
+                style={[styles.buttonContainer, { backgroundColor: '#15a472' }]}>
+                <Text style={styles.btnText}>Confirm</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -292,6 +281,15 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     padding: 3,
   },
+  deleteAvatarBtn: {
+    color: '#f1f1f1',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    backgroundColor: '#383838',
+    opacity: 0.7,
+    padding: 3,
+  },
 
   // ====== MODAL STYLES ======
   modalContainer: {
@@ -308,7 +306,7 @@ const styles = StyleSheet.create({
     width: '90%',
   },
 
-  // tabs
+  // tab button styles
   tabRow: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -329,7 +327,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Bold',
   },
 
-  // "default" tab
+  // "default" tab styles
   title: {
     fontSize: 20,
     marginBottom: 20,
@@ -343,11 +341,34 @@ const styles = StyleSheet.create({
   avatarImg: {
     width: width / 4,
     height: width / 4,
-    margin: 4,
+    margin: 2,
   },
+
+  // "upload" tab styles
+  imageBox: {
+    width: width / 2,
+    height: width / 2,
+    borderWidth: 2,
+    borderColor: '#333333',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  uploadedImage: {
+    width: '100%',
+    height: '100%',
+  },
+  iconRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+
+  // cancel & confirm buttons
   selectedAvatar: {
     borderWidth: 2,
-    borderColor: '#0072e3',
+    borderColor: '#5119c0',
+    borderRadius: 8,
   },
   modalButtons: {
     flexDirection: 'row',
@@ -360,30 +381,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 8,
   },
-  cancelBg: {
-    backgroundColor: '#5f5f5f',
-  },
-  confirmBg: {
-    backgroundColor: '#15a472',
-  },
+
   btnText: {
     textAlign: 'center',
     color: '#ffffff',
     fontSize: 18,
     fontFamily: 'Inter-SemiBold',
   },
-
-  // "upload" tab
-  imageBox: {
-    width: width / 2,
-    height: width / 2,
-    borderWidth: 2,
-    borderColor: '#333333',
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
 });
 
-export default AvatarModal;
+export default SetAvatar;

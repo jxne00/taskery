@@ -21,9 +21,8 @@ const Register = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassowrd] = useState('');
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const [focusedBox, setFocusedBox] = useState(''); // 'email', 'password','password2'
-
+  
   const [isLoading, setIsLoading] = useState(false);
 
   const passwordRef = useRef(null);
@@ -48,8 +47,8 @@ const Register = ({ navigation }) => {
     // create user using firebase auth
     auth
       .createUserWithEmailAndPassword(email, password)
-      .then(setIsLoading(false))
       .then(() => {
+        setIsLoading(false);
         navigation.navigate('Onboarding');
 
         // clear all input fields
@@ -173,7 +172,7 @@ const Register = ({ navigation }) => {
               returnKeyType="done"
             />
 
-            {showConfirmPassword && (
+            {confirmPassword && (
               <Ionicons
                 name={showConfirmPassword ? 'eye' : 'eye-off'}
                 size={22}
@@ -187,7 +186,7 @@ const Register = ({ navigation }) => {
         {/* signup button */}
         <TouchableOpacity style={styles.registerBtn} onPress={handleRegister}>
           {isLoading ? (
-            <ActivityIndicator size="small" color="#fff" />
+            <ActivityIndicator size="small" color="#ffffff" />
           ) : (
             <Text style={styles.buttonText}>Register</Text>
           )}
