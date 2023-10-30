@@ -4,8 +4,8 @@ import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 
-import { useTheme } from '../../../theme/ThemeContext';
-import useGlobalStyles from '../../../theme/globalStyles';
+import { useTheme } from '../../../hooks/useThemeContext';
+import useGlobalStyles from '../../../hooks/useGlobalStyles';
 
 import { secondsToHMS } from '../../../components/timeConverters';
 

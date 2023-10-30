@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import { useTheme } from '../../theme/ThemeContext';
-import useGlobalStyles from '../../theme/globalStyles';
+import { useTheme } from '../../hooks/useThemeContext';
+import useGlobalStyles from '../../hooks/useGlobalStyles';
 import CustomStatusBar from '../../components/StatusBar';
 
 import useFetchUser from '../../hooks/useFetchUser';
@@ -31,63 +31,76 @@ const Profile = ({ navigation }) => {
 
   const userId = auth.currentUser?.uid;
 
+  if (ProfileIsLoading) {
+    return (
+      <ActivityIndicator
+        size="large"
+        color={theme.text}
+        style={{ justifyContent: 'center' }}
+      />
+    );
+  }
+
   return (
     <SafeAreaView style={global.container}>
       <View style={[global.container, styles.container]}>
-        {ProfileIsLoading && (
-          <ActivityIndicator
-            size="large"
+        {/* avatar image */}
+        <Image
+          source={{ uri: user.avatar_path }}
+          style={[
+            styles.avatar,
+            !user.avatar_path && { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+          ]}
+        />
+
+        {/* settings */}
+        <Ionicons
+          name="settings-outline"
+          size={28}
+          style={styles.settingsIcon}
+          color={theme.text}
+          onPress={() =>
+            navigation.navigate('Settings', {
+              is_public: user.is_public,
+              userId,
+            })
+          }
+        />
+
+        {/* name */}
+        <View style={global.row}>
+          <Text style={[global.text, styles.profileName]}>{user.name}</Text>
+
+          <Ionicons
+            name="create-outline"
+            size={28}
             color={theme.text}
-            style={{ justifyContent: 'center' }}
+            onPress={() =>
+              navigation.navigate('EditProfile', {
+                user: user,
+                userId: userId,
+              })
+            }
           />
-        )}
+        </View>
 
-        {!ProfileIsLoading && (
-          <>
-            {/* avatar image */}
-            <Image
-              source={{ uri: user.avatar_path }}
-              style={[
-                styles.avatar,
-                !user.avatar_path && { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
-              ]}
-            />
+        {/* profile visibility */}
+        <View style={[styles.visContainer, { borderColor: theme.textLight }]}>
+          <Ionicons
+            name={user?.is_public ? 'md-lock-open' : 'md-lock-closed'}
+            size={16}
+            color={theme.textLight}
+          />
+          <Text style={[styles.visText, { color: theme.text }]}>
+            {user?.is_public ? 'Public' : 'Private'}
+          </Text>
+        </View>
 
-            <Ionicons
-              name="settings-outline"
-              size={28}
-              style={styles.settingsIcon}
-              color={theme.text}
-              onPress={() =>
-                navigation.navigate('Settings', {
-                  is_public: user.is_public,
-                  userId,
-                })
-              }
-            />
-
-            {/* name */}
-            <Text style={[global.text, styles.profileName]}>{user?.name}</Text>
-
-            {/* profile visibility */}
-            <View style={[styles.visContainer, { borderColor: theme.textLight }]}>
-              <Ionicons
-                name={user?.is_public ? 'md-lock-open' : 'md-lock-closed'}
-                size={16}
-                color={theme.textLight}
-              />
-              <Text style={[styles.visText, { color: theme.text }]}>
-                {user?.is_public ? 'Public' : 'Private'}
-              </Text>
-            </View>
-
-            {/* creation date (only if public) */}
-            {user?.is_public && (
-              <Text style={[global.text, styles.profileCreationDate]}>
-                Member since: {toDateDisplay(user?.created_at)}
-              </Text>
-            )}
-          </>
+        {/* creation date (only if public) */}
+        {user?.is_public && (
+          <Text style={[global.text, styles.profileCreationDate]}>
+            Member since: {toDateDisplay(user.created_at)}
+          </Text>
         )}
 
         <View style={[styles.horizontalLine, { backgroundColor: theme.textLight }]} />

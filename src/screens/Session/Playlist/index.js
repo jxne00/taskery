@@ -3,8 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 
-import { useTheme } from '../../../theme/ThemeContext';
-import useGlobalStyles from '../../../theme/globalStyles';
+import { useTheme } from '../../../hooks/useThemeContext';
+import useGlobalStyles from '../../../hooks/useGlobalStyles';
 
 /**
  * a playlist component to play sound from a list of sounds

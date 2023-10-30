@@ -3,7 +3,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { FontAwesome } from '@expo/vector-icons';
 
-import { useTheme } from '../../../../theme/ThemeContext';
+import { useTheme } from '../../../../hooks/useThemeContext';
 
 /**
  * a date picker component for deadline

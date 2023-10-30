@@ -1,44 +1,43 @@
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import useGlobalStyles from '../../../theme/globalStyles';
-import { useTheme } from '../../../theme/ThemeContext';
+
+import { useTheme } from '../../../hooks/useThemeContext';
+import useThemeStyles from '../../../hooks/useThemeStyles';
 
 const PostsList = ({ data }) => {
   const { theme } = useTheme();
-  const global = useGlobalStyles();
+  const themed = useThemeStyles();
 
   const renderPost = (item) => {
     return (
       <View style={[styles.postContainer, { borderColor: theme.textLight }]}>
-        <Text style={[styles.postTitle, { color: theme.text }]}>{item.title}</Text>
+        <Text style={themed.subHeaderText}>{item.title}</Text>
 
-        {item.caption && (
-          <Text style={[styles.postCaption, { color: theme.text }]}>
-            {item.caption}
-          </Text>
-        )}
+        <View style={{ height: 5 }} />
+
+        {item.caption && <Text style={themed.textRegular}>{item.caption}</Text>}
 
         <View style={{ height: 20 }} />
 
         {/* likes and comments */}
         <View style={styles.statRow}>
-          <TouchableOpacity style={global.row}>
+          <TouchableOpacity style={themed.row}>
             <Ionicons
               name="md-heart-outline"
               size={20}
               color={theme.red}
               style={{ marginRight: 3 }}
             />
-            <Text style={[global.text, { color: theme.text }]}>{item.likes}</Text>
+            <Text style={themed.textRegular}>{item.likes}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={global.row}
-            // TODO: show comments
+            style={themed.row}
             onPress={() => {
+              // TODO comments page
               console.log('TODO: show comments');
             }}>
-            <Text style={[global.text, { color: theme.textLight }]}>
+            <Text style={themed.textRegularLight}>
               {item.comments} {item.comments === 1 ? 'comment' : 'comments'}
             </Text>
           </TouchableOpacity>
@@ -50,8 +49,8 @@ const PostsList = ({ data }) => {
   return (
     <FlatList
       data={data}
-      renderItem={renderPost}
-      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => renderPost(item)}
+      keyExtractor={(item) => item.id}
       style={{ width: '100%' }}
       ListHeaderComponent={
         <Text style={[styles.postSectionHeader, { color: theme.text }]}>Posts</Text>
@@ -75,15 +74,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     width: '95%',
     alignSelf: 'center',
-  },
-  postTitle: {
-    fontSize: 18,
-    fontFamily: 'Inter-SemiBold',
-    paddingBottom: 5,
-  },
-  postCaption: {
-    fontSize: 16,
-    fontFamily: 'Inter-Regular',
   },
   statRow: {
     flexDirection: 'row',

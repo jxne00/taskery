@@ -4,8 +4,8 @@ import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 
 import CustomStatusBar from '../../components/StatusBar';
-import { useTheme } from '../../theme/ThemeContext';
-import useGlobalStyles from '../../theme/globalStyles';
+import { useTheme } from '../../hooks/useThemeContext';
+import useGlobalStyles from '../../hooks/useGlobalStyles';
 
 import Playlist from './Playlist';
 import Timer from './Timer';

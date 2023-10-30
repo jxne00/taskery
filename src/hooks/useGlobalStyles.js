@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { useTheme } from './ThemeContext';
+import { useTheme } from './useThemeContext';
 
 /** global styles used throughout the app */
 const useGlobalStyles = () => {

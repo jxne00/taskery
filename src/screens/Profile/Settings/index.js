@@ -16,8 +16,8 @@ import { updateVisibility } from '../../../services/redux/userSlice';
 import CustomStatusBar from '../../../components/StatusBar';
 import InfoBox from '../../../components/InfoBox';
 
-import { useTheme } from '../../../theme/ThemeContext';
-import useGlobalStyles from '../../../theme/globalStyles';
+import { useTheme } from '../../../hooks/useThemeContext';
+import useGlobalStyles from '../../../hooks/useGlobalStyles';
 
 /** The settings screen to manage app & account settings */
 const Settings = ({ navigation, is_public, userId }) => {

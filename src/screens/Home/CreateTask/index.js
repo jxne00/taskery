@@ -15,8 +15,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addTask, updateTask } from '../../../services/redux/taskSlice';
 import { auth } from '../../../services/firebase';
 
-import useGlobalStyles from '../../../theme/globalStyles';
-import { useTheme } from '../../../theme/ThemeContext';
+import useGlobalStyles from '../../../hooks/useGlobalStyles';
+import { useTheme } from '../../../hooks/useThemeContext';
 
 import Spacer from '../../../components/Spacer';
 import styles from './styles';

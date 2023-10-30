@@ -1,7 +1,7 @@
 import { Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
-import { useTheme } from '../theme/ThemeContext';
+import { useTheme } from '../hooks/useThemeContext';
 
 import { HomeStack, CommunityStack, ProfileStack } from './StackNavigator';
 import Session from '../screens/Session';

@@ -1,7 +1,7 @@
 import React from 'react';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
-import { useTheme } from '../theme/ThemeContext';
+import { useTheme } from '../hooks/useThemeContext';
 
 /** A date picker to set range */
 const DatePick = ({ openDatePicker, handleConfirm, handleCancel, date }) => {

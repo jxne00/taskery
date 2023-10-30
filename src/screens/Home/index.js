@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
-import { useTheme } from '../../theme/ThemeContext';
+import { useTheme } from '../../hooks/useThemeContext';
+import useGlobalStyles from '../../hooks/useGlobalStyles';
+
 import DatePick from '../../components/DatePick';
-import useGlobalStyles from '../../theme/globalStyles';
 import styles from './styles';
 
 import useFetchTasks from '../../hooks/useFetchTasks';

@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { toggleCompletion } from '../../../services/redux/taskSlice';
 import { auth } from '../../../services/firebase';
-import { useTheme } from '../../../theme/ThemeContext';
+import { useTheme } from '../../../hooks/useThemeContext';
 import { toDateDisplay } from '../../../components/timeConverters';
 import styles from './styles';
 

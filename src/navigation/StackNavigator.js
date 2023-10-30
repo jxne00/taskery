@@ -2,7 +2,7 @@ import { SafeAreaView } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { MenuProvider } from 'react-native-popup-menu';
 
-import { useTheme } from '../theme/ThemeContext';
+import { useTheme } from '../hooks/useThemeContext';
 import CustomStatusBar from '../components/StatusBar';
 
 // auth screens
@@ -13,8 +13,10 @@ import Onboarding from '../screens/Login/Onboarding';
 // main screens
 import Home from '../screens/Home';
 import Profile from '../screens/Profile';
-import Community from '../screens/Community';
+import EditProfile from '../screens/Profile/EditProfile';
 import Settings from '../screens/Profile/Settings';
+
+import Community from '../screens/Community';
 
 const StackA = createStackNavigator();
 const StackH = createStackNavigator();
@@ -82,6 +84,7 @@ const ProfileStack = () => {
         headerShown: false,
       }}>
       <StackP.Screen name="Profile" component={Profile} />
+      <StackP.Screen name="EditProfile" component={EditProfile} />
       <StackP.Screen name="Settings" component={Settings} />
     </StackP.Navigator>
   );
