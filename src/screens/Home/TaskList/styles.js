@@ -83,6 +83,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Inter-SemiBold',
   },
+
+  addTaskLoading: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '110%',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addTaskLoadingText: {
+    fontSize: 16,
+    fontFamily: 'Inter-Medium',
+    color: '#fff',
+  },
 });
 
 export default styles;

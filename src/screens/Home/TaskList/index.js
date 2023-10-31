@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
-import { View, FlatList, Text, TouchableOpacity } from 'react-native';
+import {
+  View,
+  FlatList,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { toggleCompletion } from '../../../services/redux/taskSlice';
-import { auth } from '../../../services/firebase';
 import { useTheme } from '../../../hooks/useThemeContext';
+import { auth } from '../../../services/firebase';
+import {
+  toggleCompletion,
+  deleteTask,
+  addTask,
+} from '../../../services/redux/taskSlice';
 import { toDateDisplay } from '../../../components/timeConverters';
 import styles from './styles';
 
@@ -14,16 +23,19 @@ import styles from './styles';
  * A flatlist of tasks with its details
  * @param tasklist - list of tasks
  * @param handleEdit - handle editing of task
- * @param handleDelete - handle deleting of task
  */
-const TaskList = ({ tasklist, handleEdit, handleDelete }) => {
+const TaskList = ({ tasklist, handleEdit }) => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
   const userId = auth.currentUser?.uid;
 
   const toggleIsLoading = useSelector((state) => state.tasks.loading.updateStatus);
+  const duplicateIsLoading = useSelector((state) => state.tasks.loading.addTask);
+  const deleteIsLoading = useSelector((state) => state.tasks.loading.deleteTask);
+
   const [togglingID, setTogglingID] = useState(null);
 
+  /** handle context menu press */
   const handleMenuPress = (value, id) => {
     switch (value) {
       case 'edit':
@@ -33,12 +45,34 @@ const TaskList = ({ tasklist, handleEdit, handleDelete }) => {
         handleDelete(id);
         break;
       case 'duplicate':
-        // TODO implement duplicate task
-        console.log('duplicate pressed');
+        handleDuplicate(id);
         break;
       default:
         break;
     }
+  };
+
+  /** delete a task */
+  const handleDelete = (id) => {
+    dispatch(deleteTask({ userId, taskId: id }));
+    // TODO swipe to delete
+    // TODO multi-select delete
+  };
+
+  /** creates a duplicate of an existing task */
+  const handleDuplicate = (id) => {
+    const taskDetails = tasklist.find((task) => task.id === id);
+    const { title, details, deadline, is_complete, tags, subtasks } = taskDetails;
+
+    const newTask = {
+      title: `${title} (copy)`,
+      details,
+      deadline,
+      is_complete,
+      tags,
+      subtasks,
+    };
+    dispatch(addTask({ userId, taskDetails: newTask }));
   };
 
   /** toggles task completion status */
@@ -135,12 +169,23 @@ const TaskList = ({ tasklist, handleEdit, handleDelete }) => {
   );
 
   return (
-    <FlatList
-      data={tasklist}
-      keyExtractor={(item) => item.id}
-      renderItem={renderTask}
-      style={styles.flatlist}
-    />
+    <>
+      <FlatList
+        data={tasklist}
+        keyExtractor={(item) => item.id}
+        renderItem={renderTask}
+        style={styles.flatlist}
+      />
+
+      {(duplicateIsLoading || deleteIsLoading) && (
+        <View style={styles.addTaskLoading}>
+          <ActivityIndicator size="large" color={theme.blue} />
+          <Text style={styles.addTaskLoadingText}>
+            {duplicateIsLoading ? 'Duplicating task...' : 'Deleting task...'}
+          </Text>
+        </View>
+      )}
+    </>
   );
 };
 

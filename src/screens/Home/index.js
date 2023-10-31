@@ -40,12 +40,6 @@ const Home = () => {
     setTaskToEdit(taskDetail);
   };
 
-  /** delete task */
-  const handleDelete = (id) => {
-    // TODO delete task
-    console.log('(TODO!!!) delete task with id: ', id);
-  };
-
   /** set the active picker "to" or "from" */
   const handleOpenDatePicker = (input) => {
     setActivePickerInput(input);
@@ -233,7 +227,6 @@ const Home = () => {
         <TaskList
           tasklist={tasks}
           handleEdit={handleEdit}
-          handleDelete={handleDelete}
         />
       )}
 
