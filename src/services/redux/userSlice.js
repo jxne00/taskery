@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { db } from '../firebase';
+import { storeAvatar } from '../firebase/helper';
 
 /** fetch user's profile data from firestore */
 export const fetchUser = createAsyncThunk('user/fetchUser', async (userId) => {
@@ -26,6 +27,28 @@ export const updateVisibility = createAsyncThunk(
       return updated;
     } catch (err) {
       alert(err);
+    }
+  },
+);
+
+export const updateProfile = createAsyncThunk(
+  'user/updateProfile',
+  async ({ userId, name, avatar }, { rejectWithValue }) => {
+    try {
+      // get avatar image url if avatar is set
+      let avatarUrl = avatar ? await storeAvatar(userId, avatar) : null;
+
+      const updatedUser = {
+        ...(name && { name }),
+        ...(avatarUrl && { avatar_path: avatarUrl }),
+      };
+
+      // update user profile in firestore
+      await db.collection('users').doc(userId).set(updatedUser, { merge: true });
+
+      return updatedUser;
+    } catch (err) {
+      return rejectWithValue(err.message);
     }
   },
 );
@@ -64,6 +87,12 @@ const userSlice = createSlice({
       .addCase(updateVisibility.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
+      })
+
+      // update profile
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.data.name = action.payload.name;
+        state.data.avatar_path = action.payload.avatar_path;
       });
   },
 });

@@ -9,11 +9,12 @@ import {
   Modal,
   Dimensions,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
-import { storage } from '../../../services/firebase';
+import { storage } from '../services/firebase';
 
 /**
  * An avatar image that shows a modal when clicked.
@@ -27,6 +28,7 @@ const SetAvatar = ({ chosenAvatar, setChosenAvatar }) => {
   const [image, setImage] = useState(null); // image from device
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [loadingStates, setLoadingStates] = useState({});
 
   useEffect(() => {
     /** fetch avatar urls from firebase storage */
@@ -47,6 +49,14 @@ const SetAvatar = ({ chosenAvatar, setChosenAvatar }) => {
       alert('Error fetching avatar urls: ', err);
     });
   }, []);
+
+  const handleLoadStart = (index) => {
+    setLoadingStates((prevState) => ({ ...prevState, [index]: true }));
+  };
+
+  const handleLoadEnd = (index) => {
+    setLoadingStates((prevState) => ({ ...prevState, [index]: false }));
+  };
 
   /** set a random avatar as the default */
   const getRandAvatar = () => {
@@ -133,7 +143,7 @@ const SetAvatar = ({ chosenAvatar, setChosenAvatar }) => {
           onPress={() => setModalVisible(true)}
         />
 
-        {chosenAvatar && (
+        {/* {chosenAvatar && (
           // button to delete avatar image
           <MaterialCommunityIcons
             name="delete-outline"
@@ -141,7 +151,7 @@ const SetAvatar = ({ chosenAvatar, setChosenAvatar }) => {
             style={styles.deleteAvatarBtn}
             onPress={() => setChosenAvatar(null)}
           />
-        )}
+        )} */}
       </ImageBackground>
 
       {/* ==== modal to select new avatar ==== */}
@@ -177,13 +187,24 @@ const SetAvatar = ({ chosenAvatar, setChosenAvatar }) => {
                 <View style={styles.avatarsRow}>
                   {avatarUrls.map((url, index) => (
                     <TouchableOpacity key={index} onPress={() => setCurrent(index)}>
-                      <Image
-                        source={{ uri: url }}
-                        style={[
-                          styles.avatarImg,
-                          current === index && styles.selectedAvatar,
-                        ]}
-                      />
+                      <View style={styles.imageContainer}>
+                        {loadingStates[index] && (
+                          <ActivityIndicator
+                            size="small"
+                            color="#252525"
+                            // style={styles.imageLoader}
+                          />
+                        )}
+                        <Image
+                          source={{ uri: url }}
+                          style={[
+                            styles.avatarImg,
+                            current === index && styles.selectedAvatar,
+                          ]}
+                          onLoadStart={() => handleLoadStart(index)}
+                          onLoadEnd={() => handleLoadEnd(index)}
+                        />
+                      </View>
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -271,6 +292,7 @@ const styles = StyleSheet.create({
   avatarImage: {
     width: 130,
     height: 130,
+    borderRadius: 80,
   },
   editAvatarBtn: {
     color: '#ffffff',

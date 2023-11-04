@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   profileName: {
     fontSize: 30,
     fontFamily: 'Inter-Bold',
-    marginTop: 10,
+    paddingRight: 5,
   },
   visContainer: {
     flexDirection: 'row',

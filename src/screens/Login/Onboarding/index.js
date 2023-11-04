@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import SetAvatar from './SetAvatar';
+import SetAvatar from '../../../components/SetAvatar';
 import { auth, db, storage } from '../../../services/firebase';
 import InfoBox from '../../../components/InfoBox';
 import styles from './styles';

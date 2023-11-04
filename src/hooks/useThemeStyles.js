@@ -87,6 +87,20 @@ const useThemeStyles = () => {
       flexDirection: 'row',
       alignItems: 'center',
     },
+
+    // overlay display when loading
+    loadingOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    loadingText: {
+      marginTop: 10,
+      fontSize: 22,
+      fontFamily: 'Inter-Medium',
+      color: '#cecece',
+    },
   });
 };
 

@@ -15,7 +15,7 @@ import TaskList from './TaskList';
 import CreateTask from './CreateTask';
 
 /** The home screen that displays a list of tasks */
-const Home = () => {
+const Home = ({ navigation }) => {
   const { theme, themeType } = useTheme();
   const global = useGlobalStyles();
 
@@ -121,7 +121,11 @@ const Home = () => {
           color={theme.text}
           style={{ marginLeft: 'auto' }}
           // TODO implement calendar function
-          onPress={() => console.log('calendar (TODO!!!)')}
+          onPress={() =>
+            navigation.navigate('Calendar', {
+              tasks,
+            })
+          }
         />
       </View>
 
@@ -224,10 +228,7 @@ const Home = () => {
 
       {/* list of tasks */}
       {!fetchIsLoading && tasks.length > 0 && (
-        <TaskList
-          tasklist={tasks}
-          handleEdit={handleEdit}
-        />
+        <TaskList tasklist={tasks} handleEdit={handleEdit} />
       )}
 
       {/* create new task */}

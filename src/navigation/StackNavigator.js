@@ -12,10 +12,10 @@ import Onboarding from '../screens/Login/Onboarding';
 
 // main screens
 import Home from '../screens/Home';
+import CalendarView from '../screens/Home/Calendar';
 import Profile from '../screens/Profile';
 import EditProfile from '../screens/Profile/EditProfile';
 import Settings from '../screens/Profile/Settings';
-
 import Community from '../screens/Community';
 
 const StackA = createStackNavigator();
@@ -55,6 +55,7 @@ const HomeStack = () => {
             gestureEnabled: false, // prevent swipe to go back
           }}>
           <StackH.Screen name="Home" component={Home} />
+          <StackH.Screen name="Calendar" component={CalendarView} />
         </StackH.Navigator>
       </MenuProvider>
       <CustomStatusBar />
