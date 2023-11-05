@@ -5,12 +5,12 @@ let PRIMARY_COL = '#583492';
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FDF3EC',
+    backgroundColor: '#fcf8f6',
   },
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#FDF3EC',
+    backgroundColor: '#fcf8f6',
   },
 
   backBtn: {
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     marginTop: '20%',
     textAlign: 'center',
-    color: '#1b1b1b',
+    color: PRIMARY_COL,
     fontFamily: 'Inter-Bold',
   },
 
@@ -45,9 +45,9 @@ const styles = StyleSheet.create({
     height: 44,
     paddingHorizontal: 10,
     borderWidth: 1,
-    borderColor: '#8f8f8f',
+    borderColor: '#b2b2b2',
     borderRadius: 15,
-    backgroundColor: '#f4f2f1',
+    backgroundColor: '#dddcdc',
   },
   inputRightIcon: {
     marginLeft: 'auto',
@@ -86,6 +86,23 @@ const styles = StyleSheet.create({
   loginTxt: {
     color: PRIMARY_COL,
     fontFamily: 'Inter-Medium',
+  },
+
+  errorBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffe0e0',
+    width: '90%',
+    height: 50,
+    marginTop: 30,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  errorMsg: {
+    color: '#af0000',
+    fontSize: 14,
+    fontFamily: 'Inter-Medium',
+    marginLeft: 10,
   },
 });
 

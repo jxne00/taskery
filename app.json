@@ -41,6 +41,12 @@
         "projectId": "22ea028a-46bb-4c63-b7f9-77611d2982dc"
       }
     },
-    "owner": "pangju"
+    "owner": "pangju",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/22ea028a-46bb-4c63-b7f9-77611d2982dc"
+    }
   }
 }

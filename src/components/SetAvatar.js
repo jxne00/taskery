@@ -5,13 +5,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  ImageBackground,
   Modal,
   Dimensions,
   Platform,
   ActivityIndicator,
 } from 'react-native';
-import { MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
 import { storage } from '../services/firebase';
@@ -130,30 +129,21 @@ const SetAvatar = ({ chosenAvatar, setChosenAvatar }) => {
   return (
     <View style={styles.container}>
       {/* image of selected avatar */}
-      <ImageBackground
-        source={{ uri: chosenAvatar }}
-        style={[
-          styles.avatarImage,
-          !chosenAvatar && { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
-        ]}>
-        <MaterialCommunityIcons
-          name={chosenAvatar ? 'image-edit' : 'image-plus'}
-          size={26}
+      <View>
+        <Image
+          source={{ uri: chosenAvatar }}
+          style={[
+            styles.avatarImage,
+            !chosenAvatar && { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+          ]}
+        />
+        <Ionicons
+          name="add"
+          size={34}
           style={styles.editAvatarBtn}
           onPress={() => setModalVisible(true)}
         />
-
-        {/* {chosenAvatar && (
-          // button to delete avatar image
-          <MaterialCommunityIcons
-            name="delete-outline"
-            size={26}
-            style={styles.deleteAvatarBtn}
-            onPress={() => setChosenAvatar(null)}
-          />
-        )} */}
-      </ImageBackground>
-
+      </View>
       {/* ==== modal to select new avatar ==== */}
       <Modal
         animationType="slide"
@@ -189,11 +179,7 @@ const SetAvatar = ({ chosenAvatar, setChosenAvatar }) => {
                     <TouchableOpacity key={index} onPress={() => setCurrent(index)}>
                       <View style={styles.imageContainer}>
                         {loadingStates[index] && (
-                          <ActivityIndicator
-                            size="small"
-                            color="#252525"
-                            // style={styles.imageLoader}
-                          />
+                          <ActivityIndicator size="small" color="#252525" />
                         )}
                         <Image
                           source={{ uri: url }}
@@ -209,8 +195,8 @@ const SetAvatar = ({ chosenAvatar, setChosenAvatar }) => {
                   ))}
                 </View>
 
-                <FontAwesome
-                  name="random"
+                <Ionicons
+                  name="shuffle"
                   size={28}
                   color="#333333"
                   style={{ marginTop: 20 }}
@@ -295,13 +281,11 @@ const styles = StyleSheet.create({
     borderRadius: 80,
   },
   editAvatarBtn: {
-    color: '#ffffff',
+    color: '#000000',
+    backgroundColor: '#b5bee4',
     position: 'absolute',
     bottom: 0,
     right: 0,
-    backgroundColor: '#000000',
-    opacity: 0.7,
-    padding: 3,
   },
   deleteAvatarBtn: {
     color: '#f1f1f1',

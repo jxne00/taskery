@@ -8,14 +8,11 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
 import { useTheme } from '../../hooks/useThemeContext';
 import useGlobalStyles from '../../hooks/useGlobalStyles';
 import CustomStatusBar from '../../components/StatusBar';
-
 import useFetchUser from '../../hooks/useFetchUser';
 import { auth } from '../../services/firebase';
-import { toDateDisplay } from '../../components/timeConverters';
 
 // TODO replace dummyPosts with actual data
 import dummyPosts from './dummyPosts';
@@ -31,22 +28,12 @@ const Profile = ({ navigation }) => {
 
   const userId = auth.currentUser?.uid;
 
-  if (ProfileIsLoading) {
-    return (
-      <ActivityIndicator
-        size="large"
-        color={theme.text}
-        style={{ justifyContent: 'center' }}
-      />
-    );
-  }
-
   return (
     <SafeAreaView style={global.container}>
       <View style={[global.container, styles.container]}>
         {/* avatar image */}
         <Image
-          source={{ uri: user.avatar_path }}
+          source={{ uri: user?.avatar_path }}
           style={[
             styles.avatar,
             !user.avatar_path && { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
@@ -96,13 +83,6 @@ const Profile = ({ navigation }) => {
           </Text>
         </View>
 
-        {/* creation date (only if public) */}
-        {user?.is_public && (
-          <Text style={[global.text, styles.profileCreationDate]}>
-            Member since: {toDateDisplay(user.created_at)}
-          </Text>
-        )}
-
         <View style={[styles.horizontalLine, { backgroundColor: theme.textLight }]} />
 
         {/* user's posts */}
@@ -148,11 +128,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Inter-Regular',
     marginLeft: 5,
-  },
-  profileCreationDate: {
-    fontSize: 16,
-    fontFamily: 'Inter-Regular',
-    marginTop: 10,
   },
 
   horizontalLine: {

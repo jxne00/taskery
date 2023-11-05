@@ -5,11 +5,11 @@ let PRIMARY_COL = '#583492';
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FDF3EC',
+    backgroundColor: '#fcf8f6',
   },
   container: {
     flex: 1,
-    backgroundColor: '#FDF3EC',
+    backgroundColor: '#fcf8f6',
     alignItems: 'center',
   },
   title: {
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     height: 44,
     paddingHorizontal: 10,
     borderRadius: 18,
-    backgroundColor: '#d7d6d6',
+    backgroundColor: '#dddcdc',
   },
   inputRightIcon: {
     marginLeft: 'auto',
@@ -62,6 +62,11 @@ const styles = StyleSheet.create({
   },
 
   // buttons
+  buttonsContainer: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 'auto',
+  },
   loginBtn: {
     backgroundColor: PRIMARY_COL,
     borderRadius: 22,
@@ -69,7 +74,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '90%',
     height: 42,
-    marginTop: 'auto',
   },
   loginText: {
     color: '#FDF3EC',
@@ -91,6 +95,24 @@ const styles = StyleSheet.create({
     color: '#242424',
     fontSize: 18,
     fontFamily: 'Inter-SemiBold',
+  },
+
+  errorBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffe0e0',
+    width: '90%',
+    height: 50,
+    marginTop: 30,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+
+  errorMsg: {
+    color: '#af0000',
+    fontSize: 14,
+    fontFamily: 'Inter-Medium',
+    marginLeft: 10,
   },
 });
 

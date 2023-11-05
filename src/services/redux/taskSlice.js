@@ -36,27 +36,26 @@ export const addTask = createAsyncThunk(
       return;
     }
 
-    // create a copy for firestore update
-    // because firestore date has to be a timestamp
-    const dataForStore = { ...taskDetails };
+    try {
+      // create a copy for firestore update
+      // because firestore date has to be a timestamp
+      const dataForStore = { ...taskDetails };
 
-    if (dataForStore.deadline) {
-      // convert js date to firestore timestamp
-      dataForStore.deadline = toTimestamp(dataForStore.deadline);
+      if (dataForStore.deadline) {
+        // convert js date to firestore timestamp
+        dataForStore.deadline = toTimestamp(dataForStore.deadline);
+      }
+
+      const docRef = await db
+        .collection('users')
+        .doc(userId)
+        .collection('tasks')
+        .add(dataForStore);
+
+      return { ...taskDetails, id: docRef.id };
+    } catch (err) {
+      alert(err.message);
     }
-
-    const docRef = await db
-      .collection('users')
-      .doc(userId)
-      .collection('tasks')
-      .add(dataForStore)
-      .catch((err) => {
-        alert(err.message);
-      });
-
-    console.log('(AsyncThunk) new task added!');
-
-    return { ...taskDetails, id: docRef.id };
   },
 );
 
@@ -80,8 +79,6 @@ export const updateTask = createAsyncThunk(
         .collection('tasks')
         .doc(taskId)
         .update(dataForStore);
-
-      console.log('(AsyncThunk) task updated!');
 
       return { ...taskDetails, id: taskId };
     } catch (err) {
@@ -125,6 +122,7 @@ export const toggleCompletion = createAsyncThunk(
   },
 );
 
+/** redux slice for tasks */
 const tasksSlice = createSlice({
   name: 'tasks',
   initialState: {

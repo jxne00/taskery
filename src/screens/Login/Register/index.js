@@ -6,13 +6,13 @@ import {
   SafeAreaView,
   TextInput,
   TouchableOpacity,
-  Alert,
+  TouchableWithoutFeedback,
   ActivityIndicator,
+  Keyboard,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
-import styles from './styles';
 import { auth } from '../../../services/firebase';
+import styles from './styles';
 
 /** The registration screen to create new user account */
 const Register = ({ navigation }) => {
@@ -22,23 +22,22 @@ const Register = ({ navigation }) => {
   const [confirmPassword, setConfirmPassowrd] = useState('');
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [focusedBox, setFocusedBox] = useState(''); // 'email', 'password','password2'
-  
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   const passwordRef = useRef(null);
   const confirmPasswordRef = useRef(null);
 
   /** register new user with firebase auth */
   const handleRegister = () => {
-    // ensure no empty fields
     if (!email || !password || !confirmPassword) {
-      Alert.alert('Login Failed', 'Please fill in all fields and try again.');
+      setErrorMsg('Please fill in all fields and try again.');
       return;
     }
 
-    // check if password and confirm password match
+    // password & confirm password must match
     if (password !== confirmPassword) {
-      Alert.alert('Passwords do not match.', 'Please re-enter your password.');
+      setErrorMsg('Passwords do not match. Please try again.');
       return;
     }
 
@@ -48,159 +47,182 @@ const Register = ({ navigation }) => {
     auth
       .createUserWithEmailAndPassword(email, password)
       .then(() => {
-        setIsLoading(false);
+        resetInputFields();
         navigation.navigate('Onboarding');
-
-        // clear all input fields
-        setEmail('');
-        setPassword('');
       })
-
-      // catch errors and show alert
-      .catch((error) => {
-        if (error.code === 'auth/email-already-in-use')
-          alert('Email is already is use.');
-        else alert(error.message);
-      });
+      .catch((err) => {
+        if (err.code === 'auth/email-already-in-use')
+          setErrorMsg('Email is already is use. Please choose another email.');
+        else setErrorMsg(err.message);
+      })
+      .finally(() => setIsLoading(false));
   };
 
   /** go back to login screen */
   const handleBackPress = () => {
+    resetInputFields();
     navigation.goBack();
+  };
 
-    // clear all input fields
+  /** reset state of all fields */
+  const resetInputFields = () => {
     setEmail('');
     setPassword('');
+    setConfirmPassowrd('');
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+    setErrorMsg(null);
+  };
+
+  /** dismisses the keyboard */
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+    setFocusedBox('');
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <Ionicons
-          name="md-arrow-back"
-          size={28}
-          style={styles.backBtn}
-          onPress={handleBackPress}
-        />
+      <TouchableWithoutFeedback onPress={dismissKeyboard}>
+        <View style={styles.container}>
+          <Ionicons
+            name="md-arrow-back"
+            size={28}
+            style={styles.backBtn}
+            onPress={handleBackPress}
+          />
 
-        <Text style={styles.title}>Create Account</Text>
+          <Text style={styles.title}>Create Account</Text>
 
-        <View style={styles.inputContainer}>
-          {/* email input */}
-          <Text style={styles.inputLabel}>Email:</Text>
+          <View style={styles.inputContainer}>
+            {/* email input */}
+            <Text style={styles.inputLabel}>Email:</Text>
 
-          <View style={[styles.inputBox, focusedBox === 'email' && styles.focusedBox]}>
-            <Ionicons name="person" size={20} color="#a9a9a9" />
-            <TextInput
-              value={email}
-              style={styles.textInput}
-              placeholder="Enter your email"
-              placeholderTextColor={'#a9a9a9'}
-              autoCapitalize="none"
-              autoCompleteType="off"
-              autoCorrect={false}
-              keyboardType="email-address"
-              onChangeText={(text) => setEmail(text)}
-              onFocus={() => setFocusedBox('email')}
-              onBlur={() => setFocusedBox('')}
-              onSubmitEditing={() => passwordRef.current && passwordRef.current.focus()}
-              returnKeyType="next"
-            />
-          </View>
-
-          <View style={{ height: 20 }} />
-
-          {/* password input */}
-          <Text style={styles.inputLabel}>Password:</Text>
-
-          <View
-            style={[styles.inputBox, focusedBox === 'password' && styles.focusedBox]}>
-            <Ionicons name="md-lock-closed" size={20} color="#a9a9a9" />
-
-            <TextInput
-              value={password}
-              style={styles.textInput}
-              placeholder="Set a password"
-              placeholderTextColor={'#a9a9a9'}
-              autoCapitalize="none"
-              autoCompleteType="off"
-              autoCorrect={false}
-              secureTextEntry={!showPassword}
-              textContentType="oneTimeCode"
-              onChangeText={(text) => setPassword(text)}
-              onFocus={() => setFocusedBox('password')}
-              onBlur={() => setFocusedBox('')}
-              ref={passwordRef}
-              onSubmitEditing={() =>
-                confirmPasswordRef.current && confirmPasswordRef.current.focus()
-              }
-              returnKeyType="next"
-            />
-
-            {password && (
-              <Ionicons
-                name={showPassword ? 'eye' : 'eye-off'}
-                size={22}
-                style={styles.inputRightIcon}
-                onPress={() => setShowPassword(!showPassword)}
+            <View
+              style={[styles.inputBox, focusedBox === 'email' && styles.focusedBox]}>
+              <Ionicons name="person" size={20} color="#a9a9a9" />
+              <TextInput
+                value={email}
+                style={styles.textInput}
+                placeholder="Enter your email"
+                placeholderTextColor={'#a9a9a9'}
+                autoCapitalize="none"
+                autoCompleteType="off"
+                autoCorrect={false}
+                keyboardType="email-address"
+                onChangeText={(text) => setEmail(text)}
+                onFocus={() => setFocusedBox('email')}
+                onBlur={() => setFocusedBox('')}
+                onSubmitEditing={() =>
+                  passwordRef.current && passwordRef.current.focus()
+                }
+                returnKeyType="next"
               />
-            )}
-          </View>
+            </View>
 
-          <View style={{ height: 20 }} />
+            <View style={{ height: 20 }} />
 
-          {/* confirm password input */}
-          <Text style={styles.inputLabel}>Confirm Password:</Text>
-          <View
-            style={[styles.inputBox, focusedBox === 'password2' && styles.focusedBox]}>
-            <Ionicons name="md-lock-closed" size={20} color="#a9a9a9" />
+            {/* password input */}
+            <Text style={styles.inputLabel}>Password:</Text>
 
-            <TextInput
-              value={confirmPassword}
-              style={styles.textInput}
-              placeholder="Re-enter password"
-              placeholderTextColor={'#a9a9a9'}
-              autoCapitalize="none"
-              autoCompleteType="off"
-              autoCorrect={false}
-              secureTextEntry={!showConfirmPassword}
-              textContentType="oneTimeCode"
-              onChangeText={(text) => setConfirmPassowrd(text)}
-              onFocus={() => setFocusedBox('password2')}
-              onBlur={() => setFocusedBox('')}
-              ref={confirmPasswordRef}
-              returnKeyType="done"
-            />
+            <View
+              style={[styles.inputBox, focusedBox === 'password' && styles.focusedBox]}>
+              <Ionicons name="md-lock-closed" size={20} color="#a9a9a9" />
 
-            {confirmPassword && (
-              <Ionicons
-                name={showConfirmPassword ? 'eye' : 'eye-off'}
-                size={22}
-                style={styles.inputRightIcon}
-                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+              <TextInput
+                value={password}
+                style={styles.textInput}
+                placeholder="Set a password"
+                placeholderTextColor={'#a9a9a9'}
+                autoCapitalize="none"
+                autoCompleteType="off"
+                autoCorrect={false}
+                secureTextEntry={!showPassword}
+                textContentType="oneTimeCode"
+                onChangeText={(text) => setPassword(text)}
+                onFocus={() => setFocusedBox('password')}
+                onBlur={() => setFocusedBox('')}
+                ref={passwordRef}
+                onSubmitEditing={() =>
+                  confirmPasswordRef.current && confirmPasswordRef.current.focus()
+                }
+                returnKeyType="next"
               />
-            )}
-          </View>
-        </View>
 
-        {/* signup button */}
-        <TouchableOpacity style={styles.registerBtn} onPress={handleRegister}>
-          {isLoading ? (
-            <ActivityIndicator size="small" color="#ffffff" />
-          ) : (
-            <Text style={styles.buttonText}>Register</Text>
+              {password && (
+                <Ionicons
+                  name={showPassword ? 'eye' : 'eye-off'}
+                  size={22}
+                  style={styles.inputRightIcon}
+                  onPress={() => setShowPassword(!showPassword)}
+                />
+              )}
+            </View>
+
+            <View style={{ height: 20 }} />
+
+            {/* confirm password input */}
+            <Text style={styles.inputLabel}>Confirm Password:</Text>
+            <View
+              style={[
+                styles.inputBox,
+                focusedBox === 'password2' && styles.focusedBox,
+              ]}>
+              <Ionicons name="md-lock-closed" size={20} color="#a9a9a9" />
+
+              <TextInput
+                value={confirmPassword}
+                style={styles.textInput}
+                placeholder="Re-enter password"
+                placeholderTextColor={'#a9a9a9'}
+                autoCapitalize="none"
+                autoCompleteType="off"
+                autoCorrect={false}
+                secureTextEntry={!showConfirmPassword}
+                textContentType="oneTimeCode"
+                onChangeText={(text) => setConfirmPassowrd(text)}
+                onFocus={() => setFocusedBox('password2')}
+                onBlur={() => setFocusedBox('')}
+                ref={confirmPasswordRef}
+                returnKeyType="done"
+              />
+
+              {confirmPassword && (
+                <Ionicons
+                  name={showConfirmPassword ? 'eye' : 'eye-off'}
+                  size={22}
+                  style={styles.inputRightIcon}
+                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                />
+              )}
+            </View>
+          </View>
+
+          {/* error message //TODO set haptic feedback */}
+          {errorMsg && (
+            <View style={styles.errorBox}>
+              <Ionicons name="alert-circle-outline" size={20} color="#af0000" />
+              <Text style={styles.errorMsg}>{errorMsg}</Text>
+            </View>
           )}
-        </TouchableOpacity>
 
-        <Text style={styles.toLoginText}>
-          Already have an account?{' '}
-          <Text style={styles.loginTxt} onPress={() => navigation.goBack()}>
-            Login
+          {/* signup button */}
+          <TouchableOpacity style={styles.registerBtn} onPress={handleRegister}>
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#ffffff" />
+            ) : (
+              <Text style={styles.buttonText}>Register</Text>
+            )}
+          </TouchableOpacity>
+
+          <Text style={styles.toLoginText}>
+            Already have an account?{' '}
+            <Text style={styles.loginTxt} onPress={() => navigation.goBack()}>
+              Login
+            </Text>
           </Text>
-        </Text>
-      </View>
-
-      <StatusBar style="dark" />
+          <StatusBar style="dark" />
+        </View>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 };
