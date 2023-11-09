@@ -31,15 +31,16 @@ const Login = ({ navigation }) => {
     setErrorMsg(null);
 
     // check for empty fields
-    if (!email || !password) {
-      setErrorMsg('Please fill in all fields and try again.');
-      setIsLoading(false);
-      return;
-    }
+    // if (!email || !password) {
+    //   setErrorMsg('Please fill in all fields and try again.');
+    //   setIsLoading(false);
+    //   return;
+    // }
 
     // authenticate user with firebase
     auth
-      .signInWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword('june@demo.com', 'password')
+      // .signInWithEmailAndPassword(email, password)
       .then((res) => {
         console.log(`👤 ${res.user.uid} logged in.`);
 

@@ -72,7 +72,10 @@ const Home = ({ navigation }) => {
       <TouchableOpacity
         style={[
           styles.periodBtn,
-          { backgroundColor: isSelected ? theme.blue : theme.gray },
+          {
+            backgroundColor: isSelected ? theme.darkGray : theme.background,
+            borderColor: theme.darkGray,
+          },
         ]}
         onPress={() => setChosenTimeFrame(view)}>
         <Text
@@ -81,9 +84,9 @@ const Home = ({ navigation }) => {
             {
               color: isSelected
                 ? themeType === 'light'
-                  ? '#fff'
+                  ? theme.gray
                   : theme.text
-                : theme.textLight,
+                : theme.darkGray,
             },
           ]}>
           {displayText}
@@ -107,9 +110,9 @@ const Home = ({ navigation }) => {
       <View style={styles.row}>
         {!userLoading ? (
           <Text style={styles.welcomeText}>
-            <Text style={{ color: theme.text }}>Hello, </Text>
-            <Text style={{ color: theme.blue }}>{user?.name}</Text>
-            <Text style={{ color: theme.text }}>!</Text>
+            <Text style={{ color: theme.text }}>Hi, </Text>
+            <Text style={{ color: theme.darkGray }}>{user?.name}</Text>
+            <Text style={{ color: theme.text }}> !</Text>
           </Text>
         ) : (
           <ActivityIndicator size="small" color={theme.textLight} />
@@ -233,7 +236,7 @@ const Home = ({ navigation }) => {
 
       {/* create new task */}
       <TouchableOpacity
-        style={[styles.addTaskBtn, { backgroundColor: theme.blue }]}
+        style={[styles.addTaskBtn, { backgroundColor: theme.darkGray }]}
         onPress={() => setShowTaskModal(true)}>
         <Text
           style={[
@@ -245,7 +248,7 @@ const Home = ({ navigation }) => {
 
         <MaterialIcons
           name="add-task"
-          size={26}
+          size={24}
           color={themeType === 'light' ? theme.navActive : theme.text}
         />
       </TouchableOpacity>

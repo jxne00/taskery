@@ -120,13 +120,21 @@ const Settings = ({ navigation, is_public, userId }) => {
           </View>
         </View>
 
+        <View style={{ height: 20 }} />
+
         <TouchableOpacity
-          style={[styles.signOutBtn, { backgroundColor: theme.blue }]}
+          style={[styles.pageButtons, { borderBottomColor: theme.textLight }]}
+          onPress={() => navigation.navigate('About')}>
+          <Text style={global.text}>About</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.signOutBtn, { backgroundColor: theme.darkGray }]}
           onPress={handleSignout}>
           <Text
             style={[
               styles.signOutTxt,
-              { color: themeType === 'light' ? '#fff' : theme.text },
+              { color: themeType === 'light' ? theme.background : theme.text },
             ]}>
             Sign Out
           </Text>
@@ -183,6 +191,17 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 18,
     fontFamily: 'Inter-SemiBold',
+  },
+
+  pageButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginVertical: 10,
+    borderBottomWidth: 1,
+    width: '80%',
+    paddingVertical: 10,
   },
 });
 

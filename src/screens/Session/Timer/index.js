@@ -3,12 +3,26 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-nativ
 import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
+import { Svg, Circle } from 'react-native-svg';
+import Animated, {
+  Easing,
+  interpolateColor,
+  useAnimatedProps,
+  useDerivedValue,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { useTheme } from '../../../hooks/useThemeContext';
 import useGlobalStyles from '../../../hooks/useGlobalStyles';
 
 import { secondsToHMS } from '../../../components/timeConverters';
 
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+
+const strokeWidth = 10;
+const radius = 40;
+const circumference = 2 * Math.PI * radius;
 const ONE_SECOND = 1000;
 
 /** A countdown timer */
@@ -17,22 +31,38 @@ const Timer = () => {
   const global = useGlobalStyles();
 
   const [timerIsActive, setTimerIsActive] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(1200);
 
   const [isInputMode, setIsInputMode] = useState(false);
 
   const [hrsInput, setHrsInput] = useState('00');
-  const [minsInput, setMinsInput] = useState('00');
+  const [minsInput, setMinsInput] = useState('20');
   const [secsInput, setSecsInput] = useState('00');
 
-  const DEFAULT_HOURS = '00';
-  const DEFAULT_MINUTES = '00';
-  const DEFAULT_SECONDS = '00';
+  const [sound, setSound] = useState();
 
   // get hours, minutes, seconds
   const { hours, minutes, seconds } = secondsToHMS(timeLeft);
 
-  const [sound, setSound] = useState();
+  // timer params
+  const duration = hours * 3600 + minutes * 60 + seconds;
+
+  // animated value for stroke dashoffset
+  const progress = useSharedValue(circumference);
+
+  useEffect(() => {
+    progress.value = withTiming(0, {
+      duration: duration * 1000,
+      easing: Easing.linear,
+    });
+  }, [duration]);
+
+  // animated props for animated circle
+  const animatedProps = useAnimatedProps(() => {
+    return {
+      strokeDashoffset: progress.value,
+    };
+  });
 
   // set the countdown
   useEffect(() => {
@@ -45,20 +75,14 @@ const Timer = () => {
       }, ONE_SECOND);
     }
     // countdown ended
-    else if (timerIsActive) {
-      endTimer();
-    }
+    else if (timerIsActive) endTimer();
+
     return () => clearInterval(interval);
   }, [timeLeft, timerIsActive]);
 
   useEffect(() => {
     // unload sound on unmount
-    return sound
-      ? () => {
-          console.log('Unloading Sound');
-          sound.unloadAsync();
-        }
-      : undefined;
+    return sound ? () => sound.unloadAsync() : undefined;
   }, [sound]);
 
   /** play sound & vibration when timer ends */
@@ -80,7 +104,6 @@ const Timer = () => {
     );
     setSound(sound);
 
-    console.log('Playing alarm');
     await sound.playAsync();
   };
 
@@ -93,11 +116,7 @@ const Timer = () => {
 
   /** toggle timer on & off */
   const toggleStartPause = () => {
-    if (timerIsActive) {
-      setTimerIsActive(false);
-    } else {
-      setTimerIsActive(true);
-    }
+    timerIsActive ? setTimerIsActive(false) : setTimerIsActive(true);
   };
 
   /** toggle input mode on & off */
@@ -124,48 +143,35 @@ const Timer = () => {
 
   return (
     <View style={styles.container}>
-      <View
-        style={[
-          styles.timeContainer,
-          { borderColor: isInputMode ? theme.textLight : theme.text },
-        ]}>
-        {/* hours */}
-        {isInputMode ? (
-          <TextInput
-            style={[styles.timeInput, { color: theme.textLight }]}
-            value={hrsInput}
-            onChangeText={(text) => setHrsInput(text)}
-          />
-        ) : (
-          <Text style={[styles.timeInput, { color: theme.text }]}>{hours}</Text>
-        )}
+      {/* timer circle */}
+      <Svg height="100" width="100" viewBox="0 0 100 100">
+        <Circle
+          cx="50"
+          cy="50"
+          r={radius}
+          fill="none"
+          stroke={theme.textLight}
+          strokeWidth={strokeWidth}
+        />
+        <AnimatedCircle
+          cx="50"
+          cy="50"
+          r={radius}
+          fill="none"
+          stroke={theme.text}
+          strokeWidth={strokeWidth}
+          strokeDasharray={circumference}
+          animatedProps={animatedProps}
+          strokeLinecap="round"
+        />
+      </Svg>
 
-        <Text style={styles.timeInput}>:</Text>
-
-        {/* minutes */}
-        {isInputMode ? (
-          <TextInput
-            style={[styles.timeInput, { color: theme.textLight }]}
-            value={minsInput}
-            onChangeText={(text) => setMinsInput(text)}
-          />
-        ) : (
-          <Text style={[styles.timeInput, { color: theme.text }]}>{minutes}</Text>
-        )}
-
-        <Text style={styles.timeInput}>:</Text>
-
-        {/* seconds */}
-        {isInputMode ? (
-          <TextInput
-            style={[styles.timeInput, { color: theme.textLight }]}
-            value={secsInput}
-            onChangeText={(text) => setSecsInput(text)}
-          />
-        ) : (
-          <Text style={[styles.timeInput, { color: theme.text }]}>{seconds}</Text>
-        )}
-      </View>
+      {/* Centered Time Text */}
+      {/* <View style={styles.timeWrapper}>
+        <Text style={[global.textRegular, { color: theme.text }]}>
+          {secondsToHMS(timeLeft).formatted}
+        </Text>
+      </View> */}
 
       {/* toggle input mode button */}
       <TouchableOpacity onPress={handleInputMode} style={styles.iconContainer}>
@@ -212,8 +218,6 @@ const Timer = () => {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // justifyContent: 'space-between',
     marginHorizontal: '5%',
     marginVertical: '10%',
   },
@@ -221,7 +225,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     borderWidth: 3,
-    borderRadius: 10,
+    borderRadius: 80,
     paddingVertical: 14,
   },
   buttonsContainer: {
@@ -238,7 +242,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   timeInput: {
-    fontSize: 70,
+    fontSize: 60,
     textAlign: 'center',
     fontFamily: 'Inter-Regular',
   },
@@ -262,6 +266,19 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginRight: 10,
     fontFamily: 'Inter-Regular',
+  },
+
+  // timer
+  timeWrapper: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 80,
+    height: 80,
+    left: '50%',
+    top: '50%',
+    marginLeft: -40,
+    marginTop: -40,
   },
 });
 

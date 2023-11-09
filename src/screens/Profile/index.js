@@ -22,6 +22,7 @@ import PostsList from './PostsList';
 const Profile = ({ navigation }) => {
   const { theme } = useTheme();
   const global = useGlobalStyles();
+  const [isLoading, setIsLoading] = useState(true);
 
   // get profile data from redux store
   const { user, ProfileIsLoading, userError } = useFetchUser();
@@ -31,6 +32,15 @@ const Profile = ({ navigation }) => {
   return (
     <SafeAreaView style={global.container}>
       <View style={[global.container, styles.container]}>
+        {/* loading indicator */}
+        {isLoading && (
+          <ActivityIndicator
+            size="small"
+            color={theme.text}
+            style={{ paddingTop: 20 }}
+          />
+        )}
+
         {/* avatar image */}
         <Image
           source={{ uri: user?.avatar_path }}
@@ -38,6 +48,8 @@ const Profile = ({ navigation }) => {
             styles.avatar,
             !user.avatar_path && { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
           ]}
+          onLoadStart={() => setIsLoading(true)}
+          onLoadEnd={() => setIsLoading(false)}
         />
 
         {/* settings */}

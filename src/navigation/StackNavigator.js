@@ -16,6 +16,7 @@ import CalendarView from '../screens/Home/Calendar';
 import Profile from '../screens/Profile';
 import EditProfile from '../screens/Profile/EditProfile';
 import Settings from '../screens/Profile/Settings';
+import About from '../screens/Profile/About';
 import Community from '../screens/Community';
 
 const StackA = createStackNavigator();
@@ -87,6 +88,7 @@ const ProfileStack = () => {
       <StackP.Screen name="Profile" component={Profile} />
       <StackP.Screen name="EditProfile" component={EditProfile} />
       <StackP.Screen name="Settings" component={Settings} />
+      <StackP.Screen name="About" component={About} />
     </StackP.Navigator>
   );
 };

@@ -1,6 +1,6 @@
 import { Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AntDesign } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../hooks/useThemeContext';
 
 import { HomeStack, CommunityStack, ProfileStack } from './StackNavigator';
@@ -30,21 +30,21 @@ const BottomTabNav = () => {
               color = focused ? theme.text : theme.navInactive;
               break;
             case 'SessionTab':
-              iconName = 'bulb1';
+              iconName = 'timer';
               color = focused ? theme.text : theme.navInactive;
               break;
             case 'CommunityTab':
-              iconName = 'earth';
+              iconName = 'people';
               color = focused ? theme.text : theme.navInactive;
               break;
             case 'ProfileTab':
-              iconName = 'user';
+              iconName = 'md-person-circle-outline';
               color = focused ? theme.text : theme.navInactive;
               break;
             default:
               break;
           }
-          return <AntDesign name={iconName} size={size} color={color} />;
+          return <Ionicons name={iconName} size={size} color={color} />;
         },
         // text label color
         tabBarActiveTintColor: theme.text,

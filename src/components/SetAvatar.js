@@ -19,15 +19,14 @@ import { storage } from '../services/firebase';
  * An avatar image that shows a modal when clicked.
  * Choose from default avatars or upload from device.
  */
-const SetAvatar = ({ chosenAvatar, setChosenAvatar }) => {
+const SetAvatar = ({ chosenAvatar, setChosenAvatar, theme }) => {
   const [avatarUrls, setAvatarUrls] = useState([]);
   const [current, setCurrent] = useState(0); // index of pressed avatar
-
   const [currentTab, setCurrentTab] = useState('default'); // 'default' or 'upload'
   const [image, setImage] = useState(null); // image from device
-
   const [modalVisible, setModalVisible] = useState(false);
   const [loadingStates, setLoadingStates] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     /** fetch avatar urls from firebase storage */
@@ -130,20 +129,26 @@ const SetAvatar = ({ chosenAvatar, setChosenAvatar }) => {
     <View style={styles.container}>
       {/* image of selected avatar */}
       <View>
+        {loading && (
+          <ActivityIndicator size="large" color={theme ? theme.text : '#000000'} />
+        )}
+
         <Image
           source={{ uri: chosenAvatar }}
           style={[
             styles.avatarImage,
             !chosenAvatar && { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
           ]}
+          onLoadStart={() => setLoading(true)}
+          onLoadEnd={() => setLoading(false)}
         />
-        <Ionicons
-          name="add"
-          size={34}
-          style={styles.editAvatarBtn}
+        <TouchableOpacity
           onPress={() => setModalVisible(true)}
-        />
+          style={styles.editAvatarBtn}>
+          <Ionicons name="pencil" size={28} />
+        </TouchableOpacity>
       </View>
+
       {/* ==== modal to select new avatar ==== */}
       <Modal
         animationType="slide"
@@ -218,18 +223,18 @@ const SetAvatar = ({ chosenAvatar, setChosenAvatar }) => {
                     // show 'upload' or 'camera' icon if there is no image
                     <View style={styles.iconRow}>
                       {/* icon to select image from gallery */}
-                      <MaterialCommunityIcons
-                        name="upload"
+                      <Ionicons
+                        name="push"
                         size={40}
-                        color="#333333"
+                        color="#262626"
                         style={{ marginRight: 20 }}
                         onPress={pickImage}
                       />
                       {/* icon to capture image with camera */}
-                      <MaterialCommunityIcons
+                      <Ionicons
                         name="camera"
                         size={40}
-                        color="#333333"
+                        color="#262626"
                         onPress={takePhoto}
                       />
                     </View>
@@ -282,7 +287,9 @@ const styles = StyleSheet.create({
   },
   editAvatarBtn: {
     color: '#000000',
-    backgroundColor: '#b5bee4',
+    backgroundColor: '#c3c7db',
+    borderRadius: 30,
+    padding: 5,
     position: 'absolute',
     bottom: 0,
     right: 0,

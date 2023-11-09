@@ -37,24 +37,26 @@ const styles = StyleSheet.create({
     right: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 20,
     padding: 10,
   },
   addTaskText: {
-    fontSize: 18,
+    fontSize: 16,
     marginRight: 5,
     fontFamily: 'Inter-SemiBold',
   },
 
   // period view options
   periodBtn: {
-    borderRadius: 8,
-    padding: 8,
+    borderRadius: 30,
     marginHorizontal: 5,
+    borderWidth: 1,
   },
   periodBtnText: {
     fontSize: 16,
     fontFamily: 'Inter-SemiBold',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
   },
 
   // range picker

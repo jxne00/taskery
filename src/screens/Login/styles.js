@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-let PRIMARY_COL = '#583492';
+let PRIMARY_COL = '#404258';
 
 const styles = StyleSheet.create({
   safeArea: {
