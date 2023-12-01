@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Modal,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  SafeAreaView,
-  Alert,
-  ActivityIndicator,
+    Modal,
+    Text,
+    View,
+    TextInput,
+    TouchableOpacity,
+    SafeAreaView,
+    Alert,
+    ActivityIndicator,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { AntDesign } from '@expo/vector-icons';
@@ -35,346 +35,381 @@ import TagComponent from './components/Tags';
  * @param setEditTask setter for editTask (only on edit)
  */
 const CreateTask = (props) => {
-  const { modalVisible, setShowTaskModal, editTask, setEditTask } = props;
-  const { theme, themeType } = useTheme();
-  const global = useGlobalStyles();
-  const dispatch = useDispatch();
+    const { modalVisible, setShowTaskModal, editTask, setEditTask } = props;
+    const { theme, themeType } = useTheme();
+    const global = useGlobalStyles();
+    const dispatch = useDispatch();
 
-  const userId = auth.currentUser?.uid;
+    const userId = auth.currentUser?.uid;
 
-  const isLoading = editTask
-    ? useSelector((state) => state.tasks.loading.updateTask)
-    : useSelector((state) => state.tasks.loading.addTask);
+    const isLoading = editTask
+        ? useSelector((state) => state.tasks.loading.updateTask)
+        : useSelector((state) => state.tasks.loading.addTask);
 
-  // task title & details
-  const [title, setTitle] = useState('');
-  const [details, setDetails] = useState('');
-  // deadline
-  const [deadline, setdeadline] = useState(new Date());
-  const [datePickerOpen, setDatePickerOpen] = useState(false);
-  // completion status
-  const [isCompleted, setIsCompleted] = useState(false);
-  // subtasks
-  const [subtasks, setSubtasks] = useState([]);
-  const [currentSubtask, setCurrentSubtask] = useState('');
-  // category
-  const [showCategoryModal, setShowCategoryModal] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  // tags
-  const [tag, setTag] = useState('');
-  const [tags, setTags] = useState([]);
-  // tag colors
-  const presetColors = ['#0000ff', '#008080', '#ff0000', '#ee82ee', '#ffff00'];
-  const [selectedColor, setSelectedColor] = useState(presetColors[0]);
+    // task title & details
+    const [title, setTitle] = useState('');
+    const [details, setDetails] = useState('');
+    // deadline
+    const [deadline, setdeadline] = useState(new Date());
+    const [datePickerOpen, setDatePickerOpen] = useState(false);
+    // completion status
+    const [isCompleted, setIsCompleted] = useState(false);
+    // subtasks
+    const [subtasks, setSubtasks] = useState([]);
+    const [currentSubtask, setCurrentSubtask] = useState('');
+    // category
+    const [showCategoryModal, setShowCategoryModal] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    // tags
+    const [tag, setTag] = useState('');
+    const [tags, setTags] = useState([]);
+    // tag colors
+    const presetColors = ['#0000ff', '#008080', '#ff0000', '#ee82ee', '#ffff00'];
+    const [selectedColor, setSelectedColor] = useState(presetColors[0]);
 
-  useEffect(() => {
-    // set initial values if on 'editTask' mode
-    const prefillDetails = () => {
-      setTitle(editTask.title);
-      editTask.details && setDetails(editTask.details);
-      setdeadline(new Date(editTask.deadline));
-      setIsCompleted(editTask.is_complete);
-      editTask.subtasks && setSubtasks(editTask.subtasks);
-      editTask.category && setSelectedCategory(editTask.category);
-      editTask.tags && setTags(editTask.tags);
+    useEffect(() => {
+        // set initial values if on 'editTask' mode
+        const prefillDetails = () => {
+            setTitle(editTask.title);
+            editTask.details && setDetails(editTask.details);
+            setdeadline(new Date(editTask.deadline));
+            setIsCompleted(editTask.is_complete);
+            editTask.subtasks && setSubtasks(editTask.subtasks);
+            editTask.category && setSelectedCategory(editTask.category);
+            editTask.tags && setTags(editTask.tags);
+        };
+
+        if (editTask) {
+            prefillDetails();
+        }
+    }, [editTask]);
+
+    /** handle create or update task */
+    const handleSubmit = async () => {
+        if (!title) {
+            Alert.alert('Title cannot be empty', 'Please set a title.');
+            return;
+        }
+
+        // full details of task
+        const taskDetails = {
+            title: title,
+            details: details,
+            is_complete: isCompleted,
+            deadline: deadline.getTime(), // in milliseconds
+            subtasks: subtasks,
+            category: selectedCategory,
+            tags: tags,
+        };
+
+        // add or update task
+        const action = editTask
+            ? updateTask({ userId, taskId: editTask.id, taskDetails })
+            : addTask({ userId, taskDetails });
+
+        // dispatch action & close modal only after done
+        dispatch(action).then(() => {
+            if (!isLoading) {
+                resetStates();
+                setShowTaskModal(false);
+            }
+        });
     };
 
-    if (editTask) {
-      prefillDetails();
-    }
-  }, [editTask]);
-
-  /** handle create or update task */
-  const handleSubmit = async () => {
-    if (!title) {
-      Alert.alert('Title cannot be empty', 'Please set a title.');
-      return;
-    }
-
-    // full details of task
-    const taskDetails = {
-      title: title,
-      details: details,
-      is_complete: isCompleted,
-      deadline: deadline.getTime(), // in milliseconds
-      subtasks: subtasks,
-      category: selectedCategory,
-      tags: tags,
+    // add a new (unique) tag to the list
+    const addTag = () => {
+        if (tag && !tags.some((t) => t.name.toLowerCase() === tag.toLowerCase())) {
+            setTags([...tags, { name: tag, color: selectedColor }]);
+            setTag('');
+        } else {
+            Alert.alert('Error adding tag', 'This tag already exists.', [
+                { text: 'OK' },
+            ]);
+        }
     };
 
-    // add or update task
-    const action = editTask
-      ? updateTask({ userId, taskId: editTask.id, taskDetails })
-      : addTask({ userId, taskDetails });
+    // remove a tag from the list
+    const removeTag = (index) => {
+        let tempTags = [...tags];
+        tempTags.splice(index, 1);
+        setTags(tempTags);
+    };
 
-    // dispatch action & close modal only after done
-    dispatch(action).then(() => {
-      if (!isLoading) {
+    // add details of each new subtasks to array
+    const createSubTask = () => {
+        if (currentSubtask) {
+            setSubtasks([
+                ...subtasks,
+                { description: currentSubtask, completed: false },
+            ]);
+            setCurrentSubtask('');
+        }
+    };
+
+    // remove a subtask from the array
+    const removeSubtask = (index) => {
+        let tempSubtasks = [...subtasks];
+        tempSubtasks.splice(index, 1);
+        setSubtasks(tempSubtasks);
+    };
+
+    // close modal & reset all states when 'cancel' pressed
+    const handleCancelPress = () => {
         resetStates();
+        if (editTask) setEditTask(null);
         setShowTaskModal(false);
-      }
-    });
-  };
+    };
 
-  // add a new (unique) tag to the list
-  const addTag = () => {
-    if (tag && !tags.some((t) => t.name.toLowerCase() === tag.toLowerCase())) {
-      setTags([...tags, { name: tag, color: selectedColor }]);
-      setTag('');
-    } else {
-      Alert.alert('Error adding tag', 'This tag already exists.', [{ text: 'OK' }]);
-    }
-  };
+    // reset all states
+    const resetStates = () => {
+        setTitle('');
+        setDetails('');
+        setdeadline(new Date());
+        setSubtasks([]);
+        setCurrentSubtask('');
+        setSelectedCategory(null);
+        setTag('');
+        setTags([]);
+        setSelectedColor(presetColors[0]);
+        setShowCategoryModal(false);
+        setIsCompleted(false);
+        editTask && setEditTask(null);
+    };
 
-  // remove a tag from the list
-  const removeTag = (index) => {
-    let tempTags = [...tags];
-    tempTags.splice(index, 1);
-    setTags(tempTags);
-  };
+    return (
+        <Modal visible={modalVisible} animationType="slide" transparent={true}>
+            <SafeAreaView style={global.container}>
+                <View style={[global.container, styles.container]}>
+                    {isLoading && (
+                        <View style={styles.loadingOverlay}>
+                            <ActivityIndicator size="large" color={'#fff'} />
+                            <Text style={styles.loadingText}>
+                                {editTask ? 'Updating...' : 'Creating...'}
+                            </Text>
+                        </View>
+                    )}
 
-  // add details of each new subtasks to array
-  const createSubTask = () => {
-    if (currentSubtask) {
-      setSubtasks([...subtasks, { description: currentSubtask, completed: false }]);
-      setCurrentSubtask('');
-    }
-  };
+                    <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
+                        {/* header */}
+                        <View style={styles.row}>
+                            <Text style={[global.text, styles.header]}>
+                                {editTask ? 'Edit task' : 'Create task'}
+                            </Text>
+                            <Text style={styles.cancelTxt} onPress={handleCancelPress}>
+                                Cancel
+                            </Text>
+                        </View>
 
-  // remove a subtask from the array
-  const removeSubtask = (index) => {
-    let tempSubtasks = [...subtasks];
-    tempSubtasks.splice(index, 1);
-    setSubtasks(tempSubtasks);
-  };
+                        <Spacer />
 
-  // close modal & reset all states when 'cancel' pressed
-  const handleCancelPress = () => {
-    resetStates();
-    if (editTask) setEditTask(null);
-    setShowTaskModal(false);
-  };
+                        {/* ===== task title ===== */}
+                        <Text style={[styles.boxLabel, { color: theme.text }]}>
+                            Title
+                        </Text>
+                        <TextInput
+                            value={title}
+                            style={[
+                                styles.titleInput,
+                                { borderColor: theme.text, color: theme.text },
+                            ]}
+                            onChangeText={setTitle}
+                            placeholder={'Set a title'}
+                            placeholderTextColor={theme.textLight}
+                            autoCapitalize="none"
+                            autoComplete="off"
+                        />
 
-  // reset all states
-  const resetStates = () => {
-    setTitle('');
-    setDetails('');
-    setdeadline(new Date());
-    setSubtasks([]);
-    setCurrentSubtask('');
-    setSelectedCategory(null);
-    setTag('');
-    setTags([]);
-    setSelectedColor(presetColors[0]);
-    setShowCategoryModal(false);
-    setIsCompleted(false);
-    editTask && setEditTask(null);
-  };
+                        <Spacer />
 
-  return (
-    <Modal visible={modalVisible} animationType="slide" transparent={true}>
-      <SafeAreaView style={global.container}>
-        <View style={[global.container, styles.container]}>
-          {isLoading && (
-            <View style={styles.loadingOverlay}>
-              <ActivityIndicator size="large" color={'#fff'} />
-              <Text style={styles.loadingText}>
-                {editTask ? 'Updating...' : 'Creating...'}
-              </Text>
-            </View>
-          )}
+                        {/* ===== deadline section ===== */}
+                        <Text style={[styles.boxLabel, { color: theme.text }]}>
+                            Deadline
+                        </Text>
+                        <DeadlinePicker
+                            openPicker={datePickerOpen}
+                            setOpenPicker={setDatePickerOpen}
+                            date={deadline}
+                            setDate={setdeadline}
+                        />
 
-          <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
-            {/* header */}
-            <View style={styles.row}>
-              <Text style={[global.text, styles.header]}>
-                {editTask ? 'Edit task' : 'Create task'}
-              </Text>
-              <Text style={styles.cancelTxt} onPress={handleCancelPress}>
-                Cancel
-              </Text>
-            </View>
+                        <Spacer />
 
-            <Spacer />
+                        {/* ===== completion status section ===== */}
+                        <Text style={[styles.boxLabel, { color: theme.text }]}>
+                            Status
+                        </Text>
+                        <CompletionComponent
+                            isCompleted={isCompleted}
+                            setIsCompleted={setIsCompleted}
+                            theme={theme}
+                        />
 
-            {/* ===== task title ===== */}
-            <Text style={[styles.boxLabel, { color: theme.text }]}>Title</Text>
-            <TextInput
-              value={title}
-              style={[
-                styles.titleInput,
-                { borderColor: theme.text, color: theme.text },
-              ]}
-              onChangeText={setTitle}
-              placeholder={'Set a title'}
-              placeholderTextColor={theme.textLight}
-              autoCapitalize="none"
-              autoComplete="off"
-            />
+                        <Spacer />
 
-            <Spacer />
+                        {/* ===== task details ===== */}
+                        <Text style={[styles.boxLabel, { color: theme.text }]}>
+                            Details
+                        </Text>
+                        <TextInput
+                            value={details}
+                            style={[
+                                styles.detailsInput,
+                                {
+                                    color: theme.text,
+                                    borderColor: theme.text,
+                                },
+                            ]}
+                            multiline={true}
+                            onChangeText={setDetails}
+                            placeholder={'Add any other task details here (optional)'}
+                            placeholderTextColor={theme.textLight}
+                            autoCapitalize="none"
+                            autoComplete="off"
+                        />
 
-            {/* ===== deadline section ===== */}
-            <Text style={[styles.boxLabel, { color: theme.text }]}>Deadline</Text>
-            <DeadlinePicker
-              openPicker={datePickerOpen}
-              setOpenPicker={setDatePickerOpen}
-              date={deadline}
-              setDate={setdeadline}
-            />
+                        <Spacer />
 
-            <Spacer />
+                        {/* ===== subtasks section ===== */}
+                        <Text style={[styles.boxLabel, { color: theme.text }]}>
+                            Subtasks
+                        </Text>
+                        <View
+                            style={[
+                                styles.sectionContainer,
+                                { borderColor: theme.text },
+                            ]}>
+                            {/* adding a new subtask */}
+                            <View style={styles.addSubtask}>
+                                <TextInput
+                                    value={currentSubtask}
+                                    style={[
+                                        global.text,
+                                        styles.subtaskInput,
+                                        { borderColor: theme.text },
+                                    ]}
+                                    onChangeText={setCurrentSubtask}
+                                    placeholder={'Add a subtask'}
+                                    placeholderTextColor={theme.textLight}
+                                    autoCapitalize="none"
+                                    autoComplete="off"
+                                />
 
-            {/* ===== completion status section ===== */}
-            <Text style={[styles.boxLabel, { color: theme.text }]}>Status</Text>
-            <CompletionComponent
-              isCompleted={isCompleted}
-              setIsCompleted={setIsCompleted}
-              theme={theme}
-            />
+                                <AntDesign
+                                    name="pluscircleo"
+                                    size={30}
+                                    color={theme.text}
+                                    onPress={createSubTask}
+                                />
+                            </View>
 
-            <Spacer />
+                            {/* list of subtasks */}
+                            {subtasks.length > 0 && (
+                                <>
+                                    {subtasks.map((sub, index) => (
+                                        <View key={index} style={styles.row}>
+                                            <AntDesign
+                                                name={'close'}
+                                                size={22}
+                                                color={theme.red}
+                                                style={styles.Xicon}
+                                                onPress={() => removeSubtask(index)}
+                                            />
 
-            {/* ===== task details ===== */}
-            <Text style={[styles.boxLabel, { color: theme.text }]}>Details</Text>
-            <TextInput
-              value={details}
-              style={[
-                styles.detailsInput,
-                {
-                  color: theme.text,
-                  borderColor: theme.text,
-                },
-              ]}
-              multiline={true}
-              onChangeText={setDetails}
-              placeholder={'Add any other task details here (optional)'}
-              placeholderTextColor={theme.textLight}
-              autoCapitalize="none"
-              autoComplete="off"
-            />
+                                            <Text style={[global.text, styles.subtask]}>
+                                                {sub.description}
+                                            </Text>
+                                        </View>
+                                    ))}
+                                </>
+                            )}
+                        </View>
 
-            <Spacer />
+                        <Spacer />
 
-            {/* ===== subtasks section ===== */}
-            <Text style={[styles.boxLabel, { color: theme.text }]}>Subtasks</Text>
-            <View style={[styles.sectionContainer, { borderColor: theme.text }]}>
-              {/* adding a new subtask */}
-              <View style={styles.addSubtask}>
-                <TextInput
-                  value={currentSubtask}
-                  style={[
-                    global.text,
-                    styles.subtaskInput,
-                    { borderColor: theme.text },
-                  ]}
-                  onChangeText={setCurrentSubtask}
-                  placeholder={'Add a subtask'}
-                  placeholderTextColor={theme.textLight}
-                  autoCapitalize="none"
-                  autoComplete="off"
-                />
+                        {/* ===== category section ===== */}
 
-                <AntDesign
-                  name="pluscircleo"
-                  size={30}
-                  color={theme.text}
-                  onPress={createSubTask}
-                />
-              </View>
+                        <Text style={[styles.boxLabel, { color: theme.text }]}>
+                            Category
+                        </Text>
+                        <View
+                            style={[
+                                styles.sectionContainer,
+                                { borderColor: theme.text },
+                            ]}>
+                            <View style={styles.row}>
+                                {/* add a new category */}
+                                <AntDesign
+                                    name={selectedCategory ? 'edit' : 'addfolder'}
+                                    size={24}
+                                    color={theme.text}
+                                    onPress={() => setShowCategoryModal(true)}
+                                />
+                                <Text
+                                    style={[
+                                        styles.categoryText,
+                                        { color: theme.text },
+                                    ]}>
+                                    {selectedCategory}
+                                </Text>
+                            </View>
+                        </View>
 
-              {/* list of subtasks */}
-              {subtasks.length > 0 && (
-                <>
-                  {subtasks.map((sub, index) => (
-                    <View key={index} style={styles.row}>
-                      <AntDesign
-                        name={'close'}
-                        size={22}
-                        color={theme.red}
-                        style={styles.Xicon}
-                        onPress={() => removeSubtask(index)}
-                      />
+                        {/* category modal */}
+                        <CategoryModal
+                            showCategoryModal={showCategoryModal}
+                            setShowCategoryModal={setShowCategoryModal}
+                            selectedCategory={selectedCategory}
+                            setSelectedCategory={setSelectedCategory}
+                            theme={theme}
+                        />
 
-                      <Text style={[global.text, styles.subtask]}>
-                        {sub.description}
-                      </Text>
-                    </View>
-                  ))}
-                </>
-              )}
-            </View>
+                        <Spacer />
 
-            <Spacer />
+                        {/* ===== tags section ===== */}
+                        <Text style={[styles.boxLabel, { color: theme.text }]}>
+                            Tags
+                        </Text>
 
-            {/* ===== category section ===== */}
+                        <View
+                            style={[
+                                styles.sectionContainer,
+                                { borderColor: theme.text },
+                            ]}>
+                            <TagComponent
+                                tag={tag}
+                                setTag={setTag}
+                                tags={tags}
+                                selectedColor={selectedColor}
+                                setSelectedColor={setSelectedColor}
+                                presetColors={presetColors}
+                                addTag={addTag}
+                                removeTag={removeTag}
+                                theme={theme}
+                            />
+                        </View>
+                    </KeyboardAwareScrollView>
 
-            <Text style={[styles.boxLabel, { color: theme.text }]}>Category</Text>
-            <View style={[styles.sectionContainer, { borderColor: theme.text }]}>
-              <View style={styles.row}>
-                {/* add a new category */}
-                <AntDesign
-                  name={selectedCategory ? 'edit' : 'addfolder'}
-                  size={24}
-                  color={theme.text}
-                  onPress={() => setShowCategoryModal(true)}
-                />
-                <Text style={[styles.categoryText, { color: theme.text }]}>
-                  {selectedCategory}
-                </Text>
-              </View>
-            </View>
+                    <Spacer />
 
-            {/* category modal */}
-            <CategoryModal
-              showCategoryModal={showCategoryModal}
-              setShowCategoryModal={setShowCategoryModal}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-              theme={theme}
-            />
-
-            <Spacer />
-
-            {/* ===== tags section ===== */}
-            <Text style={[styles.boxLabel, { color: theme.text }]}>Tags</Text>
-
-            <View style={[styles.sectionContainer, { borderColor: theme.text }]}>
-              <TagComponent
-                tag={tag}
-                setTag={setTag}
-                tags={tags}
-                selectedColor={selectedColor}
-                setSelectedColor={setSelectedColor}
-                presetColors={presetColors}
-                addTag={addTag}
-                removeTag={removeTag}
-                theme={theme}
-              />
-            </View>
-          </KeyboardAwareScrollView>
-
-          <Spacer />
-
-          {/* ===== submit button ===== */}
-          <TouchableOpacity
-            style={styles.createBtn}
-            onPress={handleSubmit}
-            disabled={isLoading}>
-            <Text style={styles.createBtnText}>
-              {!isLoading
-                ? editTask
-                  ? 'Update'
-                  : 'Create'
-                : editTask
-                ? 'Updating...'
-                : 'Creating...'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </Modal>
-  );
+                    {/* ===== submit button ===== */}
+                    <TouchableOpacity
+                        style={styles.createBtn}
+                        onPress={handleSubmit}
+                        disabled={isLoading}>
+                        <Text style={styles.createBtnText}>
+                            {!isLoading
+                                ? editTask
+                                    ? 'Update'
+                                    : 'Create'
+                                : editTask
+                                ? 'Updating...'
+                                : 'Creating...'}
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </SafeAreaView>
+        </Modal>
+    );
 };
 
 export default CreateTask;

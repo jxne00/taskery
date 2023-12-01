@@ -28,69 +28,69 @@ const StackC = createStackNavigator();
  * navigation stack for auth screens (Login, Register, Onboarding)
  */
 const AuthStack = () => {
-  return (
-    <StackA.Navigator
-      initialRouteName="Login"
-      screenOptions={{
-        headerShown: false,
-        gestureEnabled: false, // prevent swipe to go back
-      }}>
-      <StackA.Screen name="Login" component={Login} />
-      <StackA.Screen name="Register" component={Register} />
-      <StackA.Screen name="Onboarding" component={Onboarding} />
-    </StackA.Navigator>
-  );
+    return (
+        <StackA.Navigator
+            initialRouteName="Login"
+            screenOptions={{
+                headerShown: false,
+                gestureEnabled: false, // prevent swipe to go back
+            }}>
+            <StackA.Screen name="Login" component={Login} />
+            <StackA.Screen name="Register" component={Register} />
+            <StackA.Screen name="Onboarding" component={Onboarding} />
+        </StackA.Navigator>
+    );
 };
 
 /** navigation stack for home screen */
 const HomeStack = () => {
-  const { theme } = useTheme();
+    const { theme } = useTheme();
 
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
-      <MenuProvider>
-        <StackH.Navigator
-          initialRouteName="Home"
-          screenOptions={{
-            headerShown: false,
-            gestureEnabled: false, // prevent swipe to go back
-          }}>
-          <StackH.Screen name="Home" component={Home} />
-          <StackH.Screen name="Calendar" component={CalendarView} />
-        </StackH.Navigator>
-      </MenuProvider>
-      <CustomStatusBar />
-    </SafeAreaView>
-  );
+    return (
+        <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
+            <MenuProvider>
+                <StackH.Navigator
+                    initialRouteName="Home"
+                    screenOptions={{
+                        headerShown: false,
+                        gestureEnabled: false, // prevent swipe to go back
+                    }}>
+                    <StackH.Screen name="Home" component={Home} />
+                    <StackH.Screen name="Calendar" component={CalendarView} />
+                </StackH.Navigator>
+            </MenuProvider>
+            <CustomStatusBar />
+        </SafeAreaView>
+    );
 };
 
 /** navigation stack for community screen */
 const CommunityStack = () => {
-  return (
-    <StackC.Navigator
-      initialRouteName="Community"
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <StackC.Screen name="Community" component={Community} />
-    </StackC.Navigator>
-  );
+    return (
+        <StackC.Navigator
+            initialRouteName="Community"
+            screenOptions={{
+                headerShown: false,
+            }}>
+            <StackC.Screen name="Community" component={Community} />
+        </StackC.Navigator>
+    );
 };
 
 /** navigation stack for profile screen */
 const ProfileStack = () => {
-  return (
-    <StackP.Navigator
-      initialRouteName="Profile"
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <StackP.Screen name="Profile" component={Profile} />
-      <StackP.Screen name="EditProfile" component={EditProfile} />
-      <StackP.Screen name="Settings" component={Settings} />
-      <StackP.Screen name="About" component={About} />
-    </StackP.Navigator>
-  );
+    return (
+        <StackP.Navigator
+            initialRouteName="Profile"
+            screenOptions={{
+                headerShown: false,
+            }}>
+            <StackP.Screen name="Profile" component={Profile} />
+            <StackP.Screen name="EditProfile" component={EditProfile} />
+            <StackP.Screen name="Settings" component={Settings} />
+            <StackP.Screen name="About" component={About} />
+        </StackP.Navigator>
+    );
 };
 
 export { AuthStack, HomeStack, CommunityStack, ProfileStack };

@@ -6,21 +6,21 @@ import useGlobalStyles from '../../hooks/useGlobalStyles';
 
 /** The community screen that shows posts shared by other uses */
 const Community = () => {
-  const { theme } = useTheme();
-  const global = useGlobalStyles();
+    const { theme } = useTheme();
+    const global = useGlobalStyles();
 
-  return (
-    <SafeAreaView style={global.container}>
-      <View style={global.container}>
-        <Text style={global.text}>This is the community screen</Text>
-        <CustomStatusBar />
-      </View>
-    </SafeAreaView>
-  );
+    return (
+        <SafeAreaView style={global.container}>
+            <View style={global.container}>
+                <Text style={global.text}>This is the community screen</Text>
+                <CustomStatusBar />
+            </View>
+        </SafeAreaView>
+    );
 };
 
 const styles = StyleSheet.create({
-  container: {},
+    container: {},
 });
 
 export default Community;

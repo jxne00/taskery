@@ -5,21 +5,21 @@ import { useTheme } from '../hooks/useThemeContext';
 
 /** A date picker to set range */
 const DatePick = ({ openDatePicker, handleConfirm, handleCancel, date }) => {
-  const { themeType } = useTheme();
+    const { themeType } = useTheme();
 
-  return (
-    <>
-      <DateTimePickerModal
-        isVisible={openDatePicker}
-        mode="date"
-        onConfirm={(date) => handleConfirm(date)}
-        onCancel={handleCancel}
-        date={date || new Date()}
-        themeVariant={themeType === 'light' ? 'light' : 'dark'}
-        isDarkModeEnabled={themeType === 'dark'}
-      />
-    </>
-  );
+    return (
+        <>
+            <DateTimePickerModal
+                isVisible={openDatePicker}
+                mode="date"
+                onConfirm={(date) => handleConfirm(date)}
+                onCancel={handleCancel}
+                date={date || new Date()}
+                themeVariant={themeType === 'light' ? 'light' : 'dark'}
+                isDarkModeEnabled={themeType === 'dark'}
+            />
+        </>
+    );
 };
 
 export default DatePick;

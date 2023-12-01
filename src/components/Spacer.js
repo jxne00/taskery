@@ -7,11 +7,11 @@ import { View } from 'react-native';
  * @param width  width of spacer
  */
 const Spacer = ({ height, width }) => {
-  // default height and width
-  width = width || '100%';
-  height = height || 20;
+    // default height and width
+    width = width || '100%';
+    height = height || 20;
 
-  return <View style={{ height, width }} />;
+    return <View style={{ height, width }} />;
 };
 
 export default Spacer;

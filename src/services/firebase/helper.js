@@ -8,8 +8,8 @@ import { storage } from './index';
  * @param milliseconds time in milliseconds
  */
 const toTimestamp = (milliseconds) => {
-  const date = new Date(milliseconds);
-  return firebase.firestore.Timestamp.fromDate(date);
+    const date = new Date(milliseconds);
+    return firebase.firestore.Timestamp.fromDate(date);
 };
 
 /**
@@ -18,17 +18,17 @@ const toTimestamp = (milliseconds) => {
  * @param image image to store
  */
 const storeAvatar = async (userId, image) => {
-  // store in storage path 'usersAvatar/{userId}'
-  const storageRef = storage.ref(`usersAvatar/${userId}`);
+    // store in storage path 'usersAvatar/{userId}'
+    const storageRef = storage.ref(`usersAvatar/${userId}`);
 
-  // convert to blob and upload
-  const response = await fetch(image);
-  const blob = await response.blob();
-  await storageRef.put(blob);
+    // convert to blob and upload
+    const response = await fetch(image);
+    const blob = await response.blob();
+    await storageRef.put(blob);
 
-  // return download url
-  const url = await storageRef.getDownloadURL();
-  return url;
+    // return download url
+    const url = await storageRef.getDownloadURL();
+    return url;
 };
 
 export { toTimestamp, storeAvatar };

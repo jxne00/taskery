@@ -4,10 +4,10 @@ import taskReducer from './taskSlice';
 
 /** setup redux store */
 const store = configureStore({
-  reducer: {
-    user: userReducer,
-    tasks: taskReducer,
-  },
+    reducer: {
+        user: userReducer,
+        tasks: taskReducer,
+    },
 });
 
 export default store;

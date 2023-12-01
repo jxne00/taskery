@@ -4,7 +4,7 @@ Cloud Firestore rules:
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
+
     // users collection
     match /users/{userId} {
       allow read, update: if request.auth.uid == userId;
@@ -23,7 +23,7 @@ service cloud.firestore {
       // users can read and write own task tags
       match /tags/{tagId} {
         allow read, write: if request.auth.uid == userId;
-      } 
+      }
     }
 
     // posts collection
@@ -31,7 +31,7 @@ service cloud.firestore {
       // users can read posts where owner's "is_public" is true
       // users can read their own posts
       allow read: if get(/databases/$(database)/documents/users/$(resource.data.userId)).data.is_public == true || request.auth.uid == resource.data.userId;
-      
+
       // users can write (create, update, delete) own post
       allow write: if request.auth.uid == resource.data.userId;
 
@@ -59,7 +59,7 @@ service firebase.storage {
       allow read;
       allow write: if request.auth != null;
     }
-    
+
     match /usersAvatar/{userId} {
       // users can read and write own avatar
       allow read, write: if request.auth != null && request.auth.uid == userId;
