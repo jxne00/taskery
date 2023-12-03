@@ -14,26 +14,45 @@ import CustomStatusBar from '../../components/StatusBar';
 import useFetchUser from '../../hooks/useFetchUser';
 import { auth } from '../../services/firebase';
 
-// TODO replace dummyPosts with actual data
-import dummyPosts from './dummyPosts';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchUserPosts } from '../../services/redux/postSlice';
+
 import PostsList from './PostsList';
 
 /** The profile screen displaying user's profile info */
 const Profile = ({ navigation }) => {
     const { theme } = useTheme();
     const global = useGlobalStyles();
-    const [isLoading, setIsLoading] = useState(true);
+    const [avatarLoading, setAvatarLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
 
     // get profile data from redux store
     const { user, ProfileIsLoading, userError } = useFetchUser();
 
     const userId = auth.currentUser?.uid;
 
+    // fetch user's posts from firestore
+    const dispatch = useDispatch();
+    const userPosts = useSelector((state) => state.posts.userPosts);
+    const postsLoading = useSelector((state) => state.posts.loading.userPosts);
+    const postsError = useSelector((state) => state.posts.error);
+
+    useEffect(() => {
+        dispatch(fetchUserPosts(userId));
+    }, [dispatch, userId]);
+
+    // refetch posts on refresh
+    const handleRefresh = () => {
+        setRefreshing(true);
+        dispatch(fetchUserPosts(userId));
+        setRefreshing(false);
+    };
+
     return (
         <SafeAreaView style={global.container}>
             <View style={[global.container, styles.container]}>
                 {/* loading indicator */}
-                {isLoading && (
+                {avatarLoading && (
                     <ActivityIndicator
                         size="small"
                         color={theme.text}
@@ -41,15 +60,23 @@ const Profile = ({ navigation }) => {
                     />
                 )}
 
+                {userError && (
+                    <Text style={[styles.errorText, { color: theme.red }]}>
+                        Error loading profile!
+                    </Text>
+                )}
+
                 {/* avatar image */}
                 <Image
                     source={{ uri: user?.avatar_path }}
                     style={[
                         styles.avatar,
-                        !user.avatar_path && { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+                        !user.avatar_path && {
+                            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                        },
                     ]}
-                    onLoadStart={() => setIsLoading(true)}
-                    onLoadEnd={() => setIsLoading(false)}
+                    onLoadStart={() => setAvatarLoading(true)}
+                    onLoadEnd={() => setAvatarLoading(false)}
                 />
 
                 {/* settings */}
@@ -66,34 +93,52 @@ const Profile = ({ navigation }) => {
                     }
                 />
 
-                {/* name */}
-                <View style={global.row}>
-                    <Text style={[global.text, styles.profileName]}>{user.name}</Text>
-
-                    <Ionicons
-                        name="create-outline"
-                        size={28}
+                {ProfileIsLoading ? (
+                    <ActivityIndicator
+                        size="large"
                         color={theme.text}
-                        onPress={() =>
-                            navigation.navigate('EditProfile', {
-                                user: user,
-                                userId: userId,
-                            })
-                        }
+                        style={{ paddingTop: 20 }}
                     />
-                </View>
+                ) : (
+                    <>
+                        {/* name */}
+                        <View style={global.row}>
+                            <Text style={[global.text, styles.profileName]}>
+                                {user.name}
+                            </Text>
 
-                {/* profile visibility */}
-                <View style={[styles.visContainer, { borderColor: theme.textLight }]}>
-                    <Ionicons
-                        name={user?.is_public ? 'md-lock-open' : 'md-lock-closed'}
-                        size={16}
-                        color={theme.textLight}
-                    />
-                    <Text style={[styles.visText, { color: theme.text }]}>
-                        {user?.is_public ? 'Public' : 'Private'}
-                    </Text>
-                </View>
+                            <Ionicons
+                                name="create-outline"
+                                size={28}
+                                color={theme.text}
+                                onPress={() =>
+                                    navigation.navigate('EditProfile', {
+                                        user: user,
+                                        userId: userId,
+                                    })
+                                }
+                            />
+                        </View>
+
+                        {/* profile visibility */}
+                        <View
+                            style={[
+                                styles.visContainer,
+                                { borderColor: theme.textLight },
+                            ]}>
+                            <Ionicons
+                                name={
+                                    user?.is_public ? 'md-lock-open' : 'md-lock-closed'
+                                }
+                                size={16}
+                                color={theme.textLight}
+                            />
+                            <Text style={[styles.visText, { color: theme.text }]}>
+                                {user?.is_public ? 'Public' : 'Private'}
+                            </Text>
+                        </View>
+                    </>
+                )}
 
                 <View
                     style={[
@@ -102,8 +147,32 @@ const Profile = ({ navigation }) => {
                     ]}
                 />
 
-                {/* user's posts */}
-                <PostsList data={dummyPosts} />
+                {postsError && (
+                    <Text style={[styles.errorText, { color: theme.red }]}>
+                        Error loading posts!
+                    </Text>
+                )}
+
+                {/* list user's posts */}
+                {postsLoading ? (
+                    <ActivityIndicator
+                        size="small"
+                        color={theme.text}
+                        style={{ paddingTop: 20 }}
+                    />
+                ) : (
+                    <PostsList
+                        data={userPosts}
+                        refreshing={refreshing}
+                        onRefresh={handleRefresh}
+                    />
+                )}
+
+                {/* if 0 posts */}
+                {!postsLoading &&
+                    userPosts.length === 0 &&
+                    !postsError &&
+                    !refreshing && <Text style={theme.textLight}>No posts yet!</Text>}
 
                 <CustomStatusBar />
             </View>
@@ -114,6 +183,11 @@ const Profile = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
+    },
+    errorText: {
+        padding: 10,
+        fontSize: 16,
+        fontFamily: 'Inter-Regular',
     },
     settingsIcon: {
         position: 'absolute',

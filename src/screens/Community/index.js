@@ -51,6 +51,8 @@ const Community = () => {
                     {toDateDisplay(item.time_created)}
                 </Text>
 
+                {/* TODO display post user's name & avatar */}
+
                 <Text style={themed.subHeaderText}>{item.title}</Text>
 
                 {item.content && (

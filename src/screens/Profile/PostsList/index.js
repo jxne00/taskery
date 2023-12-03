@@ -1,21 +1,26 @@
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { toDateDisplay } from '../../../components/timeConverters';
 
 import { useTheme } from '../../../hooks/useThemeContext';
 import useThemeStyles from '../../../hooks/useThemeStyles';
 
-const PostsList = ({ data }) => {
+const PostsList = ({ data, refreshing, onRefresh }) => {
     const { theme } = useTheme();
     const themed = useThemeStyles();
 
     const renderPost = (item) => {
         return (
             <View style={[styles.postContainer, { borderColor: theme.textLight }]}>
+                <Text style={[themed.textRegularLight, styles.createdDate]}>
+                    {toDateDisplay(item.time_created)}
+                </Text>
+
                 <Text style={themed.subHeaderText}>{item.title}</Text>
 
                 <View style={{ height: 5 }} />
 
-                {item.caption && <Text style={themed.textRegular}>{item.caption}</Text>}
+                {item.content && <Text style={themed.textRegular}>{item.content}</Text>}
 
                 <View style={{ height: 20 }} />
 
@@ -28,7 +33,7 @@ const PostsList = ({ data }) => {
                             color={theme.red}
                             style={{ marginRight: 3 }}
                         />
-                        <Text style={themed.textRegular}>{item.likes}</Text>
+                        <Text style={themed.textRegular}>{item.numLikes}</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -38,8 +43,8 @@ const PostsList = ({ data }) => {
                             console.log('TODO: show comments');
                         }}>
                         <Text style={themed.textRegularLight}>
-                            {item.comments}{' '}
-                            {item.comments === 1 ? 'comment' : 'comments'}
+                            {item.numComments}{' '}
+                            {item.numComments === 1 ? 'comment' : 'comments'}
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -55,9 +60,11 @@ const PostsList = ({ data }) => {
             style={{ width: '100%' }}
             ListHeaderComponent={
                 <Text style={[styles.postSectionHeader, { color: theme.text }]}>
-                    Posts
+                    My Posts
                 </Text>
             }
+            refreshing={refreshing}
+            onRefresh={onRefresh}
         />
     );
 };
@@ -77,6 +84,11 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         width: '95%',
         alignSelf: 'center',
+    },
+    createdDate: {
+        alignSelf: 'flex-end',
+        fontSize: 12,
+        fontFamily: 'Inter-Regular',
     },
     statRow: {
         flexDirection: 'row',
