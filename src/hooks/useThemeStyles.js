@@ -101,6 +101,13 @@ const useThemeStyles = () => {
             fontFamily: 'Inter-Medium',
             color: '#cecece',
         },
+
+        // activity indicator align center of screen
+        loadingCenter: {
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
     });
 };
 

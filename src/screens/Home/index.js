@@ -198,7 +198,6 @@ const Home = ({ navigation }) => {
 
                     <DatePick
                         openDatePicker={openDatePicker}
-                        setOpenDatePicker={setOpenDatePicker}
                         handleConfirm={handlePickerConfirm}
                         handleCancel={handlePickerCancel}
                         date={

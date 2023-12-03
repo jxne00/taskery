@@ -9,8 +9,8 @@ import { toDateDisplay } from '../../../components/timeConverters';
  * @param setShowDetails - function to set modal visibility
  * @param handleEdit - function to handle editing of task
  */
+// TODO style TaskDetail modal
 const TaskDetail = ({ task, showDetails, setShowDetails, handleEdit }) => {
-    console.log(task);
     return (
         <Modal
             animationType="slide"
@@ -23,28 +23,39 @@ const TaskDetail = ({ task, showDetails, setShowDetails, handleEdit }) => {
                 <View style={styles.modalView}>
                     <Text style={styles.title}>{task.title}</Text>
 
-                    <Text style={styles.description}>{task.details}</Text>
+                    <Text style={styles.details}>{task.details}</Text>
 
-                    <Text style={styles.date}>{toDateDisplay(task.deadline)}</Text>
+                    <Text style={styles.date}>Due: {toDateDisplay(task.deadline)}</Text>
 
                     <Text style={styles.date}>
                         {task.completed ? 'Completed' : 'Not Completed'}
                     </Text>
 
                     {/* subtasks */}
-                    <Text style={styles.date}>Subtasks</Text>
-                    {task.subtasks.map((subtask) => (
-                        <Text key={subtask.id}>{subtask.title}</Text>
-                    ))}
+                    <View style={styles.subtasksContainer}>
+                        {task.subtasks.map((subtask, index) => (
+                            <Text key={index} style={styles.subtask}>
+                                {subtask.description} -{' '}
+                                {subtask.completed ? 'Done' : 'Pending'}
+                            </Text>
+                        ))}
+                    </View>
 
+                    {/* buttons */}
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
                             style={styles.button}
-                            onPress={() => handleEdit(task.id)}>
+                            onPress={() => {
+                                // close modal and show edit page
+                                setShowDetails(false);
+                                handleEdit(task.id);
+                            }}>
                             <Text style={styles.buttonText}>Edit</Text>
                         </TouchableOpacity>
+
                         <TouchableOpacity
                             style={styles.button}
+                            // close modal
                             onPress={() => setShowDetails(false)}>
                             <Text style={styles.buttonText}>Close</Text>
                         </TouchableOpacity>
@@ -60,12 +71,12 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: 'rgba(0,0,0,0.9)',
     },
     modalView: {
-        width: '80%',
+        width: '95%',
         backgroundColor: 'white',
-        borderRadius: 20,
+        borderRadius: 10,
         padding: 35,
         alignItems: 'center',
     },
@@ -74,21 +85,32 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 10,
     },
-    description: {
+    details: {
         fontSize: 18,
         marginBottom: 10,
+        backgroundColor: '#f0f0f0',
+        padding: 10,
     },
     date: {
         fontSize: 16,
         marginBottom: 10,
     },
+    subtasksContainer: {
+        width: '100%',
+        marginBottom: 10,
+    },
+    subtask: {
+        fontSize: 16,
+        marginBottom: 10,
+    },
+
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '100%',
     },
     button: {
-        backgroundColor: '#2196F3',
+        backgroundColor: '#175f99',
         borderRadius: 20,
         padding: 10,
         elevation: 2,

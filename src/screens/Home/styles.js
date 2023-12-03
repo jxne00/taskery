@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 
     // period view options
     periodBtn: {
-        borderRadius: 30,
+        borderRadius: 10,
         marginHorizontal: 5,
         borderWidth: 1,
     },
