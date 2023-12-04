@@ -1,16 +1,21 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { db } from '../firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
 
 /** fetch all public posts from firestore */
 export const fetchAllPosts = createAsyncThunk('posts/fetchAllPosts', async () => {
+    console.log('-> [AsyncThunk] fetching all public posts...');
+
     try {
-        console.log(': (AsyncThunk) fetching all public posts!');
         // get all posts that are public
         const postsRef = collection(db, 'posts');
-        const postsQuery = query(postsRef, where('is_public', '==', true));
-
+        const postsQuery = query(
+            postsRef,
+            where('is_public', '==', true),
+            orderBy('time_created', 'desc'),
+        );
         const snapshot = await getDocs(postsQuery);
+
         const posts = [];
 
         snapshot.forEach((doc) => {
@@ -21,8 +26,10 @@ export const fetchAllPosts = createAsyncThunk('posts/fetchAllPosts', async () =>
 
             posts.push({ ...data, id: doc.id });
         });
+
         return posts;
     } catch (err) {
+        console.log(err);
         alert(err);
     }
 });
@@ -31,10 +38,16 @@ export const fetchAllPosts = createAsyncThunk('posts/fetchAllPosts', async () =>
 export const fetchUserPosts = createAsyncThunk(
     'posts/fetchUserPosts',
     async (userId) => {
+        console.log('-> [AsyncThunk] fetching user posts...');
+
         try {
-            console.log(': (AsyncThunk) fetching user posts!');
+            // get all posts posted by current user
             const postsRef = collection(db, 'posts');
-            const postsQuery = query(postsRef, where('userId', '==', userId));
+            const postsQuery = query(
+                postsRef,
+                where('userId', '==', userId),
+                orderBy('time_created', 'desc'),
+            );
 
             const snapshot = await getDocs(postsQuery);
             const posts = [];
@@ -50,11 +63,34 @@ export const fetchUserPosts = createAsyncThunk(
 
             return posts;
         } catch (err) {
-            console.error('Error fetching user posts:', err);
             alert(err);
         }
     },
 );
+
+/** Fetch comments of each post */
+export const fetchComments = createAsyncThunk('posts/fetchComments', async (postId) => {
+    console.log('-> [AsyncThunk] fetching comments...');
+
+    try {
+        // fetch comments from firestore
+        const commentsRef = collection(db, 'posts', postId, 'comments');
+        const snapshot = await getDocs(commentsRef);
+        const comments = [];
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            // convert firestore timestamp to milliseconds
+            data.time_created = data.time_created.toMillis();
+
+            comments.push({ ...data, id: doc.id });
+        });
+
+        return { postId, comments };
+    } catch (err) {
+        alert(err);
+    }
+});
 
 // Posts slice
 const postsSlice = createSlice({
@@ -65,6 +101,7 @@ const postsSlice = createSlice({
         loading: {
             allPosts: false,
             userPosts: false,
+            comments: false,
         },
         error: null,
     },
@@ -95,6 +132,23 @@ const postsSlice = createSlice({
             .addCase(fetchUserPosts.rejected, (state, action) => {
                 state.loading.userPosts = false;
                 state.error = action.error.message;
+            })
+
+            // ============ fetch comments ============ //
+            .addCase(fetchComments.pending, (state) => {
+                state.loading.comments = true;
+            })
+            .addCase(fetchComments.fulfilled, (state, action) => {
+                state.loading.comments = false;
+                const { postId, comments } = action.payload;
+                // find and add fetched comments to the post
+                const index = state.allPosts.findIndex((post) => post.id === postId);
+                if (index !== -1) {
+                    state.allPosts[index].comments = comments;
+                }
+            })
+            .addCase(fetchComments.rejected, (state) => {
+                state.loading.comments = false;
             });
     },
 });

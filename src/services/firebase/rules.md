@@ -4,45 +4,39 @@ Cloud Firestore rules:
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
     // users collection
     match /users/{userId} {
-      allow read, update: if request.auth.uid == userId;
-      allow create: if request.auth.uid != null;
+        allow read, update: if request.auth.uid == userId;
+        allow create: if request.auth.uid != null;
 
-      // users can read & write (create, update, delete) own tasks
-      match /tasks/{taskId} {
-        allow read, write: if request.auth.uid == userId;
-      }
+        // tasks subcollection
+    	match /tasks/{taskId} {
+             // users can read & write (create, update, delete) own task
+            allow read, write: if request.auth.uid == userId;
+        }
 
-      // users can read and write own task categories
-      match /categories/{categoryId} {
-        allow read, write: if request.auth.uid == userId;
-      }
-
-      // users can read and write own task tags
-      match /tags/{tagId} {
-        allow read, write: if request.auth.uid == userId;
-      }
+        // category subcollection
+    	match /categories/{categoryId} {
+             // users can read and write own task categories
+            allow read, write: if request.auth.uid == userId;
+        }
     }
-
     // posts collection
     match /posts/{postId} {
-      // users can read posts where owner's "is_public" is true
-      // users can read their own posts
-      allow read: if get(/databases/$(database)/documents/users/$(resource.data.userId)).data.is_public == true || request.auth.uid == resource.data.userId;
+        // users can read all public posts
+        allow read: if resource.data.is_public == true;
 
-      // users can write (create, update, delete) own post
-      allow write: if request.auth.uid == resource.data.userId;
+        // users can write (create, update, delete) own post
+        allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
 
-      match /comments/{commentId} {
-        // all authenticated users can read and create comment on a post
-        allow read, create: if request.auth.uid != null;
+        // comments subcollection
+        match /comments/{commentId} {
+            // users can read and create comments
+            allow read, create: if request.auth != null;
 
-        // users can update or delete their own comment
-        // users can delete any comment on their own posts
-        allow update, delete: if request.auth.uid == resource.data.userId || request.auth.uid == get(/databases/$(database)/documents/posts/$(postId)).data.userId;
-      }
+            // users can only update and delete own comments
+            allow update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
+        }
     }
   }
 }

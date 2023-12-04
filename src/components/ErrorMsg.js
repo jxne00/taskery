@@ -1,12 +1,17 @@
 import { StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import styles from '../screens/Login/styles';
 
+/**
+ * Displays an error box with the error message in red text
+ * @param {string} errorMsg - the error message to display
+ */
 const ErrorMessage = ({ errorMsg }) => {
-    <View style={styles.errorBox}>
-        <Ionicons name="alert-circle-outline" size={20} color="#af0000" />
-        <Text style={styles.errorMsg}>{errorMsg}</Text>
-    </View>;
+    return (
+        <View style={styles.errorBox}>
+            <Ionicons name="alert-circle-outline" size={20} color="#af0000" />
+            <Text style={styles.errorBoxTxt}>{errorMsg}</Text>
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
@@ -21,7 +26,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
 
-    errorMsg: {
+    errorBoxTxt: {
         color: '#af0000',
         fontSize: 14,
         fontFamily: 'Inter-Medium',

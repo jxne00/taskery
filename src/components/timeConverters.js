@@ -1,8 +1,5 @@
-// helper functions
-
 /**
  * convert milliseconds to dd MMM yyyy format
- *
  * @param {number} milliseconds date in milliseconds
  */
 const toDateDisplay = (milliseconds) => {
@@ -15,7 +12,6 @@ const toDateDisplay = (milliseconds) => {
 
 /**
  * convert seconds to hours, minutes, and seconds
- *
  * @param {number} totalSeconds total seconds
  */
 const secondsToHMS = (totalSeconds) => {
@@ -29,4 +25,25 @@ const secondsToHMS = (totalSeconds) => {
     return { hours, minutes, seconds };
 };
 
-export { toDateDisplay, secondsToHMS };
+/**
+ * Calculate the time since a given date
+ * @param {number} date date in milliseconds
+ */
+const timeSinceDate = (date) => {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    const { hours, minutes } = secondsToHMS(seconds);
+
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) {
+        return `${days} day${days > 1 ? 's' : ''} ago`;
+    } else if (hours > 0) {
+        return `${hours} h ago`;
+    } else if (minutes > 0) {
+        return `${minutes} min${minutes > 1 ? 's' : ''} ago`;
+    } else {
+        return `${seconds} sec${seconds > 1 ? 's' : ''} ago`;
+    }
+};
+
+export { toDateDisplay, secondsToHMS, timeSinceDate };
