@@ -9,15 +9,15 @@ import {
     ActivityIndicator,
     Modal,
 } from 'react-native';
-
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchAllPosts, fetchComments } from '../../services/redux/postSlice';
-import { timeSinceDate } from '../../components/timeConverters';
-
 import { AntDesign } from '@expo/vector-icons';
+
 import CustomStatusBar from '../../components/StatusBar';
 import { useTheme } from '../../hooks/useThemeContext';
 import useThemeStyles from '../../hooks/useThemeStyles';
+
+import { fetchAllPosts, fetchComments } from '../../services/redux/postSlice';
+import { timeSinceDate } from '../../components/timeConverters';
 
 /** The community screen that shows posts shared by other uses */
 const Community = () => {
@@ -59,6 +59,7 @@ const Community = () => {
         console.log('TODO: like post');
     };
 
+    // TODO style comments modal
     const CommentsModal = () => {
         // get comments from post
         const comments = allPosts.find((post) => post.id === selectedPostID).comments;
@@ -95,7 +96,7 @@ const Community = () => {
                                         </Text>
                                         <Text style={styles.commentAuthor}>
                                             - {comment.name} (
-                                            {timeSinceDate(comment.time_created)} ago)
+                                            {timeSinceDate(comment.time_created)})
                                         </Text>
                                     </View>
                                 ))}
@@ -174,7 +175,20 @@ const Community = () => {
     return (
         <SafeAreaView style={themed.container}>
             <View style={themed.container}>
-                <Text style={[themed.headerText, styles.title]}>Community Posts</Text>
+                <View style={[themed.row, styles.topRow]}>
+                    <Text style={[themed.headerText, styles.title]}>
+                        Community Posts
+                    </Text>
+                    <AntDesign
+                        name="message1"
+                        size={24}
+                        color={theme.text}
+                        style={{ marginRight: 15 }}
+                        onPress={() => {
+                            console.log('TODO: message?');
+                        }}
+                    />
+                </View>
 
                 <View style={[styles.halfLine, { backgroundColor: theme.blue }]} />
 

@@ -27,16 +27,15 @@ import DeadlinePicker from './components/Deadline';
 import TagComponent from './components/Tags';
 
 /**
- * A modal to create a new task or edit existing task.
- *
+ * A modal to input details of a new task or edit an existing task.
  * @param modalVisible visibility of modal
  * @param setShowTaskModal modal visibility setter
- * @param editTask details of task to be edited (only on edit)
- * @param setEditTask setter for editTask (only on edit)
+ * @param editTask details of task to be edited (only on edit, optional)
+ * @param setEditTask setter for editTask (only on edit, optional)
  */
 const CreateTask = (props) => {
     const { modalVisible, setShowTaskModal, editTask, setEditTask } = props;
-    const { theme, themeType } = useTheme();
+    const { theme } = useTheme();
     const global = useGlobalStyles();
     const dispatch = useDispatch();
 
@@ -63,12 +62,11 @@ const CreateTask = (props) => {
     // tags
     const [tag, setTag] = useState('');
     const [tags, setTags] = useState([]);
-    // tag colors
     const presetColors = ['#0000ff', '#008080', '#ff0000', '#ee82ee', '#ffff00'];
     const [selectedColor, setSelectedColor] = useState(presetColors[0]);
 
+    // prefill input details if editing task
     useEffect(() => {
-        // set initial values if on 'editTask' mode
         const prefillDetails = () => {
             setTitle(editTask.title);
             editTask.details && setDetails(editTask.details);
@@ -116,7 +114,7 @@ const CreateTask = (props) => {
         });
     };
 
-    // add a new (unique) tag to the list
+    /** add a new (unique) tag to the list */
     const addTag = () => {
         if (tag && !tags.some((t) => t.name.toLowerCase() === tag.toLowerCase())) {
             setTags([...tags, { name: tag, color: selectedColor }]);
@@ -128,14 +126,14 @@ const CreateTask = (props) => {
         }
     };
 
-    // remove a tag from the list
+    /** remove a tag from the list */
     const removeTag = (index) => {
         let tempTags = [...tags];
         tempTags.splice(index, 1);
         setTags(tempTags);
     };
 
-    // add details of each new subtasks to array
+    /** add details of each new subtasks to array */
     const createSubTask = () => {
         if (currentSubtask) {
             setSubtasks([
@@ -146,21 +144,21 @@ const CreateTask = (props) => {
         }
     };
 
-    // remove a subtask from the array
+    /** remove a subtask from the array */
     const removeSubtask = (index) => {
         let tempSubtasks = [...subtasks];
         tempSubtasks.splice(index, 1);
         setSubtasks(tempSubtasks);
     };
 
-    // close modal & reset all states when 'cancel' pressed
+    /** close modal & reset states when 'cancel' pressed */
     const handleCancelPress = () => {
         resetStates();
         if (editTask) setEditTask(null);
         setShowTaskModal(false);
     };
 
-    // reset all states
+    /** reset all states */
     const resetStates = () => {
         setTitle('');
         setDetails('');
@@ -248,20 +246,17 @@ const CreateTask = (props) => {
 
                         {/* ===== task details ===== */}
                         <Text style={[styles.boxLabel, { color: theme.text }]}>
-                            Details
+                            Additional Notes
                         </Text>
                         <TextInput
                             value={details}
                             style={[
                                 styles.detailsInput,
-                                {
-                                    color: theme.text,
-                                    borderColor: theme.text,
-                                },
+                                { color: theme.text, borderColor: theme.text },
                             ]}
                             multiline={true}
                             onChangeText={setDetails}
-                            placeholder={'Add any other task details here (optional)'}
+                            placeholder={'Any additional notes or details (optional)'}
                             placeholderTextColor={theme.textLight}
                             autoCapitalize="none"
                             autoComplete="off"

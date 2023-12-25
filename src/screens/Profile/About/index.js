@@ -48,9 +48,7 @@ const About = ({ navigation }) => {
                         styles.sectionBox,
                         { backgroundColor: theme.backgroundSec },
                     ]}>
-                    <Text style={themed.subHeaderText}>
-                        Technologies used to build this app
-                    </Text>
+                    <Text style={themed.subHeaderText}>Technologies used</Text>
                     <View
                         style={[
                             styles.horizontalLine,
@@ -58,10 +56,10 @@ const About = ({ navigation }) => {
                         ]}
                     />
                     <Text style={themed.textRegular}>
-                        taskery is built with React Native and managed using the Expo
-                        framework. It uses Firebase to handle authentication, and Cloud
-                        Firestore for data storage. Redux Toolkit is used to manage the
-                        app's state.
+                        taskery is developed with React Native, and managed through
+                        Expo. It employs Firebase Auth for authentication, and Cloud
+                        Firestore for data storage. State management is handled using
+                        the Redux Toolkit with Redux Thunk as middleware.
                     </Text>
                 </View>
 
@@ -78,8 +76,8 @@ const About = ({ navigation }) => {
                         ]}
                     />
                     <Text style={themed.textRegular}>
-                        This app is developed by June, a Computer Science undergraduate
-                        whose personal quest to overcome a lack of motivation for task
+                        This app is developed by June, a university student whose
+                        personal quest to overcome a lack of motivation for task
                         completion sparked the idea of turning everyday task management
                         into a more engaging and fulfilling experience.
                     </Text>

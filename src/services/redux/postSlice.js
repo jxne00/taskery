@@ -63,6 +63,7 @@ export const fetchUserPosts = createAsyncThunk(
 
             return posts;
         } catch (err) {
+            console.log(err);
             alert(err);
         }
     },

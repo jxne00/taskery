@@ -155,7 +155,7 @@ const Profile = ({ navigation }) => {
                     />
                 )}
 
-                {/* if 0 posts */}
+                {/* show message if 0 posts */}
                 {!postsLoading &&
                     userPosts.length === 0 &&
                     !postsError &&

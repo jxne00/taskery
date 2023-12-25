@@ -26,15 +26,16 @@ const styles = StyleSheet.create({
     },
     titleInput: {
         borderWidth: 1,
-        padding: 14,
+        padding: 12,
         borderRadius: 20,
         fontSize: 18,
         fontFamily: 'Inter-Medium',
     },
     boxLabel: {
-        fontSize: 18,
-        fontFamily: 'Inter-SemiBold',
-        paddingBottom: 10,
+        fontSize: 16,
+        fontFamily: 'Inter-Medium',
+        paddingBottom: 6,
+        paddingLeft: 4,
     },
     detailsInput: {
         borderWidth: 1,
