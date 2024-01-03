@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '90%',
         marginTop: 10,
-        marginBottom: 20,
+        marginBottom: 10,
     },
     filterRow: {
         marginLeft: 'auto',
@@ -68,6 +68,20 @@ const styles = StyleSheet.create({
         padding: 8,
         borderRadius: 8,
         width: 120,
+    },
+
+    // checkbox
+    checkboxContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        marginLeft: 20,
+        marginBottom: 10,
+    },
+    checkboxLabel: {
+        marginLeft: 8,
+        fontWeight: 500,
+        fontSize: 18,
     },
 });
 

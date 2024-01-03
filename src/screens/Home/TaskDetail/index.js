@@ -1,5 +1,9 @@
 import React from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+import { useTheme } from '../../../hooks/useThemeContext';
+import useThemeStyles from '../../../hooks/useThemeStyles';
 import { toDateDisplay } from '../../../components/timeConverters';
 
 /**
@@ -11,6 +15,11 @@ import { toDateDisplay } from '../../../components/timeConverters';
  */
 // TODO style TaskDetail modal
 const TaskDetail = ({ task, showDetails, setShowDetails, handleEdit }) => {
+    const { theme } = useTheme();
+    const themed = useThemeStyles();
+
+    const subtaskExists = task.subtasks && task.subtasks.length > 0;
+
     return (
         <Modal
             animationType="slide"
@@ -23,23 +32,67 @@ const TaskDetail = ({ task, showDetails, setShowDetails, handleEdit }) => {
                 <View style={styles.modalView}>
                     <Text style={styles.title}>{task.title}</Text>
 
-                    <Text style={styles.details}>{task.details}</Text>
+                    {/* status & deadline in a row */}
+                    <View style={[themed.row, styles.toprow]}>
+                        <Text style={themed.textSemibold}>
+                            Due: {toDateDisplay(task.deadline)}
+                        </Text>
 
-                    <Text style={styles.date}>Due: {toDateDisplay(task.deadline)}</Text>
+                        <View style={styles.taskStatusBtn}>
+                            <View
+                                style={[
+                                    styles.colorCircle,
+                                    {
+                                        backgroundColor: task.completed
+                                            ? theme.green
+                                            : theme.orange,
+                                    },
+                                ]}
+                            />
+                            <Text style={styles.statusText}>
+                                {task.completed ? 'Completed' : 'Not Done'}
+                            </Text>
+                        </View>
+                    </View>
 
-                    <Text style={styles.date}>
-                        {task.completed ? 'Completed' : 'Not Completed'}
-                    </Text>
+                    {/* additional notes */}
+                    {task.details && (
+                        <View style={styles.detailsContainer}>
+                            <Text style={themed.textRegular}>Additional Note:</Text>
+                            <Text style={styles.details}>{task.details}</Text>
+                        </View>
+                    )}
 
                     {/* subtasks */}
-                    <View style={styles.subtasksContainer}>
-                        {task.subtasks.map((subtask, index) => (
-                            <Text key={index} style={styles.subtask}>
-                                {subtask.description} -{' '}
-                                {subtask.completed ? 'Done' : 'Pending'}
-                            </Text>
-                        ))}
-                    </View>
+                    {subtaskExists && (
+                        <View style={styles.subtasksContainer}>
+                            <Text style={themed.textSemibold}>Subtasks:</Text>
+                            <View style={styles.subtaskItems}>
+                                {task.subtasks.map((subtask, index) => (
+                                    <View key={index} style={styles.subtask}>
+                                        {subtask.completed ? (
+                                            <MaterialCommunityIcons
+                                                name="checkbox-marked"
+                                                size={24}
+                                                color={theme.darkGray}
+                                                style={styles.icon}
+                                            />
+                                        ) : (
+                                            <MaterialCommunityIcons
+                                                name="checkbox-blank"
+                                                size={24}
+                                                color={theme.darkGray}
+                                                style={styles.icon}
+                                            />
+                                        )}
+                                        <Text style={styles.subtaskText}>
+                                            {subtask.description}
+                                        </Text>
+                                    </View>
+                                ))}
+                            </View>
+                        </View>
+                    )}
 
                     {/* buttons */}
                     <View style={styles.buttonContainer}>
@@ -78,12 +131,20 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 10,
         padding: 35,
-        alignItems: 'center',
+    },
+    toprow: {
+        justifyContent: 'space-between',
+        marginVertical: 10,
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 10,
+        textAlign: 'center',
+    },
+    detailsContainer: {
+        width: '100%',
+        marginVertical: 10,
     },
     details: {
         fontSize: 18,
@@ -97,11 +158,22 @@ const styles = StyleSheet.create({
     },
     subtasksContainer: {
         width: '100%',
-        marginBottom: 10,
+        marginVertical: 10,
+    },
+    subtaskItems: {
+        marginVertical: 10,
     },
     subtask: {
-        fontSize: 16,
         marginBottom: 10,
+        alignItems: 'center',
+        flexDirection: 'row',
+    },
+    subtaskText: {
+        fontSize: 16,
+        marginLeft: 10,
+    },
+    icon: {
+        marginRight: 10,
     },
 
     buttonContainer: {
@@ -121,6 +193,27 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         textAlign: 'center',
+    },
+
+    // task status button
+    taskStatusBtn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 4,
+        paddingHorizontal: 8,
+        borderRadius: 18,
+        borderWidth: 1,
+    },
+    colorCircle: {
+        width: 12,
+        height: 12,
+        borderRadius: 8,
+        marginRight: 5,
+    },
+    statusText: {
+        fontSize: 14,
+        fontFamily: 'Inter-SemiBold',
     },
 });
 

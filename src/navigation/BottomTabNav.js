@@ -81,7 +81,7 @@ const BottomTabNav = () => {
                 },
             })}>
             <Tab.Screen name="HomeTab" component={HomeStack} />
-            <Tab.Screen name="SessionTab" component={Session} />
+            {/* <Tab.Screen name="SessionTab" component={Session} /> */}
             <Tab.Screen name="CommunityTab" component={CommunityStack} />
             <Tab.Screen name="ProfileTab" component={ProfileStack} />
         </Tab.Navigator>

@@ -66,6 +66,29 @@ const selectTasksForRange = createSelector([selectAllTasks], (tasks, from, to) =
 // TODO selectTasksBySearch - search by title, description, tag, category, or all
 
 // TODO selectTasksBySort - sort by deadline, title, category, tag, or none
+const selectSortedTasks = createSelector(
+    [(state, tasks) => tasks, (state, tasks, sortOrder) => sortOrder],
+    (tasks, sortOrder) => {
+        // sort tasks by deadline in asc or desc order
+        return tasks.slice().sort((a, b) => {
+            if (sortOrder === 'asc') {
+                return dayjs(a.deadline).unix() - dayjs(b.deadline).unix();
+            } else {
+                return dayjs(b.deadline).unix() - dayjs(a.deadline).unix();
+            }
+        });
+    },
+);
+
+const filterByCompletion = createSelector(
+    [(state, tasks) => tasks, (state, tasks, showCompleted) => showCompleted],
+    (tasks, showCompleted) => {
+        if (!showCompleted) {
+            return tasks.filter((task) => !task.is_complete);
+        }
+        return tasks;
+    },
+);
 
 export {
     selectAllTasks,
@@ -73,4 +96,6 @@ export {
     selectTasksForWeek,
     selectTasksForMonth,
     selectTasksForRange,
+    selectSortedTasks,
+    filterByCompletion,
 };

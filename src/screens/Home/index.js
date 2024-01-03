@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 import { useTheme } from '../../hooks/useThemeContext';
 import useGlobalStyles from '../../hooks/useGlobalStyles';
@@ -25,10 +26,21 @@ const Home = ({ navigation }) => {
     const [openDatePicker, setOpenDatePicker] = useState(false);
     const [activePickerInput, setActivePickerInput] = useState(null); // 'from' or 'to'
     const [confirmRange, setConfirmRange] = useState(false);
+    const [sortPickerOpen, setSortPickerOpen] = useState(false);
+    const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc'
+    const [sortOptions, setSortOptions] = useState([
+        { label: 'Deadline (Ascending)', value: 'asc' },
+        { label: 'Deadline (Descending)', value: 'desc' },
+    ]);
+    const [showCompleted, setShowCompleted] = useState(false);
 
     // fetch data from redux store
     const { user, userLoading } = useFetchUser();
-    const { tasks, fetchIsLoading, fetchTasksError } = useFetchTasks(chosenTimeFrame);
+    const { tasks, fetchIsLoading, fetchTasksError } = useFetchTasks(
+        chosenTimeFrame,
+        sortOrder,
+        showCompleted,
+    );
 
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [taskToEdit, setTaskToEdit] = useState(null);
@@ -101,7 +113,7 @@ const Home = ({ navigation }) => {
         week: "This Week's Tasks",
         month: "This Month's Tasks",
         all: 'All Tasks',
-        range: 'Tasks in range',
+        // range: 'Tasks in range',
     };
 
     return (
@@ -118,7 +130,7 @@ const Home = ({ navigation }) => {
                     <ActivityIndicator size="small" color={theme.textLight} />
                 )}
 
-                <MaterialIcons
+                {/* <MaterialIcons
                     name="today"
                     size={30}
                     color={theme.text}
@@ -129,7 +141,7 @@ const Home = ({ navigation }) => {
                             tasks,
                         })
                     }
-                />
+                /> */}
             </View>
 
             {/* buttons to select view period */}
@@ -138,7 +150,7 @@ const Home = ({ navigation }) => {
                 {optionButton('today')}
                 {optionButton('week')}
                 {optionButton('month')}
-                {optionButton('range')}
+                {/* {optionButton('range')} */}
             </View>
 
             {/* choosing date range */}
@@ -217,19 +229,36 @@ const Home = ({ navigation }) => {
 
                 {/* filter & sort */}
                 <View style={[global.row, styles.filterRow]}>
-                    <MaterialIcons
+                    {/* <MaterialIcons
                         name="filter-list-alt"
                         size={26}
                         color={theme.text}
                         // TODO implement filter function
                         onPress={() => console.log('filter (TODO!!!)')}
-                    />
+                    /> */}
                     <MaterialIcons
                         name="sort"
                         size={26}
                         color={theme.text} // TODO implement sort function
-                        onPress={() => console.log('sort (TODO!!!)')}
+                        onPress={() => setSortPickerOpen(!sortPickerOpen)}
                     />
+                    {sortPickerOpen && (
+                        <DropDownPicker
+                            open={sortPickerOpen}
+                            value={sortOrder}
+                            items={sortOptions}
+                            setOpen={setSortPickerOpen}
+                            setValue={setSortOrder}
+                            setItems={setSortOptions}
+                            listMode="MODAL"
+                            textStyle={{ color: theme.text }}
+                            onChangeValue={(value) => {
+                                // Update tasks sorting based on selected value
+                                console.log(`pressed sort by ${value}`);
+                                setSortOrder(value);
+                            }}
+                        />
+                    )}
                 </View>
             </View>
 
@@ -251,7 +280,28 @@ const Home = ({ navigation }) => {
 
             {/* list of tasks */}
             {!fetchIsLoading && tasks.length > 0 && (
-                <TaskList tasklist={tasks} handleEdit={handleEdit} />
+                <>
+                    <View style={styles.checkboxContainer}>
+                        <TouchableOpacity
+                            onPress={() => setShowCompleted(!showCompleted)}>
+                            {showCompleted ? (
+                                <MaterialIcons
+                                    name="check-box"
+                                    size={24}
+                                    color={theme.text}
+                                />
+                            ) : (
+                                <MaterialIcons
+                                    name="check-box-outline-blank"
+                                    size={24}
+                                    color={theme.text}
+                                />
+                            )}
+                        </TouchableOpacity>
+                        <Text style={styles.checkboxLabel}>Show completed</Text>
+                    </View>
+                    <TaskList tasklist={tasks} handleEdit={handleEdit} />
+                </>
             )}
 
             {/* create new task */}

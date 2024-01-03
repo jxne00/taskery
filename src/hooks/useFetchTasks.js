@@ -10,27 +10,40 @@ import {
     selectTasksForWeek,
     selectTasksForMonth,
     selectTasksForRange,
+    selectSortedTasks,
+    filterByCompletion,
 } from '../services/redux/taskSelectors';
 
 /** Custom hook for fetching tasks from redux store */
-const useFetchTasks = (chosenTimeFrame) => {
+const useFetchTasks = (chosenTimeFrame, sortOrder, showCompleted) => {
     const dispatch = useDispatch();
 
     const userId = auth.currentUser?.uid;
 
+    // select tasks based on chosenTimeFrame and sortOrder
     const tasks = useSelector((state) => {
+        let selectedTasks;
         switch (chosenTimeFrame) {
             case 'today':
-                return selectTasksForToday(state);
+                selectedTasks = selectTasksForToday(state);
+                break;
             case 'week':
-                return selectTasksForWeek(state);
+                selectedTasks = selectTasksForWeek(state);
+                break;
             case 'month':
-                return selectTasksForMonth(state);
+                selectedTasks = selectTasksForMonth(state);
+                break;
             case 'all':
-                return selectAllTasks(state);
+                selectedTasks = selectAllTasks(state);
+                break;
             default:
-                return selectAllTasks(state);
+                selectedTasks = selectAllTasks(state);
         }
+
+        // filter tasks by completion
+        selectedTasks = filterByCompletion(state, selectedTasks, showCompleted);
+
+        return selectSortedTasks(state, selectedTasks, sortOrder);
     });
 
     const fetchIsLoading = useSelector((state) => state.tasks.loading.fetchTasks);

@@ -138,7 +138,7 @@ const TaskList = ({ tasklist, handleEdit }) => {
 
             <View style={styles.btmRow}>
                 {/* tags */}
-                {item.tags && (
+                {item.tags && item.tags.length > 0 ? (
                     <View style={styles.tagContainer}>
                         {item.tags.map((tag) => (
                             <View
@@ -154,6 +154,8 @@ const TaskList = ({ tasklist, handleEdit }) => {
                             </View>
                         ))}
                     </View>
+                ) : (
+                    <View></View>
                 )}
 
                 {/* context menu with 'edit', 'delete', 'duplicate' options */}
