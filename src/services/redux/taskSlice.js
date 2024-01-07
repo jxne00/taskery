@@ -5,22 +5,18 @@ import { toTimestamp } from '../firebase/helper';
 /** fetch user's tasks from firestore */
 export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async (userId) => {
     try {
-        console.log(': (AsyncThunk) fetching tasks!');
         const tasksRef = db.collection('users').doc(userId).collection('tasks');
         const snapshot = await tasksRef.get();
         const tasks = [];
 
         snapshot.forEach((doc) => {
             const data = doc.data();
-
-            if (data.deadline) {
-                // convert firestore timestamp to milliseconds
-                data.deadline = data.deadline.toMillis();
-            }
+            // convert firestore timestamp to milliseconds
+            if (data.deadline) data.deadline = data.deadline.toMillis();
 
             tasks.push({ ...data, id: doc.id });
         });
-
+        console.log('\n---->', tasks.length, 'tasks fetched');
         return tasks;
     } catch (err) {
         alert(err);
@@ -51,7 +47,7 @@ export const addTask = createAsyncThunk(
                 .doc(userId)
                 .collection('tasks')
                 .add(dataForStore);
-
+            console.log('\n----> new task created with ID:', docRef.id);
             return { ...taskDetails, id: docRef.id };
         } catch (err) {
             alert(err.message);
@@ -79,7 +75,7 @@ export const updateTask = createAsyncThunk(
                 .collection('tasks')
                 .doc(taskId)
                 .update(dataForStore);
-
+            console.log('\n---->', taskId, 'updated');
             return { ...taskDetails, id: taskId };
         } catch (err) {
             alert(err.message);
@@ -99,7 +95,7 @@ export const deleteTask = createAsyncThunk(
                 .doc(taskId)
                 .delete();
 
-            console.log('(AsyncThunk) task deleted!');
+            console.log('\n---->', taskId, 'deleted');
 
             return taskId;
         } catch (err) {

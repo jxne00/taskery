@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
     },
     checkboxLabel: {
         marginLeft: 8,
-        fontWeight: 500,
         fontSize: 18,
     },
 });
