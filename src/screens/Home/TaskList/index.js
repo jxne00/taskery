@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     FlatList,
@@ -25,7 +25,7 @@ import TaskDetail from '../TaskDetail';
  * @param tasklist - list of tasks
  * @param handleEdit - handle editing of task
  */
-const TaskList = ({ tasklist, handleEdit }) => {
+const TaskList = ({ tasklist, handleEdit, filters }) => {
     const { theme } = useTheme();
     const dispatch = useDispatch();
     const userId = auth.currentUser?.uid;
@@ -37,6 +37,11 @@ const TaskList = ({ tasklist, handleEdit }) => {
     const [togglingID, setTogglingID] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
     const [showTaskDetail, setShowTaskDetail] = useState(false);
+
+    const showStatus = filters[0].value;
+    const showDescription = filters[1].value;
+    const showDeadline = filters[2].value;
+    const showTags = filters[3].value;
 
     /** handle context menu press */
     const handleMenuPress = (value, id) => {
@@ -97,48 +102,51 @@ const TaskList = ({ tasklist, handleEdit }) => {
             style={[styles.taskContainer, { borderColor: theme.textLight }]}>
             <View style={styles.toprow}>
                 {/* task completion status */}
-                <TouchableOpacity
-                    style={[styles.taskStatusBtn, { borderColor: theme.textLight }]}
-                    onPress={() => handleStatusToggle(item.id, item.is_complete)}>
-                    <View
-                        style={[
-                            styles.colorCircle,
-                            {
-                                backgroundColor: item.is_complete
-                                    ? theme.green
-                                    : theme.orange,
-                            },
-                        ]}
-                    />
+                {showStatus && (
+                    <TouchableOpacity
+                        style={[styles.taskStatusBtn, { borderColor: theme.textLight }]}
+                        onPress={() => handleStatusToggle(item.id, item.is_complete)}>
+                        <View
+                            style={[
+                                styles.colorCircle,
+                                {
+                                    backgroundColor: item.is_complete
+                                        ? theme.green
+                                        : theme.orange,
+                                },
+                            ]}
+                        />
 
-                    <Text style={[styles.statusText, { color: theme.textLight }]}>
-                        {toggleIsLoading && togglingID === item.id
-                            ? 'Loading...'
-                            : item.is_complete
-                            ? 'Completed'
-                            : 'Not Done'}
-                    </Text>
-                </TouchableOpacity>
+                        <Text style={[styles.statusText, { color: theme.textLight }]}>
+                            {toggleIsLoading && togglingID === item.id
+                                ? 'Loading...'
+                                : item.is_complete
+                                ? 'Completed'
+                                : 'Not Done'}
+                        </Text>
+                    </TouchableOpacity>
+                )}
 
                 {/* deadline */}
-                <Text style={[styles.taskDeadline, { color: theme.textLight }]}>
-                    <AntDesign name="calendar" size={16} color={theme.textLight} />{' '}
-                    {toDateDisplay(item.deadline)}
-                </Text>
+                {showDeadline && (
+                    <Text style={[styles.taskDeadline, { color: theme.textLight }]}>
+                        <AntDesign name="calendar" size={16} color={theme.textLight} />{' '}
+                        {toDateDisplay(item.deadline)}
+                    </Text>
+                )}
             </View>
 
             <Text style={[styles.taskTitle, { color: theme.text }]}>{item.title}</Text>
 
             {/* details of task */}
-            {item.details && (
+            {item.details && showDescription && (
                 <Text style={[styles.taskDetail, { color: theme.text }]}>
                     {item.details}
                 </Text>
             )}
-
             <View style={styles.btmRow}>
                 {/* tags */}
-                {item.tags && item.tags.length > 0 ? (
+                {item.tags && item.tags.length > 0 && showTags ? (
                     <View style={styles.tagContainer}>
                         {item.tags.map((tag) => (
                             <View

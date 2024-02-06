@@ -62,7 +62,7 @@ const CreateTask = (props) => {
     // tags
     const [tag, setTag] = useState('');
     const [tags, setTags] = useState([]);
-    const presetColors = ['#0000ff', '#008080', '#ff0000', '#ee82ee', '#ffff00'];
+    const presetColors = ['#0000ff', '#008080', '#ff0000', '#ee82ee', '#ffdb58'];
     const [selectedColor, setSelectedColor] = useState(presetColors[0]);
 
     // prefill input details if editing task
