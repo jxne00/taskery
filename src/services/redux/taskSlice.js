@@ -16,7 +16,6 @@ export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async (userId) =>
 
             tasks.push({ ...data, id: doc.id });
         });
-        console.log('\n---->', tasks.length, 'tasks fetched');
         return tasks;
     } catch (err) {
         alert(err);
@@ -47,7 +46,6 @@ export const addTask = createAsyncThunk(
                 .doc(userId)
                 .collection('tasks')
                 .add(dataForStore);
-            console.log('\n----> new task created with ID:', docRef.id);
             return { ...taskDetails, id: docRef.id };
         } catch (err) {
             alert(err.message);

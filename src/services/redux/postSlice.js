@@ -4,8 +4,6 @@ import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
 
 /** fetch all public posts from firestore */
 export const fetchAllPosts = createAsyncThunk('posts/fetchAllPosts', async () => {
-    console.log('-> [AsyncThunk] fetching all public posts...');
-
     try {
         // get all posts that are public
         const postsRef = collection(db, 'posts');
@@ -38,8 +36,6 @@ export const fetchAllPosts = createAsyncThunk('posts/fetchAllPosts', async () =>
 export const fetchUserPosts = createAsyncThunk(
     'posts/fetchUserPosts',
     async (userId) => {
-        console.log('-> [AsyncThunk] fetching user posts...');
-
         try {
             // get all posts posted by current user
             const postsRef = collection(db, 'posts');

@@ -17,9 +17,9 @@ import CreateTask from './CreateTask';
 import FilterOptionModal from '../../components/Modals/FilterOptionModal';
 
 /**
- * The home screen displays a list of tasks
+ * The home screen which displays a list tasks
  */
-const Home = () => {
+const Home = ({ navigation }) => {
     const { theme, themeType } = useTheme();
     const global = useGlobalStyles();
 
@@ -39,7 +39,7 @@ const Home = () => {
 
     // fetch data from redux store
     const { user, userLoading } = useFetchUser();
-    const { tasks, fetchIsLoading, fetchTasksError } = useFetchTasks(
+    const { tasks, fetchIsLoading } = useFetchTasks(
         chosenTimeFrame,
         sortOrder,
         showCompleted,
@@ -126,12 +126,7 @@ const Home = () => {
                     size={30}
                     color={theme.text}
                     style={{ marginLeft: 'auto' }}
-                    // TODO implement calendar function
-                    onPress={() =>
-                        navigation.navigate('Calendar', {
-                            tasks,
-                        })
-                    }
+                    onPress={() => navigation.navigate('Calendar')}
                 />
             </View>
 
@@ -161,7 +156,7 @@ const Home = () => {
                         <MaterialIcons
                             name="sort"
                             size={26}
-                            color={theme.text} // TODO implement sort function
+                            color={theme.text}
                             onPress={() => setSortPickerOpen(!sortPickerOpen)}
                         />
                         {sortPickerOpen && (

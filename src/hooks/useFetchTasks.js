@@ -9,12 +9,17 @@ import {
     selectTasksForToday,
     selectTasksForWeek,
     selectTasksForMonth,
-    selectTasksForRange,
     selectSortedTasks,
     filterByCompletion,
 } from '../services/redux/taskSelectors';
 
-/** Custom hook for fetching tasks from redux store */
+/**
+ * Custom hook for fetching tasks from redux store
+ *
+ * @param {string} chosenTimeFrame - today, week, month, all
+ * @param {string} sortOrder - date, priority, title
+ * @param {boolean} showCompleted - show or hide completed tasks
+ */
 const useFetchTasks = (chosenTimeFrame, sortOrder, showCompleted) => {
     const dispatch = useDispatch();
 
