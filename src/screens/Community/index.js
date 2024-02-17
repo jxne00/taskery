@@ -17,16 +17,20 @@ import { useTheme } from '../../hooks/useThemeContext';
 import useThemeStyles from '../../hooks/useThemeStyles';
 
 import { fetchAllPosts, fetchComments } from '../../services/redux/postSlice';
+import useFetchUser from '../../hooks/useFetchUser';
 import { timeSinceDate } from '../../components/timeConverters';
 
 /** The community screen that shows posts shared by other uses */
-const Community = () => {
+const Community = ({ navigation }) => {
     const themed = useThemeStyles();
     const { theme } = useTheme();
 
     const dispatch = useDispatch();
 
-    // get all posts from redux store
+    // fetch user data
+    const { user, userLoading, userError } = useFetchUser();
+
+    // retrieve posts content from redux store
     const allPosts = useSelector((state) => state.posts.allPosts);
     const postsLoading = useSelector((state) => state.posts.loading.allPosts);
     const postsError = useSelector((state) => state.posts.error);
@@ -47,23 +51,21 @@ const Community = () => {
         }
     }, [selectedPostID, dispatch]);
 
-    // refetch posts on refresh
+    // refetch posts when screen is pulled down
     const handleRefresh = () => {
         setRefreshing(true);
         dispatch(fetchAllPosts());
         setRefreshing(false);
     };
 
-    // TODO like post (make heart full if already liked)
+    // TODO like post with user id
     const handleLike = () => {
         console.log('TODO: like post');
     };
 
-    // TODO style comments modal
     const CommentsModal = () => {
         // get comments from post
         const comments = allPosts.find((post) => post.id === selectedPostID).comments;
-        console.log('(CommentsModal) Display comments: ', comments);
 
         // close modal
         const handleModalClose = () => {
@@ -84,10 +86,9 @@ const Community = () => {
                             {comments && ` (${comments.length})`}
                         </Text>
 
-                        {/* comments */}
-                        {comments && comments.length > 0 && (
-                            <View style={styles.commentsContainer}>
-                                {comments.map((comment) => (
+                        <View style={styles.commentsContainer}>
+                            {comments && comments.length > 0 ? (
+                                comments.map((comment) => (
                                     <View
                                         key={comment.id}
                                         style={styles.commentContainer}>
@@ -99,9 +100,14 @@ const Community = () => {
                                             {timeSinceDate(comment.time_created)})
                                         </Text>
                                     </View>
-                                ))}
-                            </View>
-                        )}
+                                ))
+                            ) : (
+                                // if no comments
+                                <Text style={themed.textRegularLight}>
+                                    Be the first to comment!
+                                </Text>
+                            )}
+                        </View>
 
                         {/* close modal */}
                         <TouchableOpacity
@@ -124,8 +130,21 @@ const Community = () => {
 
         return (
             <View style={[styles.postContainer, { borderColor: theme.textLight }]}>
-                {/* TODO display post user's name & avatar */}
-                <View style={[themed.row, styles.topRow]}>
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate('PostDetail', { item });
+                    }}>
+                    <Text style={themed.subHeaderText}>{item.title}</Text>
+
+                    {item.content && (
+                        <Text style={[themed.textRegular, styles.content]}>
+                            {item.content}
+                        </Text>
+                    )}
+                </TouchableOpacity>
+
+                {/* likes and comments */}
+                <View style={styles.statRow}>
                     <View style={themed.row}>
                         <AntDesign
                             name="user"
@@ -136,37 +155,34 @@ const Community = () => {
                         <Text style={themed.textRegularLight}>{item.userName}</Text>
                     </View>
 
-                    <Text style={[themed.textRegularLight, styles.createdDate]}>
-                        {timeSinceDate(item.time_created)}
-                    </Text>
-                </View>
+                    <View style={themed.row}>
+                        <TouchableOpacity style={themed.row} onPress={handleLike}>
+                            <AntDesign
+                                name="hearto"
+                                size={20}
+                                color={theme.darkgray}
+                                style={{ marginRight: 3 }}
+                            />
+                            <Text style={themed.textRegularLight}>{item.numLikes}</Text>
+                        </TouchableOpacity>
 
-                <Text style={themed.subHeaderText}>{item.title}</Text>
+                        {/* add a space */}
+                        <Text> </Text>
 
-                {item.content && (
-                    <Text style={[themed.textRegular, styles.content]}>
-                        {item.content}
-                    </Text>
-                )}
-
-                {/* likes and comments */}
-                <View style={styles.statRow}>
-                    <TouchableOpacity style={themed.row} onPress={handleLike}>
-                        <AntDesign
-                            name="hearto"
-                            size={20}
-                            color={theme.red}
-                            style={{ marginRight: 3 }}
-                        />
-                        <Text style={themed.textRegular}>{item.numLikes}</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={themed.row} onPress={handleCommentPress}>
-                        <Text style={themed.textRegularLight}>
-                            {item.numComments}{' '}
-                            {item.numComments === 1 ? 'comment' : 'comments'}
-                        </Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity
+                            style={themed.row}
+                            onPress={handleCommentPress}>
+                            <AntDesign
+                                name="message1"
+                                size={20}
+                                color={theme.darkgray}
+                                style={{ marginRight: 3 }}
+                            />
+                            <Text style={themed.textRegularLight}>
+                                {item.numComments}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         );
@@ -180,17 +196,15 @@ const Community = () => {
                         Community Posts
                     </Text>
                     <AntDesign
-                        name="message1"
+                        name="pluscircle"
                         size={24}
                         color={theme.text}
                         style={{ marginRight: 15 }}
-                        onPress={() => {
-                            console.log('TODO: message?');
-                        }}
+                        onPress={() => navigation.navigate('CreatePost', { user })}
                     />
                 </View>
 
-                <View style={[styles.halfLine, { backgroundColor: theme.blue }]} />
+                <View style={[styles.halfLine, { backgroundColor: theme.gray }]} />
 
                 {postsError && (
                     <Text style={themed.textRegular}>Error: {postsError}</Text>

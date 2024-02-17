@@ -6,13 +6,13 @@ import { storeAvatar } from '../firebase/helper';
 const fetchUser = createAsyncThunk(
     'user/fetchUser',
     async (userId, { rejectWithValue }) => {
-        console.log(': [Redux] fetching user...');
-
         try {
             const userRef = db.collection('users').doc(userId);
             const doc = await userRef.get();
             const data = doc.data();
 
+            // add user id to data
+            data.id = doc.id;
             return data;
         } catch (err) {
             return rejectWithValue(err.message);

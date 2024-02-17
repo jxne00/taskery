@@ -18,6 +18,8 @@ import EditProfile from '../screens/Profile/EditProfile';
 import Settings from '../screens/Profile/Settings';
 import About from '../screens/Profile/About';
 import Community from '../screens/Community';
+import CreatePost from '../screens/Community/CreatePost';
+import PostDetail from '../screens/Community/PostDetail';
 
 const StackA = createStackNavigator();
 const StackH = createStackNavigator();
@@ -73,6 +75,8 @@ const CommunityStack = () => {
                 headerShown: false,
             }}>
             <StackC.Screen name="Community" component={Community} />
+            <StackC.Screen name="CreatePost" component={CreatePost} />
+            <StackC.Screen name="PostDetail" component={PostDetail} />
         </StackC.Navigator>
     );
 };

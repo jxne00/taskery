@@ -40,23 +40,6 @@ const selectTasksForMonth = createSelector([selectAllTasks], (tasks) => {
     });
 });
 
-// TODO selectTasksForRange - for tasks due within a given range
-const selectTasksForRange = createSelector([selectAllTasks], (tasks, from, to) => {
-    const startOfRange = dayjs(from);
-    const endOfRange = dayjs(to);
-
-    console.log('startOfRange: ', startOfRange, '|| endOfRange: ', endOfRange);
-
-    return tasks.filter((task) => {
-        const taskDate = dayjs(task.deadline);
-        const isInRange = taskDate.isBetween(startOfRange, endOfRange, null, '[]');
-
-        console.log('taskDate: ', taskDate, '|| isInRange: ', isInRange);
-
-        return isInRange;
-    });
-});
-
 // TODO selectTasksByTag - for tasks with a given tag
 
 // TODO selectTasksByCateory - for tasks in a category
@@ -95,7 +78,6 @@ export {
     selectTasksForToday,
     selectTasksForWeek,
     selectTasksForMonth,
-    selectTasksForRange,
     selectSortedTasks,
     filterByCompletion,
 };
