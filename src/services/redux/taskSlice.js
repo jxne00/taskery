@@ -92,9 +92,6 @@ export const deleteTask = createAsyncThunk(
                 .collection('tasks')
                 .doc(taskId)
                 .delete();
-
-            console.log('\n---->', taskId, 'deleted');
-
             return taskId;
         } catch (err) {
             alert(err.message);
@@ -116,8 +113,6 @@ export const toggleCompletion = createAsyncThunk(
                 .update({
                     is_complete: newStatus,
                 });
-
-            console.log('(AsyncThunk) task status toggled!');
 
             return { taskId, is_complete: newStatus };
         } catch (err) {

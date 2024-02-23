@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     Modal,
+    Alert,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { AntDesign } from '@expo/vector-icons';
@@ -16,7 +17,13 @@ import CustomStatusBar from '../../components/StatusBar';
 import { useTheme } from '../../hooks/useThemeContext';
 import useThemeStyles from '../../hooks/useThemeStyles';
 
-import { fetchAllPosts, fetchComments } from '../../services/redux/postSlice';
+import {
+    fetchAllPosts,
+    deletePost,
+    toggleLike,
+    addComment,
+    deleteComment,
+} from '../../services/redux/postSlice';
 import useFetchUser from '../../hooks/useFetchUser';
 import { timeSinceDate } from '../../components/timeConverters';
 
@@ -34,22 +41,17 @@ const Community = ({ navigation }) => {
     const allPosts = useSelector((state) => state.posts.allPosts);
     const postsLoading = useSelector((state) => state.posts.loading.allPosts);
     const postsError = useSelector((state) => state.posts.error);
-    const commentsLoading = useSelector((state) => state.posts.loading.comments);
+
+    const likesLoading = useSelector((state) => state.posts.loading.likes);
 
     const [refreshing, setRefreshing] = useState(false);
     const [selectedPostID, setSelectedPostID] = useState(null);
     const [commentsVisible, setCommentsVisible] = useState(false);
+    const [updatingLikes, setUpdatingLikes] = useState(false);
 
     useEffect(() => {
         dispatch(fetchAllPosts());
     }, [dispatch]);
-
-    // fetch comments for selected post
-    useEffect(() => {
-        if (selectedPostID) {
-            dispatch(fetchComments(selectedPostID));
-        }
-    }, [selectedPostID, dispatch]);
 
     // refetch posts when screen is pulled down
     const handleRefresh = () => {
@@ -58,9 +60,27 @@ const Community = ({ navigation }) => {
         setRefreshing(false);
     };
 
-    // TODO like post with user id
-    const handleLike = () => {
-        console.log('TODO: like post');
+    const handleLike = (postId, userId) => {
+        setUpdatingLikes(postId);
+        dispatch(toggleLike({ postId, userId })).then(() => {
+            setUpdatingLikes(false);
+        });
+    };
+
+    const handlePostDelete = (postId) => {
+        // delete confirmation
+        Alert.alert('Delete Post', 'Are you sure you want to delete?', [
+            {
+                text: 'Cancel',
+                style: 'cancel',
+            },
+            {
+                text: 'OK',
+                onPress: () => {
+                    dispatch(deletePost(postId));
+                },
+            },
+        ]);
     };
 
     const CommentsModal = () => {
@@ -128,8 +148,20 @@ const Community = ({ navigation }) => {
             setCommentsVisible(true);
         };
 
+        // check if post is by current user
+        const isOwnPost = user.id === item.userId;
+
+        const likeCount = item.likes ? item.likes.length : 0;
+        const commentCount = item.comments ? item.comments.length : 0;
+
+        let userHasLiked = false;
+        if (item.likes) {
+            userHasLiked = item.likes.includes(user.id);
+        }
+
         return (
             <View style={[styles.postContainer, { borderColor: theme.textLight }]}>
+                {/* go to details page on press */}
                 <TouchableOpacity
                     onPress={() => {
                         navigation.navigate('PostDetail', { item });
@@ -146,31 +178,63 @@ const Community = ({ navigation }) => {
                 {/* likes and comments */}
                 <View style={styles.statRow}>
                     <View style={themed.row}>
-                        <AntDesign
-                            name="user"
-                            size={16}
-                            color={theme.text}
-                            style={{ marginRight: 3 }}
-                        />
-                        <Text style={themed.textRegularLight}>{item.userName}</Text>
+                        {/* show delete if post is by current user */}
+                        {isOwnPost ? (
+                            <View>
+                                <AntDesign
+                                    name="delete"
+                                    size={20}
+                                    color={theme.red}
+                                    onPress={() => handlePostDelete(item.id)}
+                                />
+                            </View>
+                        ) : (
+                            <View style={themed.row}>
+                                <AntDesign
+                                    name="user"
+                                    size={16}
+                                    color={theme.text}
+                                    style={{ marginRight: 3 }}
+                                />
+                                <Text style={themed.textRegularLight}>
+                                    {item.userName}
+                                </Text>
+                            </View>
+                        )}
                     </View>
 
                     <View style={themed.row}>
-                        <TouchableOpacity style={themed.row} onPress={handleLike}>
-                            <AntDesign
-                                name="hearto"
-                                size={20}
-                                color={theme.darkgray}
-                                style={{ marginRight: 3 }}
-                            />
-                            <Text style={themed.textRegularLight}>{item.numLikes}</Text>
-                        </TouchableOpacity>
-
-                        {/* add a space */}
-                        <Text> </Text>
-
                         <TouchableOpacity
                             style={themed.row}
+                            onPress={() => handleLike(item.id, user.id)}>
+                            {likesLoading && updatingLikes === item.id ? (
+                                <ActivityIndicator size="small" color={theme.text} />
+                            ) : (
+                                <>
+                                    {userHasLiked ? (
+                                        <AntDesign
+                                            name="heart"
+                                            size={20}
+                                            color={theme.red}
+                                            style={{ marginRight: 3 }}
+                                        />
+                                    ) : (
+                                        <AntDesign
+                                            name="hearto"
+                                            size={20}
+                                            color={theme.darkgray}
+                                            style={{ marginRight: 3 }}
+                                        />
+                                    )}
+                                    <Text style={themed.textRegularLight}>
+                                        {likeCount}
+                                    </Text>
+                                </>
+                            )}
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={[themed.row, { marginLeft: 12 }]}
                             onPress={handleCommentPress}>
                             <AntDesign
                                 name="message1"
@@ -178,9 +242,7 @@ const Community = ({ navigation }) => {
                                 color={theme.darkgray}
                                 style={{ marginRight: 3 }}
                             />
-                            <Text style={themed.textRegularLight}>
-                                {item.numComments}
-                            </Text>
+                            <Text style={themed.textRegularLight}>{commentCount}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -192,8 +254,13 @@ const Community = ({ navigation }) => {
         <SafeAreaView style={themed.container}>
             <View style={themed.container}>
                 <View style={[themed.row, styles.topRow]}>
-                    <Text style={[themed.headerText, styles.title]}>
-                        Community Posts
+                    <Text
+                        style={[
+                            themed.textPoetsen,
+                            styles.title,
+                            { color: theme.text },
+                        ]}>
+                        COMMUNITY POSTS
                     </Text>
                     <AntDesign
                         name="pluscircle"
@@ -229,7 +296,7 @@ const Community = ({ navigation }) => {
                     />
                 )}
 
-                {selectedPostID && !commentsLoading && <CommentsModal />}
+                {selectedPostID && <CommentsModal />}
             </View>
             <CustomStatusBar />
         </SafeAreaView>
@@ -240,6 +307,7 @@ const styles = StyleSheet.create({
     title: {
         paddingHorizontal: 10,
         paddingVertical: 5,
+        fontSize: 24,
     },
     halfLine: {
         width: '45%',
@@ -248,10 +316,13 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     postContainer: {
-        padding: 10,
-        marginBottom: 10,
-        marginHorizontal: 5,
-        borderBottomWidth: 1,
+        marginVertical: 10,
+        borderWidth: 1,
+        borderRadius: 10,
+        paddingHorizontal: 15,
+        paddingVertical: 12,
+        width: '95%',
+        alignSelf: 'center',
     },
     topRow: {
         justifyContent: 'space-between',

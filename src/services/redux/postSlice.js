@@ -1,6 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { db } from '../firebase';
-import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
+import {
+    collection,
+    getDocs,
+    query,
+    where,
+    orderBy,
+    doc,
+    getDoc,
+    updateDoc,
+} from 'firebase/firestore';
 import { toTimestamp } from '../firebase/helper';
 
 /** fetch all public posts from firestore */
@@ -25,6 +34,23 @@ export const fetchAllPosts = createAsyncThunk('posts/fetchAllPosts', async () =>
             posts.push({ ...data, id: doc.id });
         });
 
+        // fetch comments for each post
+        for (const post of posts) {
+            const commentsRef = collection(db, 'posts', post.id, 'comments');
+            const commentsSnapshot = await getDocs(commentsRef);
+            const comments = [];
+
+            commentsSnapshot.forEach((doc) => {
+                const data = doc.data();
+                // convert firestore timestamp to milliseconds
+                data.time_created = data.time_created.toMillis();
+
+                comments.push({ ...data, id: doc.id });
+            });
+
+            post.comments = comments;
+        }
+
         return posts;
     } catch (err) {
         console.log(err);
@@ -32,7 +58,7 @@ export const fetchAllPosts = createAsyncThunk('posts/fetchAllPosts', async () =>
     }
 });
 
-/** fetch user's posts from firestore */
+/** fetch all posts by a user */
 export const fetchUserPosts = createAsyncThunk(
     'posts/fetchUserPosts',
     async (userId) => {
@@ -52,10 +78,26 @@ export const fetchUserPosts = createAsyncThunk(
                 const data = doc.data();
                 // convert firestore timestamp to milliseconds
                 data.time_created = data.time_created.toMillis();
-                data.time_edited = data.time_edited.toMillis();
 
                 posts.push({ ...data, id: doc.id });
             });
+
+            // fetch comments for each post
+            for (const post of posts) {
+                const commentsRef = collection(db, 'posts', post.id, 'comments');
+                const commentsSnapshot = await getDocs(commentsRef);
+                const comments = [];
+
+                commentsSnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    // convert firestore timestamp to milliseconds
+                    data.time_created = data.time_created.toMillis();
+
+                    comments.push({ ...data, id: doc.id });
+                });
+
+                post.comments = comments;
+            }
 
             return posts;
         } catch (err) {
@@ -64,75 +106,6 @@ export const fetchUserPosts = createAsyncThunk(
         }
     },
 );
-
-/** fetch comments of each post */
-export const fetchComments = createAsyncThunk('posts/fetchComments', async (postId) => {
-    console.log('-> [AsyncThunk] fetching comments...');
-
-    try {
-        // fetch comments from firestore
-        const commentsRef = collection(db, 'posts', postId, 'comments');
-        const snapshot = await getDocs(commentsRef);
-        const comments = [];
-
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            // convert firestore timestamp to milliseconds
-            data.time_created = data.time_created.toMillis();
-
-            comments.push({ ...data, id: doc.id });
-        });
-
-        return { postId, comments };
-    } catch (err) {
-        alert(err);
-    }
-});
-
-/** fetch likes */
-export const fetchLikes = createAsyncThunk('posts/fetchLikes', async (postId) => {
-    console.log('-> [AsyncThunk] fetching likes...');
-    try {
-        // fetch likes from firestore
-        const likesRef = collection(db, 'posts', postId, 'likes');
-        const snapshot = await getDocs(likesRef);
-        const likes = [];
-
-        snapshot.forEach((doc) => {
-            likes.push(doc.data());
-        });
-
-        return { postId, likes };
-    } catch (err) {
-        alert(err);
-    }
-});
-
-/** add like to post */
-export const addLike = createAsyncThunk('posts/addLike', async (like) => {
-    try {
-        // add like to firestore
-        const likesRef = collection(db, 'posts', like.postId, 'likes');
-        await likesRef.add(like);
-        return like;
-    } catch (err) {
-        console.log(err);
-        alert(err);
-    }
-});
-
-/** remove like from post */
-export const removeLike = createAsyncThunk('posts/removeLike', async (like) => {
-    try {
-        // remove like from firestore
-        const likeRef = collection(db, 'posts', like.postId, 'likes').doc(like.id);
-        await likeRef.delete();
-        return like;
-    } catch (err) {
-        console.log(err);
-        alert(err);
-    }
-});
 
 /** add a new post to firestore */
 export const addPost = createAsyncThunk('posts/addPost', async (post) => {
@@ -157,12 +130,48 @@ export const addPost = createAsyncThunk('posts/addPost', async (post) => {
     }
 });
 
+/** toggle like */
+export const toggleLike = createAsyncThunk(
+    'posts/toggleLike',
+    async ({ postId, userId }) => {
+        try {
+            const postRef = doc(db, 'posts', postId);
+            const snapshot = await getDoc(postRef);
+
+            if (!snapshot.exists()) {
+                throw new Error('Post does not exist.');
+            }
+
+            const postData = snapshot.data();
+            let likes = postData.likes || [];
+
+            // check if user already liked post
+            const index = likes.indexOf(userId);
+
+            if (index !== -1) {
+                // remove if already liked
+                likes.splice(index, 1);
+            } else {
+                // add if not liked
+                likes.push(userId);
+            }
+
+            // update firestore with new like list
+            await updateDoc(postRef, { likes });
+
+            return { postId, likes };
+        } catch (err) {
+            console.log('(posts/toggleLike)', err);
+            alert(err);
+        }
+    },
+);
+
 /** delete a post */
 export const deletePost = createAsyncThunk('posts/deletePost', async (postId) => {
     try {
         // delete post from firestore
-        const postRef = collection(db, 'posts').doc(postId);
-        await postRef.delete();
+        await db.collection('posts').doc(postId).delete();
         return postId;
     } catch (err) {
         console.log(err);
@@ -201,7 +210,6 @@ export const deleteComment = createAsyncThunk(
     },
 );
 
-// Posts slice
 const postsSlice = createSlice({
     name: 'posts',
     initialState: {
@@ -244,61 +252,6 @@ const postsSlice = createSlice({
                 state.error = action.error.message;
             })
 
-            // ============ fetch comments ============ //
-            .addCase(fetchComments.pending, (state) => {
-                state.loading.comments = true;
-            })
-            .addCase(fetchComments.fulfilled, (state, action) => {
-                state.loading.comments = false;
-                const { postId, comments } = action.payload;
-                // find and add fetched comments to the post
-                const index = state.allPosts.findIndex((post) => post.id === postId);
-                if (index !== -1) {
-                    state.allPosts[index].comments = comments;
-                }
-            })
-            .addCase(fetchComments.rejected, (state) => {
-                state.loading.comments = false;
-            })
-
-            // ============ fetch likes ============ //
-            .addCase(fetchLikes.pending, (state) => {
-                state.loading.likes = true;
-            })
-            .addCase(fetchLikes.fulfilled, (state, action) => {
-                state.loading.likes = false;
-                const { postId, likes } = action.payload;
-                // find and add fetched likes to the post
-                const index = state.allPosts.findIndex((post) => post.id === postId);
-                if (index !== -1) {
-                    state.allPosts[index].likes = likes;
-                }
-            })
-
-            // ============ add like ============ //
-            .addCase(addLike.fulfilled, (state, action) => {
-                // add the new like to the post
-                const index = state.allPosts.findIndex(
-                    (post) => post.id === action.payload.postId,
-                );
-                if (index !== -1) {
-                    state.allPosts[index].likes.push(action.payload);
-                }
-            })
-
-            // ============ remove like ============ //
-            .addCase(removeLike.fulfilled, (state, action) => {
-                // remove the deleted like from the post
-                const index = state.allPosts.findIndex(
-                    (post) => post.id === action.payload.postId,
-                );
-                if (index !== -1) {
-                    state.allPosts[index].likes = state.allPosts[index].likes.filter(
-                        (like) => like.id !== action.payload.id,
-                    );
-                }
-            })
-
             // ============ add a new post ============ //
             .addCase(addPost.fulfilled, (state, action) => {
                 // add the new post to the state
@@ -306,11 +259,30 @@ const postsSlice = createSlice({
             })
 
             // ============ delete a post ============ //
+            .addCase(deletePost.pending, (state) => {
+                state.loading.allPosts = true;
+            })
             .addCase(deletePost.fulfilled, (state, action) => {
+                state.loading.allPosts = false;
                 // remove the deleted post from the state
                 state.allPosts = state.allPosts.filter(
                     (post) => post.id !== action.payload,
                 );
+            })
+
+            // ============ toggle like ============ //
+            .addCase(toggleLike.pending, (state) => {
+                state.loading.likes = true;
+            })
+            .addCase(toggleLike.fulfilled, (state, action) => {
+                state.loading.likes = false;
+                // update the likes of the post
+                const index = state.allPosts.findIndex(
+                    (post) => post.id === action.payload.postId,
+                );
+                if (index !== -1) {
+                    state.allPosts[index].likes = action.payload.likes;
+                }
             })
 
             // ============ add a new comment ============ //

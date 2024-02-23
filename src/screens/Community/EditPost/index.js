@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -8,56 +8,56 @@ import {
     TextInput,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { addPost } from '../../../services/redux/postSlice';
+import { updatePost } from '../../../services/redux/postSlice';
 
 import { useTheme } from '../../../hooks/useThemeContext';
 import useThemeStyles from '../../../hooks/useThemeStyles';
 import CustomStatusBar from '../../../components/StatusBar';
 
-const CreatePost = ({ navigation, route }) => {
+const EditPost = ({ route, navigation }) => {
     const { theme } = useTheme();
     const themed = useThemeStyles(theme);
 
-    const [title, setTitle] = useState('');
-    const [caption, setCaption] = useState('');
+    const { post, user } = route.params;
 
-    const user = route.params.user;
+    // set initial state with existing details
+    const [title, setTitle] = useState(post.title);
+    const [caption, setCaption] = useState(post.caption);
 
-    const dispatch = useDispatch();
+    const postLoading = useSelector((state) => state.posts.loading.allPosts);
 
-    const createPost = (userId) => {
-        // check if title and caption are empty
-        if (!title || !caption) {
-            alert('Please fill out all fields');
-            return;
-        }
+    const handleUpdate = () => {
+        const dispatch = useDispatch();
 
-        const current = new Date();
-
-        const post = {
-            title,
-            content: caption,
-            is_public: user.is_public,
-            time_created: current.getTime(),
-            userName: user.name,
-            userId,
-        };
-
-        // add post to firestore and redux store
-        dispatch(addPost(post))
-            .then(() => {
-                console.log('post added');
-                setTitle('');
-                setCaption('');
-                navigation.navigate('Community');
-            })
-            .catch((error) => {
-                console.log('error adding post');
-                alert(error);
-            });
+        dispatch(
+            updatePost({
+                id: route.params.id,
+                title,
+                caption,
+            }),
+        );
     };
+
+    useEffect(() => {
+        // go back to community screen only after
+        // updating is finished
+        if (!postLoading) {
+            navigation.goBack();
+        }
+    }, [postLoading, navigation]);
+
+    if (postLoading) {
+        return (
+            <SafeAreaView style={[themed.container, { flex: 1 }]}>
+                <View style={[themed.container, styles.container]}>
+                    <Text style={themed.textSemibold}>Updating post...</Text>
+                </View>
+                <CustomStatusBar />
+            </SafeAreaView>
+        );
+    }
 
     return (
         <SafeAreaView style={[themed.container, { flex: 1 }]}>
@@ -72,7 +72,7 @@ const CreatePost = ({ navigation, route }) => {
                     />
                 </View>
 
-                <Text style={[themed.textBold, styles.header]}>New Post</Text>
+                <Text style={[themed.textBold, styles.header]}>Edit Post</Text>
 
                 <View style={styles.inputContainer}>
                     <Text style={themed.textSemibold}>Title</Text>
@@ -95,9 +95,9 @@ const CreatePost = ({ navigation, route }) => {
 
                 <TouchableOpacity
                     style={[themed.blackBtn, styles.button]}
-                    onPress={() => createPost(user.id)}>
+                    onPress={handleUpdate}>
                     <Text style={[themed.blackBtnText, { textAlign: 'center' }]}>
-                        Create
+                        Update
                     </Text>
                 </TouchableOpacity>
 
@@ -146,4 +146,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CreatePost;
+export default EditPost;
