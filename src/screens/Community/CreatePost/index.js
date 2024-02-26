@@ -9,9 +9,8 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch } from 'react-redux';
-
+import useHideTabBar from '../../../hooks/useHideTabBar';
 import { addPost } from '../../../services/redux/postSlice';
-
 import { useTheme } from '../../../hooks/useThemeContext';
 import useThemeStyles from '../../../hooks/useThemeStyles';
 import CustomStatusBar from '../../../components/StatusBar';
@@ -19,6 +18,8 @@ import CustomStatusBar from '../../../components/StatusBar';
 const CreatePost = ({ navigation, route }) => {
     const { theme } = useTheme();
     const themed = useThemeStyles(theme);
+
+    useHideTabBar();
 
     const [title, setTitle] = useState('');
     const [caption, setCaption] = useState('');

@@ -19,7 +19,6 @@ import Settings from '../screens/Profile/Settings';
 import About from '../screens/Profile/About';
 import Community from '../screens/Community';
 import CreatePost from '../screens/Community/CreatePost';
-import EditPost from '../screens/Community/EditPost';
 import PostDetail from '../screens/Community/PostDetail';
 
 const StackA = createStackNavigator();
@@ -77,7 +76,6 @@ const CommunityStack = () => {
             }}>
             <StackC.Screen name="Community" component={Community} />
             <StackC.Screen name="CreatePost" component={CreatePost} />
-            <StackC.Screen name="EditPost" component={EditPost} />
             <StackC.Screen name="PostDetail" component={PostDetail} />
         </StackC.Navigator>
     );

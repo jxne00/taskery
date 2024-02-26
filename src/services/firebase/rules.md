@@ -24,18 +24,17 @@ service cloud.firestore {
     // posts collection
     match /posts/{postId} {
         // users can read all public posts
-        allow read: if resource.data.is_public == true;
+        allow read, write: if resource.data.is_public == true;
 
         // users can write (create, update, delete) own post
-        allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+        allow read, write: if request.auth.uid == resource.data.userId;
+
+        allow create: if request.auth.uid != null;
 
         // comments subcollection
         match /comments/{commentId} {
-            // users can read and create comments
-            allow read, create: if request.auth != null;
-
-            // users can only update and delete own comments
-            allow update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
+						// users can read & write (create, update, delete) comments
+            allow read, write: if request.auth != null;
         }
     }
   }

@@ -182,10 +182,20 @@ export const deletePost = createAsyncThunk('posts/deletePost', async (postId) =>
 /** add new comment to a post */
 export const addComment = createAsyncThunk('posts/addComment', async (comment) => {
     try {
-        // add comment to firestore
-        const commentsRef = collection(db, 'posts', comment.postId, 'comments');
-        await commentsRef.add(comment);
-        return comment;
+        // create a copy for firestore update
+        // because firestore date has to be a timestamp
+        const dataForStore = { ...comment };
+
+        // convert js date to firestore timestamp
+        dataForStore.time_created = toTimestamp(dataForStore.time_created);
+
+        const commentRef = await db
+            .collection('posts')
+            .doc(comment.postId)
+            .collection('comments')
+            .add(dataForStore);
+
+        return { ...comment, id: commentRef.id };
     } catch (err) {
         console.log(err);
         alert(err);

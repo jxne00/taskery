@@ -16,6 +16,7 @@ import { AntDesign } from '@expo/vector-icons';
 import CustomStatusBar from '../../components/StatusBar';
 import { useTheme } from '../../hooks/useThemeContext';
 import useThemeStyles from '../../hooks/useThemeStyles';
+import CommentsModal from '../../components/Modals/CommentsModal';
 
 import {
     fetchAllPosts,
@@ -44,6 +45,8 @@ const Community = ({ navigation }) => {
 
     const likesLoading = useSelector((state) => state.posts.loading.likes);
 
+    const [currentView, setCurrentView] = useState('allPosts'); // allPosts, myPosts
+
     const [refreshing, setRefreshing] = useState(false);
     const [selectedPostID, setSelectedPostID] = useState(null);
     const [commentsVisible, setCommentsVisible] = useState(false);
@@ -69,7 +72,7 @@ const Community = ({ navigation }) => {
 
     const handlePostDelete = (postId) => {
         // delete confirmation
-        Alert.alert('Delete Post', 'Are you sure you want to delete?', [
+        Alert.alert('Delete Post', 'Are you sure you want to delete this post?', [
             {
                 text: 'Cancel',
                 style: 'cancel',
@@ -83,71 +86,21 @@ const Community = ({ navigation }) => {
         ]);
     };
 
-    const CommentsModal = () => {
-        // get comments from post
-        const comments = allPosts.find((post) => post.id === selectedPostID).comments;
-
-        // close modal
-        const handleModalClose = () => {
-            setSelectedPostID(null);
-            setCommentsVisible(false);
-        };
-
+    if (commentsVisible) {
         return (
-            <Modal
-                animationType="slide"
-                transparent={true}
+            <CommentsModal
                 visible={commentsVisible}
-                onRequestClose={() => handleModalClose}>
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <Text style={styles.modalTitle}>
-                            Comments
-                            {comments && ` (${comments.length})`}
-                        </Text>
-
-                        <View style={styles.commentsContainer}>
-                            {comments && comments.length > 0 ? (
-                                comments.map((comment) => (
-                                    <View
-                                        key={comment.id}
-                                        style={styles.commentContainer}>
-                                        <Text style={styles.comment}>
-                                            {comment.content}
-                                        </Text>
-                                        <Text style={styles.commentAuthor}>
-                                            - {comment.name} (
-                                            {timeSinceDate(comment.time_created)})
-                                        </Text>
-                                    </View>
-                                ))
-                            ) : (
-                                // if no comments
-                                <Text style={themed.textRegularLight}>
-                                    Be the first to comment!
-                                </Text>
-                            )}
-                        </View>
-
-                        {/* close modal */}
-                        <TouchableOpacity
-                            style={styles.button}
-                            onPress={handleModalClose}>
-                            <Text style={styles.buttonText}>Close</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Modal>
+                onClose={() => {
+                    setCommentsVisible(false);
+                    setSelectedPostID(null);
+                }}
+                post={allPosts.find((post) => post.id === selectedPostID)}
+                userId={user.id}
+            />
         );
-    };
+    }
 
     const renderPost = ({ item }) => {
-        // set post id and show comments modal
-        const handleCommentPress = () => {
-            setSelectedPostID(item.id);
-            setCommentsVisible(true);
-        };
-
         // check if post is by current user
         const isOwnPost = user.id === item.userId;
 
@@ -164,7 +117,10 @@ const Community = ({ navigation }) => {
                 {/* go to details page on press */}
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate('PostDetail', { item });
+                        navigation.navigate('PostDetail', {
+                            post: item,
+                            user,
+                        });
                     }}>
                     <Text style={themed.subHeaderText}>{item.title}</Text>
 
@@ -222,7 +178,7 @@ const Community = ({ navigation }) => {
                                         <AntDesign
                                             name="hearto"
                                             size={20}
-                                            color={theme.darkgray}
+                                            color={theme.textLight}
                                             style={{ marginRight: 3 }}
                                         />
                                     )}
@@ -235,11 +191,14 @@ const Community = ({ navigation }) => {
 
                         <TouchableOpacity
                             style={[themed.row, { marginLeft: 12 }]}
-                            onPress={handleCommentPress}>
+                            onPress={() => {
+                                setSelectedPostID(item.id);
+                                setCommentsVisible(true);
+                            }}>
                             <AntDesign
                                 name="message1"
                                 size={20}
-                                color={theme.darkgray}
+                                color={theme.textLight}
                                 style={{ marginRight: 3 }}
                             />
                             <Text style={themed.textRegularLight}>{commentCount}</Text>
@@ -273,6 +232,35 @@ const Community = ({ navigation }) => {
 
                 <View style={[styles.halfLine, { backgroundColor: theme.gray }]} />
 
+                {/* tabs to select view option  */}
+                <View style={[themed.row, styles.viewSelect]}>
+                    <TouchableOpacity
+                        style={themed.row}
+                        onPress={() => setCurrentView('allPosts')}>
+                        <Text
+                            style={
+                                currentView === 'allPosts'
+                                    ? themed.textSemibold
+                                    : themed.textRegular
+                            }>
+                            Posts
+                        </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={themed.row}
+                        onPress={() => setCurrentView('myPosts')}>
+                        <Text
+                            style={
+                                currentView === 'myPosts'
+                                    ? themed.textSemibold
+                                    : themed.textRegular
+                            }>
+                            My Posts
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+
                 {postsError && (
                     <Text style={themed.textRegular}>Error: {postsError}</Text>
                 )}
@@ -285,7 +273,11 @@ const Community = ({ navigation }) => {
                     />
                 ) : (
                     <FlatList
-                        data={allPosts}
+                        data={
+                            currentView === 'allPosts'
+                                ? allPosts.filter((post) => post.userId !== user.id)
+                                : allPosts.filter((post) => post.userId === user.id)
+                        }
                         renderItem={renderPost}
                         keyExtractor={(item) => item.id}
                         refreshing={refreshing}
@@ -339,6 +331,11 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginTop: 10,
         marginBottom: 2,
+    },
+
+    viewSelect: {
+        justifyContent: 'space-around',
+        marginBottom: 10,
     },
 
     // comments modal

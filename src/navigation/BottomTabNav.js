@@ -4,7 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../hooks/useThemeContext';
 
 import { HomeStack, CommunityStack, ProfileStack } from './StackNavigator';
-import Session from '../screens/Session';
 
 const Tab = createBottomTabNavigator();
 
@@ -27,10 +26,6 @@ const BottomTabNav = () => {
                     switch (route.name) {
                         case 'HomeTab':
                             iconName = 'home';
-                            color = focused ? theme.text : theme.navInactive;
-                            break;
-                        case 'SessionTab':
-                            iconName = 'timer';
                             color = focused ? theme.text : theme.navInactive;
                             break;
                         case 'CommunityTab':
@@ -56,9 +51,6 @@ const BottomTabNav = () => {
                         case 'HomeTab':
                             labelName = 'Home';
                             break;
-                        case 'SessionTab':
-                            labelName = 'Session';
-                            break;
                         case 'CommunityTab':
                             labelName = 'Community';
                             break;
@@ -81,7 +73,6 @@ const BottomTabNav = () => {
                 },
             })}>
             <Tab.Screen name="HomeTab" component={HomeStack} />
-            {/* <Tab.Screen name="SessionTab" component={Session} /> */}
             <Tab.Screen name="CommunityTab" component={CommunityStack} />
             <Tab.Screen name="ProfileTab" component={ProfileStack} />
         </Tab.Navigator>
