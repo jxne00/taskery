@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     StyleSheet,
     Text,
@@ -7,53 +7,41 @@ import {
     Image,
     ActivityIndicator,
 } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
+
 import ErrorMessage from '../../components/ErrorMsg';
 import CustomStatusBar from '../../components/StatusBar';
 
 import { useTheme } from '../../hooks/useThemeContext';
-import useGlobalStyles from '../../hooks/useGlobalStyles';
+import useThemeStyles from '../../hooks/useThemeStyles';
 import useFetchUser from '../../hooks/useFetchUser';
-import { auth } from '../../services/firebase';
-import { fetchUserPosts } from '../../services/redux/postSlice';
+import useFetchTasks from '../../hooks/useFetchTasks';
 
-import PostsList from './PostsList';
+import { auth } from '../../services/firebase';
 
 /**
  * The profile screen displaying user's profile info and posts.
  */
 const Profile = ({ navigation }) => {
     const { theme } = useTheme();
-    const global = useGlobalStyles();
-    const dispatch = useDispatch();
+    const themed = useThemeStyles();
     const userId = auth.currentUser?.uid;
 
     const [avatarLoading, setAvatarLoading] = useState(true);
-    const [refreshing, setRefreshing] = useState(false);
 
     // get profile data from redux store
     const { user, ProfileIsLoading, userError } = useFetchUser();
 
-    // fetch user's posts from firestore
-    const userPosts = useSelector((state) => state.posts.userPosts);
-    const postsLoading = useSelector((state) => state.posts.loading.userPosts);
-    const postsError = useSelector((state) => state.posts.error);
+    // get user's tasks
+    const { tasks, tasksLoading, tasksError } = useFetchTasks('all', 'asc', true);
 
-    useEffect(() => {
-        dispatch(fetchUserPosts(userId));
-    }, [dispatch, userId]);
-
-    // refetch posts on refresh
-    const handleRefresh = () => {
-        setRefreshing(true);
-        dispatch(fetchUserPosts(userId));
-        setRefreshing(false);
-    };
+    const totalTasks = tasks.length;
+    const completedTasks = tasks.filter((task) => task.completed).length;
+    const completionRate = ((completedTasks / totalTasks) * 100).toFixed(2);
 
     return (
-        <SafeAreaView style={global.container}>
-            <View style={[global.container, styles.container]}>
+        <SafeAreaView style={themed.container}>
+            <View style={[themed.container, styles.container]}>
                 {/* show loading until avatar image is loaded */}
                 {avatarLoading && (
                     <ActivityIndicator
@@ -102,8 +90,10 @@ const Profile = ({ navigation }) => {
                 {userError && <ErrorMessage errorMsg="Error loading profile!" />}
 
                 {/* if user is loaded */}
-                <View style={global.row}>
-                    <Text style={[global.text, styles.profileName]}>{user.name}</Text>
+                <View style={themed.row}>
+                    <Text style={[themed.textSemibold, styles.profileName]}>
+                        {user.name}
+                    </Text>
 
                     <Ionicons
                         name="create-outline"
@@ -137,31 +127,41 @@ const Profile = ({ navigation }) => {
                     ]}
                 />
 
-                {postsError && <ErrorMessage errorMsg="Error loading posts!" />}
-
-                {postsLoading ? (
-                    // show loading while fetching posts
+                {/* show loading while fetching tasks */}
+                {tasksLoading && (
                     <ActivityIndicator
-                        size="small"
+                        size="large"
                         color={theme.text}
                         style={{ paddingTop: 20 }}
                     />
-                ) : (
-                    // list of user's posts
-                    <PostsList
-                        data={userPosts}
-                        refreshing={refreshing}
-                        onRefresh={handleRefresh}
-                    />
                 )}
 
-                {/* show message if 0 posts */}
-                {!postsLoading &&
-                    userPosts.length === 0 &&
-                    !postsError &&
-                    !refreshing && (
-                        <Text style={theme.textLight}>You have no posts yet.</Text>
-                    )}
+                {tasksError && <ErrorMessage errorMsg="Error loading tasks!" />}
+
+                {/* if tasks are loaded */}
+                {tasks && (
+                    <View style={styles.statsContainer}>
+                        <Text style={[themed.textBold, styles.statTitle]}>
+                            Statistics
+                        </Text>
+
+                        <View
+                            style={[styles.statBox, { borderColor: theme.textLight }]}>
+                            <Text style={[themed.textSemibold, { fontSize: 18 }]}>
+                                Total Tasks Created
+                            </Text>
+                            <Text style={themed.textRegular}>{totalTasks}</Text>
+                        </View>
+
+                        <View
+                            style={[styles.statBox, { borderColor: theme.textLight }]}>
+                            <Text style={[themed.textSemibold, { fontSize: 18 }]}>
+                                Completed
+                            </Text>
+                            <Text style={themed.textRegular}>{completionRate}%</Text>
+                        </View>
+                    </View>
+                )}
 
                 <CustomStatusBar />
             </View>
@@ -186,7 +186,6 @@ const styles = StyleSheet.create({
     },
     profileName: {
         fontSize: 30,
-        fontFamily: 'Inter-Bold',
         paddingRight: 5,
     },
     visContainer: {
@@ -208,7 +207,25 @@ const styles = StyleSheet.create({
     horizontalLine: {
         width: '98%',
         height: 1,
-        marginTop: 10,
+        marginTop: 20,
+    },
+
+    // stats
+    statsContainer: {
+        width: '100%',
+        paddingHorizontal: 20,
+    },
+    statTitle: {
+        fontSize: 22,
+        marginTop: 20,
+    },
+
+    statBox: {
+        alignItems: 'center',
+        padding: 10,
+        borderWidth: 1,
+        marginVertical: 10,
+        borderRadius: 8,
     },
 });
 

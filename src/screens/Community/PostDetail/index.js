@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useDebugValue } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -8,21 +8,25 @@ import {
     Alert,
     ActivityIndicator,
     ScrollView,
+    Modal,
+    TextInput,
+    FlatList,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+import { useDispatch } from 'react-redux';
+import {
+    toggleLike,
+    deletePost,
+    addComment,
+    deleteComment,
+} from '../../../services/redux/postSlice';
+
 import { useTheme } from '../../../hooks/useThemeContext';
 import useThemeStyles from '../../../hooks/useThemeStyles';
-
+import useHideTabBar from '../../../hooks/useHideTabBar';
 import CustomStatusBar from '../../../components/StatusBar';
 import { timeSinceDate } from '../../../components/timeConverters';
-
-import CommentsModal from '../../../components/Modals/CommentsModal';
-
-import useHideTabBar from '../../../hooks/useHideTabBar';
-
-import { useDispatch } from 'react-redux';
-import { toggleLike, deletePost } from '../../../services/redux/postSlice';
 
 const PostDetail = ({ navigation, route }) => {
     const { theme } = useTheme();
@@ -32,6 +36,8 @@ const PostDetail = ({ navigation, route }) => {
 
     const [showComments, setShowComments] = useState(false);
     const [updatingLikes, setUpdatingLikes] = useState(false);
+    const [updatingComment, setUpdatingComment] = useState(false);
+    const [newComment, setNewComment] = useState('');
 
     const isOwnPost = post.userId === user.id;
 
@@ -43,13 +49,12 @@ const PostDetail = ({ navigation, route }) => {
     // hide bottom tab bar
     useHideTabBar();
 
-    useEffect(() => {
-        post, (user = route.params);
-    }, [route.params]);
-
     const dispatch = useDispatch();
 
-    const handleLike = (postId, userId) => {
+    const handleLike = () => {
+        const postId = post.id;
+        const userId = user.id;
+
         setUpdatingLikes(postId);
         dispatch(toggleLike({ postId, userId })).then(() => {
             setUpdatingLikes(false);
@@ -72,16 +77,195 @@ const PostDetail = ({ navigation, route }) => {
         ]);
     };
 
-    if (showComments) {
+    const handleAddComment = (postId, userId) => {
+        if (newComment) {
+            setUpdatingComment(true);
+
+            const commentToAdd = {
+                postId,
+                userId,
+                name: user.name,
+                time_created: new Date().getTime(),
+                content: newComment,
+            };
+
+            dispatch(addComment(commentToAdd)).then(() => {
+                setUpdatingComment(false);
+                setNewComment('');
+            });
+        }
+    };
+
+    const handleDelComment = (commentId) => {
+        Alert.alert('Delete Comment', 'Are you sure you want to delete this comment?', [
+            {
+                text: 'Cancel',
+                style: 'cancel',
+            },
+            {
+                text: 'Delete',
+                style: 'destructive',
+                onPress: () => {
+                    setUpdatingComment(true);
+                    dispatch(
+                        deleteComment({
+                            postId: selectedPostID,
+                            commentId,
+                        }),
+                    ).then(() => {
+                        setUpdatingComment(false);
+                    });
+                },
+            },
+        ]);
+    };
+
+    const renderComments = () => {
+        const comments = post && post.comments ? post.comments : [];
+
         return (
-            <CommentsModal
+            <Modal
+                animationType="slide"
+                transparent={true}
                 visible={showComments}
-                onClose={() => setShowComments(false)}
-                post={post}
-                userId={user.id}
-            />
+                onRequestClose={() => setShowComments(false)}>
+                <View style={styles.overlay}>
+                    {/* close modal when top is clicked */}
+                    <TouchableOpacity
+                        style={styles.closeTouchableArea}
+                        activeOpacity={1}
+                        onPress={() => setShowComments(false)}
+                    />
+
+                    <View
+                        style={[
+                            styles.modalView,
+                            {
+                                backgroundColor: theme.background,
+                                borderColor: theme.gray,
+                            },
+                        ]}>
+                        <View style={styles.modalToprow}>
+                            <Text style={[themed.textBold, styles.title]}>
+                                Comments
+                                {comments ? ` (${comments.length})` : ' (0)'}
+                            </Text>
+
+                            <Ionicons
+                                name="close-circle-outline"
+                                size={26}
+                                color={theme.text}
+                                style={styles.icon}
+                                onPress={() => setShowComments(false)}
+                            />
+                        </View>
+
+                        {/* list of comments */}
+                        {comments && comments.length > 0 ? (
+                            <FlatList
+                                data={comments}
+                                keyExtractor={(item) => item.id}
+                                renderItem={({ item }) => {
+                                    const isOwnComment = item.userId === user.id;
+
+                                    return (
+                                        <View
+                                            style={[
+                                                styles.commentBox,
+                                                {
+                                                    backgroundColor:
+                                                        theme.backgroundSec,
+                                                    borderColor: theme.gray,
+                                                },
+                                            ]}>
+                                            <View
+                                                style={[
+                                                    themed.row,
+                                                    {
+                                                        justifyContent: 'space-between',
+                                                        marginBottom: 10,
+                                                    },
+                                                ]}>
+                                                <Text
+                                                    style={[
+                                                        themed.textSemibold,
+                                                        { fontSize: 16 },
+                                                    ]}>
+                                                    {item.name}
+                                                </Text>
+
+                                                <View style={themed.row}>
+                                                    <Text
+                                                        style={[
+                                                            themed.textRegularLight,
+                                                            { fontSize: 14 },
+                                                        ]}>
+                                                        {timeSinceDate(
+                                                            item.time_created,
+                                                        )}{' '}
+                                                    </Text>
+                                                    {(isOwnPost || isOwnComment) && (
+                                                        <Ionicons
+                                                            name="trash"
+                                                            size={20}
+                                                            color={theme.red}
+                                                            onPress={() =>
+                                                                handleDelComment(
+                                                                    item.id,
+                                                                )
+                                                            }
+                                                        />
+                                                    )}
+                                                </View>
+                                            </View>
+
+                                            <Text style={themed.textRegular}>
+                                                {item.content}
+                                            </Text>
+                                        </View>
+                                    );
+                                }}
+                            />
+                        ) : (
+                            // if no comments
+                            <View style={styles.emptyContent}>
+                                <Text
+                                    style={[
+                                        themed.textRegularLight,
+                                        { textAlign: 'center' },
+                                    ]}>
+                                    Be the first to comment!
+                                </Text>
+                            </View>
+                        )}
+
+                        {/* comment input */}
+                        <View style={styles.addCommentBox}>
+                            <TextInput
+                                style={[styles.inputComment, themed.textRegular]}
+                                placeholder="Add a comment..."
+                                placeholderTextColor={theme.textLight}
+                                value={newComment}
+                                onChangeText={(text) => setNewComment(text)}
+                            />
+                            {updatingComment ? (
+                                <ActivityIndicator size="small" color={theme.text} />
+                            ) : (
+                                <TouchableOpacity
+                                    onPress={() => handleAddComment(post.id, user.id)}>
+                                    <Ionicons
+                                        name="send"
+                                        size={22}
+                                        color={theme.text}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         );
-    }
+    };
 
     return (
         <SafeAreaView style={[themed.container, { flex: 1 }]}>
@@ -105,7 +289,7 @@ const PostDetail = ({ navigation, route }) => {
                                 name={postLiked ? 'heart' : 'heart-outline'}
                                 size={24}
                                 color={theme.red}
-                                onPress={() => handleLike(post.id, user.id)}
+                                onPress={handleLike}
                             />
                             <Text style={themed.textRegularLight}>
                                 {' '}
@@ -166,6 +350,8 @@ const PostDetail = ({ navigation, route }) => {
                 </TouchableOpacity>
             </View>
 
+            {showComments && renderComments()}
+
             <CustomStatusBar />
         </SafeAreaView>
     );
@@ -204,6 +390,75 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 30,
         borderRadius: 30,
+    },
+
+    // comments modal
+    // modal styles
+    overlay: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    closeTouchableArea: {
+        flex: 1,
+    },
+    modalView: {
+        height: '50%',
+        width: '100%',
+        paddingVertical: 20,
+        paddingHorizontal: 10,
+        borderTopRightRadius: 20,
+        borderTopLeftRadius: 20,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    emptyContent: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalToprow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 12,
+    },
+    icon: {
+        position: 'absolute',
+        right: 10,
+    },
+    title: {
+        fontSize: 20,
+        textAlign: 'center',
+        flex: 1,
+    },
+
+    commentBox: {
+        margin: 10,
+        paddingHorizontal: 20,
+        paddingVertical: 14,
+        borderWidth: 1,
+        borderRadius: 16,
+    },
+
+    addCommentBox: {
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        borderRadius: 30,
+        borderWidth: 1,
+        margin: 10,
+        marginBottom: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    inputComment: {
+        flex: 1,
     },
 });
 

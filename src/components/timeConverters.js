@@ -36,13 +36,13 @@ const timeSinceDate = (date) => {
     const days = Math.floor(hours / 24);
 
     if (days > 0) {
-        return `${days} day${days > 1 ? 's' : ''} ago`;
+        return `${parseInt(days, 10)}d ago`;
     } else if (hours > 0) {
-        return `${hours} h ago`;
+        return `${parseInt(hours, 10)}h ago`;
     } else if (minutes > 0) {
-        return `${minutes} min${minutes > 1 ? 's' : ''} ago`;
+        return `${parseInt(minutes, 10)}min${minutes > 1 ? 's' : ''} ago`;
     } else {
-        return `${seconds} sec${seconds > 1 ? 's' : ''} ago`;
+        return `${parseInt(seconds, 10)}sec${seconds > 1 ? 's' : ''} ago`;
     }
 };
 

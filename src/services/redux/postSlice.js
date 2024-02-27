@@ -135,6 +135,8 @@ export const toggleLike = createAsyncThunk(
     'posts/toggleLike',
     async ({ postId, userId }) => {
         try {
+            console.log('posts/toggleLike: postId, userId', postId, userId);
+
             const postRef = doc(db, 'posts', postId);
             const snapshot = await getDoc(postRef);
 
@@ -143,10 +145,19 @@ export const toggleLike = createAsyncThunk(
             }
 
             const postData = snapshot.data();
-            let likes = postData.likes || [];
 
-            // check if user already liked post
-            const index = likes.indexOf(userId);
+            let likes;
+            let index;
+
+            if (postData.likes) {
+                // if post already has likes
+                // check if current user has liked it
+                likes = postData.likes;
+                index = likes.indexOf(userId);
+            } else {
+                likes = [];
+                index = -1;
+            }
 
             if (index !== -1) {
                 // remove if already liked
@@ -205,16 +216,19 @@ export const addComment = createAsyncThunk('posts/addComment', async (comment) =
 /** delete a comment */
 export const deleteComment = createAsyncThunk(
     'posts/deleteComment',
-    async (comment) => {
+    async ({ postId, commentId }) => {
         try {
             // delete comment from firestore
-            const commentRef = collection(db, 'posts', comment.postId, 'comments').doc(
-                comment.id,
-            );
-            await commentRef.delete();
-            return comment.id;
+            await db
+                .collection('posts')
+                .doc(postId)
+                .collection('comments')
+                .doc(commentId)
+                .delete();
+
+            return { postId, id: commentId };
         } catch (err) {
-            console.log(err);
+            console.log('posts/deleteComment', err);
             alert(err);
         }
     },

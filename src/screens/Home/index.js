@@ -14,7 +14,7 @@ import useFetchUser from '../../hooks/useFetchUser';
 import TaskList from './TaskList';
 import CreateTask from './CreateTask';
 
-import FilterOptionModal from '../../components/Modals/FilterOptionModal';
+import FilterOptionModal from './TaskFilter/FilterOptionModal';
 
 /**
  * The home screen which displays a list tasks
@@ -224,7 +224,9 @@ const Home = ({ navigation }) => {
                                 />
                             )}
                         </TouchableOpacity>
-                        <Text style={styles.checkboxLabel}>Show completed</Text>
+                        <Text style={[styles.checkboxLabel, { color: theme.text }]}>
+                            Show completed
+                        </Text>
                     </View>
                     <TaskList
                         tasklist={tasks}

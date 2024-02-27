@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
-import MyCheckbox from '../Checkbox';
+import MyCheckbox from '../../../components/Checkbox';
 
 const FilterOptionModal = ({ visible, onClose, currentVals, setCurrentVals }) => {
     const [showStatus, setShowStatus] = useState(currentVals[0].value);

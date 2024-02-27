@@ -7,16 +7,16 @@ import {
     FlatList,
     TouchableOpacity,
     ActivityIndicator,
-    Modal,
     Alert,
+    Modal,
+    TextInput,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 
 import CustomStatusBar from '../../components/StatusBar';
 import { useTheme } from '../../hooks/useThemeContext';
 import useThemeStyles from '../../hooks/useThemeStyles';
-import CommentsModal from '../../components/Modals/CommentsModal';
 
 import {
     fetchAllPosts,
@@ -51,6 +51,8 @@ const Community = ({ navigation }) => {
     const [selectedPostID, setSelectedPostID] = useState(null);
     const [commentsVisible, setCommentsVisible] = useState(false);
     const [updatingLikes, setUpdatingLikes] = useState(false);
+    const [updatingComment, setUpdatingComment] = useState(false);
+    const [newComment, setNewComment] = useState('');
 
     useEffect(() => {
         dispatch(fetchAllPosts());
@@ -70,6 +72,49 @@ const Community = ({ navigation }) => {
         });
     };
 
+    const handleAddComment = (postId, userId) => {
+        if (newComment) {
+            setUpdatingComment(true);
+
+            const commentToAdd = {
+                postId,
+                userId,
+                name: user.name,
+                time_created: new Date().getTime(),
+                content: newComment,
+            };
+
+            dispatch(addComment(commentToAdd)).then(() => {
+                setUpdatingComment(false);
+                setNewComment('');
+            });
+        }
+    };
+
+    const handleDelComment = (commentId) => {
+        Alert.alert('Delete Comment', 'Are you sure you want to delete this comment?', [
+            {
+                text: 'Cancel',
+                style: 'cancel',
+            },
+            {
+                text: 'Delete',
+                style: 'destructive',
+                onPress: () => {
+                    setUpdatingComment(true);
+                    dispatch(
+                        deleteComment({
+                            postId: selectedPostID,
+                            commentId,
+                        }),
+                    ).then(() => {
+                        setUpdatingComment(false);
+                    });
+                },
+            },
+        ]);
+    };
+
     const handlePostDelete = (postId) => {
         // delete confirmation
         Alert.alert('Delete Post', 'Are you sure you want to delete this post?', [
@@ -85,20 +130,6 @@ const Community = ({ navigation }) => {
             },
         ]);
     };
-
-    if (commentsVisible) {
-        return (
-            <CommentsModal
-                visible={commentsVisible}
-                onClose={() => {
-                    setCommentsVisible(false);
-                    setSelectedPostID(null);
-                }}
-                post={allPosts.find((post) => post.id === selectedPostID)}
-                userId={user.id}
-            />
-        );
-    }
 
     const renderPost = ({ item }) => {
         // check if post is by current user
@@ -209,6 +240,160 @@ const Community = ({ navigation }) => {
         );
     };
 
+    const renderComments = (post) => {
+        const userId = user.id;
+        const comments = post && post.comments ? post.comments : [];
+        const isOwnPost = post && post.userId === userId;
+
+        const onClose = () => {
+            setCommentsVisible(false);
+            setSelectedPostID(null);
+        };
+
+        return (
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={commentsVisible}
+                onRequestClose={onClose}>
+                <View style={styles.overlay}>
+                    {/* close modal when top is clicked */}
+                    <TouchableOpacity
+                        style={styles.closeTouchableArea}
+                        activeOpacity={1}
+                        onPress={onClose}
+                    />
+
+                    <View
+                        style={[
+                            styles.modalView,
+                            {
+                                backgroundColor: theme.background,
+                                borderColor: theme.gray,
+                            },
+                        ]}>
+                        <View style={styles.modalToprow}>
+                            <Text style={[themed.textBold, styles.title]}>
+                                Comments
+                                {comments ? ` (${comments.length})` : ' (0)'}
+                            </Text>
+
+                            <Ionicons
+                                name="close-circle-outline"
+                                size={26}
+                                color={theme.text}
+                                style={styles.icon}
+                                onPress={onClose}
+                            />
+                        </View>
+
+                        {/* list of comments */}
+                        {comments && comments.length > 0 ? (
+                            <FlatList
+                                data={comments}
+                                keyExtractor={(item) => item.id}
+                                renderItem={({ item }) => {
+                                    const isOwnComment = item.userId === user.id;
+
+                                    return (
+                                        <View
+                                            style={[
+                                                styles.commentBox,
+                                                {
+                                                    backgroundColor:
+                                                        theme.backgroundSec,
+                                                    borderColor: theme.gray,
+                                                },
+                                            ]}>
+                                            <View
+                                                style={[
+                                                    themed.row,
+                                                    {
+                                                        justifyContent: 'space-between',
+                                                        marginBottom: 10,
+                                                    },
+                                                ]}>
+                                                <Text
+                                                    style={[
+                                                        themed.textSemibold,
+                                                        { fontSize: 16 },
+                                                    ]}>
+                                                    {item.name}
+                                                </Text>
+
+                                                <View style={themed.row}>
+                                                    <Text
+                                                        style={[
+                                                            themed.textRegularLight,
+                                                            { fontSize: 14 },
+                                                        ]}>
+                                                        {timeSinceDate(
+                                                            item.time_created,
+                                                        )}{' '}
+                                                    </Text>
+                                                    {(isOwnPost || isOwnComment) && (
+                                                        <Ionicons
+                                                            name="trash"
+                                                            size={20}
+                                                            color={theme.red}
+                                                            onPress={() =>
+                                                                handleDelComment(
+                                                                    item.id,
+                                                                )
+                                                            }
+                                                        />
+                                                    )}
+                                                </View>
+                                            </View>
+
+                                            <Text style={themed.textRegular}>
+                                                {item.content}
+                                            </Text>
+                                        </View>
+                                    );
+                                }}
+                            />
+                        ) : (
+                            // if no comments
+                            <View style={styles.emptyContent}>
+                                <Text
+                                    style={[
+                                        themed.textRegularLight,
+                                        { textAlign: 'center' },
+                                    ]}>
+                                    Be the first to comment!
+                                </Text>
+                            </View>
+                        )}
+
+                        {/* comment input */}
+                        <View style={styles.addCommentBox}>
+                            <TextInput
+                                style={[styles.inputComment, themed.textRegular]}
+                                placeholder="Add a comment..."
+                                placeholderTextColor={theme.textLight}
+                                value={newComment}
+                                onChangeText={(text) => setNewComment(text)}
+                            />
+                            {updatingComment ? (
+                                <ActivityIndicator size="small" color={theme.text} />
+                            ) : (
+                                <TouchableOpacity
+                                    onPress={() => handleAddComment(post.id, user.id)}>
+                                    <Ionicons
+                                        name="send"
+                                        size={22}
+                                        color={theme.text}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+        );
+    };
+
     return (
         <SafeAreaView style={themed.container}>
             <View style={themed.container}>
@@ -216,7 +401,7 @@ const Community = ({ navigation }) => {
                     <Text
                         style={[
                             themed.textPoetsen,
-                            styles.title,
+                            styles.pageTitle,
                             { color: theme.text },
                         ]}>
                         COMMUNITY POSTS
@@ -288,15 +473,18 @@ const Community = ({ navigation }) => {
                     />
                 )}
 
-                {selectedPostID && <CommentsModal />}
+                {/* comments modal */}
+                {commentsVisible &&
+                    renderComments(allPosts.find((p) => p.id === selectedPostID))}
             </View>
+
             <CustomStatusBar />
         </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    title: {
+    pageTitle: {
         paddingHorizontal: 10,
         paddingVertical: 5,
         fontSize: 24,
@@ -385,6 +573,74 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold',
         textAlign: 'center',
+    },
+
+    // modal styles
+    overlay: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    closeTouchableArea: {
+        flex: 1,
+    },
+    modalView: {
+        height: '50%',
+        width: '100%',
+        paddingVertical: 20,
+        paddingHorizontal: 10,
+        borderTopRightRadius: 20,
+        borderTopLeftRadius: 20,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    emptyContent: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalToprow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 12,
+    },
+    icon: {
+        position: 'absolute',
+        right: 10,
+    },
+    title: {
+        fontSize: 20,
+        textAlign: 'center',
+        flex: 1,
+    },
+
+    commentBox: {
+        margin: 10,
+        paddingHorizontal: 20,
+        paddingVertical: 14,
+        borderWidth: 1,
+        borderRadius: 16,
+    },
+
+    addCommentBox: {
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        borderRadius: 30,
+        borderWidth: 1,
+        margin: 10,
+        marginBottom: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    inputComment: {
+        flex: 1,
     },
 });
 
