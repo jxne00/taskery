@@ -3,23 +3,23 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { MenuProvider } from 'react-native-popup-menu';
 
 import { useTheme } from '../hooks/useThemeContext';
-import CustomStatusBar from '../components/StatusBar';
+import CustomStatusBar from '../components/UI/StatusBar';
 
 // auth screens
 import Login from '../screens/Login';
-import Register from '../screens/Login/Register';
-import Onboarding from '../screens/Login/Onboarding';
+import Register from '../screens/Register';
+import Onboarding from '../components/Onboarding';
 
 // main screens
 import Home from '../screens/Home';
-import CalendarView from '../screens/Home/Calendar';
+import CalendarView from '../components/Home/Calendar';
 import Profile from '../screens/Profile';
-import EditProfile from '../screens/Profile/EditProfile';
-import Settings from '../screens/Profile/Settings';
-import About from '../screens/Profile/About';
+import EditProfile from '../components/Profile/EditProfile';
+import Settings from '../components/Profile/Settings';
+import About from '../components/Profile/About';
 import Community from '../screens/Community';
-import CreatePost from '../screens/Community/CreatePost';
-import PostDetail from '../screens/Community/PostDetail';
+import CreatePost from '../components/Community/CreatePost';
+import PostDetail from '../components/Community/PostDetail';
 
 const StackA = createStackNavigator();
 const StackH = createStackNavigator();
@@ -27,7 +27,7 @@ const StackP = createStackNavigator();
 const StackC = createStackNavigator();
 
 /**
- * navigation stack for auth screens (Login, Register, Onboarding)
+ * Navigation stack for auth screens (Login, Register, Onboarding)
  */
 const AuthStack = () => {
     return (
@@ -44,7 +44,7 @@ const AuthStack = () => {
     );
 };
 
-/** navigation stack for home screen */
+/** Navigation stack for home screen */
 const HomeStack = () => {
     const { theme } = useTheme();
 
@@ -66,7 +66,7 @@ const HomeStack = () => {
     );
 };
 
-/** navigation stack for community screen */
+/** Navigation stack for community screen */
 const CommunityStack = () => {
     return (
         <StackC.Navigator
@@ -81,7 +81,7 @@ const CommunityStack = () => {
     );
 };
 
-/** navigation stack for profile screen */
+/** Navigation stack for profile screen */
 const ProfileStack = () => {
     return (
         <StackP.Navigator

@@ -1,23 +1,14 @@
 import React, { useState } from 'react';
-import {
-    StyleSheet,
-    Text,
-    View,
-    SafeAreaView,
-    Image,
-    ActivityIndicator,
-} from 'react-native';
+import { Text, View, SafeAreaView, Image, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
-import ErrorMessage from '../../components/ErrorMsg';
-import CustomStatusBar from '../../components/StatusBar';
-
 import { useTheme } from '../../hooks/useThemeContext';
 import useThemeStyles from '../../hooks/useThemeStyles';
 import useFetchUser from '../../hooks/useFetchUser';
 import useFetchTasks from '../../hooks/useFetchTasks';
-
+import ErrorMessage from '../../components/UI/ErrorMsg';
+import CustomStatusBar from '../../components/UI/StatusBar';
 import { auth } from '../../services/firebase';
+import styles from './styles';
 
 /**
  * The profile screen displaying user's profile info and posts.
@@ -146,19 +137,35 @@ const Profile = ({ navigation }) => {
                         </Text>
 
                         <View
-                            style={[styles.statBox, { borderColor: theme.textLight }]}>
+                            style={[
+                                styles.statBox,
+                                {
+                                    borderColor: theme.textLight,
+                                    backgroundColor: theme.background,
+                                },
+                            ]}>
                             <Text style={[themed.textSemibold, { fontSize: 18 }]}>
                                 Total Tasks Created
                             </Text>
-                            <Text style={themed.textRegular}>{totalTasks}</Text>
+                            <Text style={themed.textRegular}>
+                                {totalTasks > 0 ? totalTasks : '0'}
+                            </Text>
                         </View>
 
                         <View
-                            style={[styles.statBox, { borderColor: theme.textLight }]}>
+                            style={[
+                                styles.statBox,
+                                {
+                                    borderColor: theme.textLight,
+                                    backgroundColor: theme.background,
+                                },
+                            ]}>
                             <Text style={[themed.textSemibold, { fontSize: 18 }]}>
                                 Completed
                             </Text>
-                            <Text style={themed.textRegular}>{completionRate}%</Text>
+                            <Text style={themed.textRegular}>
+                                {completionRate > 0 ? completionRate : '0%'}
+                            </Text>
                         </View>
                     </View>
                 )}
@@ -168,65 +175,5 @@ const Profile = ({ navigation }) => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        alignItems: 'center',
-    },
-    settingsIcon: {
-        position: 'absolute',
-        top: 10,
-        right: 15,
-    },
-    avatar: {
-        width: 120,
-        height: 120,
-        borderRadius: 80,
-        margin: 10,
-    },
-    profileName: {
-        fontSize: 30,
-        paddingRight: 5,
-    },
-    visContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderWidth: 1,
-        borderRadius: 8,
-        paddingVertical: 4,
-        paddingHorizontal: 10,
-        marginTop: 10,
-    },
-    visText: {
-        fontSize: 16,
-        fontFamily: 'Inter-Regular',
-        marginLeft: 5,
-    },
-
-    horizontalLine: {
-        width: '98%',
-        height: 1,
-        marginTop: 20,
-    },
-
-    // stats
-    statsContainer: {
-        width: '100%',
-        paddingHorizontal: 20,
-    },
-    statTitle: {
-        fontSize: 22,
-        marginTop: 20,
-    },
-
-    statBox: {
-        alignItems: 'center',
-        padding: 10,
-        borderWidth: 1,
-        marginVertical: 10,
-        borderRadius: 8,
-    },
-});
 
 export default Profile;

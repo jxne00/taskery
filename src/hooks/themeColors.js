@@ -1,6 +1,6 @@
 /** light theme colors */
 const lightTheme = {
-    background: '#fcf8f6',
+    background: '#fbfbfb',
     backgroundSec: '#ebe7e6',
     text: '#333333',
     textLight: '#666666',
@@ -37,7 +37,7 @@ const darkTheme = {
     blue: '#5050B3',
     orange: '#D76802',
     gray: '#5A5A5A',
-    darkGray: '#404258',
+    darkGray: '#4B4E68',
 };
 
 export { lightTheme, darkTheme };

@@ -2,19 +2,14 @@ import React, { useState } from 'react';
 import { Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
-
 import { useTheme } from '../../hooks/useThemeContext';
 import useGlobalStyles from '../../hooks/useGlobalStyles';
-
-import styles from './styles';
-
 import useFetchTasks from '../../hooks/useFetchTasks';
 import useFetchUser from '../../hooks/useFetchUser';
-
-import TaskList from './TaskList';
-import CreateTask from './CreateTask';
-
-import FilterOptionModal from './TaskFilter/FilterOptionModal';
+import FilterModal from '../../components/Home/FilterModal';
+import TaskList from '../../components/Home/TaskList';
+import CreateTask from '../../components/Home/CreateTask';
+import styles from './styles';
 
 /**
  * The home screen which displays a list tasks
@@ -178,7 +173,7 @@ const Home = ({ navigation }) => {
                         )}
 
                         {/* Modal to set filter options */}
-                        <FilterOptionModal
+                        <FilterModal
                             visible={showFilterModal}
                             currentVals={filterOptions}
                             setCurrentVals={setFilterOptions}

@@ -12,9 +12,9 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { auth } from '../../services/firebase';
+import ErrorMessage from '../../components/UI/ErrorMsg';
 import styles from './styles';
 
-/** The login screen to login to app using firebase for auth */
 const Login = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -25,7 +25,21 @@ const Login = ({ navigation }) => {
 
     const passwordRef = useRef(null);
 
-    /** login authentication with firebase */
+    /** reset all fields */
+    const resetFields = () => {
+        setEmail('');
+        setPassword('');
+        setShowPassword(false);
+        setErrorMsg(null);
+    };
+
+    /** navigate to registration screen */
+    const registerPressed = () => {
+        resetFields();
+        navigation.navigate('Register');
+    };
+
+    /** login authentication with Firebase */
     const handleLogin = () => {
         setIsLoading(true);
         setErrorMsg(null);
@@ -40,11 +54,7 @@ const Login = ({ navigation }) => {
         // authenticate user with firebase
         auth.signInWithEmailAndPassword(email, password)
             .then(() => {
-                setEmail('');
-                setPassword('');
-                setShowPassword(false);
-                setErrorMsg(null);
-
+                resetFields();
                 navigation.navigate('HomeTabs');
             })
             .catch((err) => {
@@ -78,7 +88,6 @@ const Login = ({ navigation }) => {
                     <Text style={styles.subtitle}>Login to your account</Text>
 
                     <View style={styles.inputContainer}>
-                        {/* email input */}
                         <Text style={styles.inputLabel}>Email:</Text>
                         <View
                             style={[
@@ -86,6 +95,8 @@ const Login = ({ navigation }) => {
                                 focusedBox === 'email' && styles.focusedBox,
                             ]}>
                             <Ionicons name="person" size={20} color="#919090" />
+
+                            {/* email input */}
                             <TextInput
                                 value={email}
                                 style={[styles.textInput]}
@@ -107,7 +118,6 @@ const Login = ({ navigation }) => {
 
                         <View style={{ height: 20 }} />
 
-                        {/* password input */}
                         <Text style={styles.inputLabel}>Password:</Text>
                         <View
                             style={[
@@ -116,6 +126,7 @@ const Login = ({ navigation }) => {
                             ]}>
                             <Ionicons name="md-lock-closed" size={20} color="#919090" />
 
+                            {/* password input */}
                             <TextInput
                                 value={password}
                                 style={styles.textInput}
@@ -132,6 +143,7 @@ const Login = ({ navigation }) => {
                                 returnKeyType="done"
                             />
 
+                            {/* show & hide password text */}
                             {password && (
                                 <Ionicons
                                     name={showPassword ? 'eye' : 'eye-off'}
@@ -144,16 +156,9 @@ const Login = ({ navigation }) => {
                         </View>
                     </View>
 
-                    {/* error message //TODO set haptic feedback */}
+                    {/* error message */}
                     {errorMsg && (
-                        <View style={styles.errorBox}>
-                            <Ionicons
-                                name="alert-circle-outline"
-                                size={20}
-                                color="#af0000"
-                            />
-                            <Text style={styles.errorMsg}>{errorMsg}</Text>
-                        </View>
+                        <ErrorMessage errorMsg={errorMsg} style={styles.errorMsg} />
                     )}
 
                     {/* buttons */}
@@ -172,7 +177,7 @@ const Login = ({ navigation }) => {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            onPress={() => navigation.navigate('Register')}
+                            onPress={registerPressed}
                             disabled={isLoading}
                             style={styles.registerBtn}>
                             <Text style={styles.registerText}>Register</Text>

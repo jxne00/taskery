@@ -10,27 +10,28 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: BG_COL,
         alignItems: 'center',
-    },
-    title: {
-        marginTop: 20,
-        fontSize: 34,
-        marginBottom: 10,
-        fontFamily: 'PoetsenOne-Regular',
-        textAlign: 'center',
-        color: PRIMARY_COL,
-    },
-    subtitle: {
-        fontSize: 16,
-        color: '#3c3c3c',
-        fontFamily: 'Inter-Medium',
+        backgroundColor: BG_COL,
     },
 
-    // text input area
+    backBtn: {
+        position: 'absolute',
+        top: 40,
+        left: 20,
+        color: '#0c0c0c',
+    },
+
+    title: {
+        fontSize: 28,
+        marginTop: '20%',
+        textAlign: 'center',
+        color: PRIMARY_COL,
+        fontFamily: 'Inter-Bold',
+    },
+
     inputContainer: {
         width: '90%',
-        marginTop: '30%',
+        marginTop: '20%',
     },
     inputLabel: {
         fontSize: 16,
@@ -44,14 +45,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: 44,
         paddingHorizontal: 10,
-        borderRadius: 18,
+        borderRadius: 15,
         backgroundColor: '#e4e4e4',
     },
     inputRightIcon: {
         marginLeft: 'auto',
     },
     textInput: {
-        height: 45,
+        height: 44,
         paddingHorizontal: 12,
         fontSize: 16,
         width: '100%',
@@ -62,40 +63,45 @@ const styles = StyleSheet.create({
         borderWidth: 2,
     },
 
-    // buttons
-    buttonsContainer: {
-        width: '100%',
+    registerBtn: {
+        backgroundColor: PRIMARY_COL,
+        borderRadius: 20,
+        paddingVertical: 10,
         alignItems: 'center',
+        width: '90%',
         marginTop: 'auto',
     },
-    loginBtn: {
-        backgroundColor: PRIMARY_COL,
-        borderRadius: 22,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '90%',
-        height: 42,
-    },
-    loginText: {
-        color: '#FDF3EC',
+    buttonText: {
+        color: BG_COL,
         fontSize: 18,
         fontFamily: 'Inter-SemiBold',
     },
-    registerBtn: {
-        borderBlockColor: '#242424',
-        borderWidth: 1,
-        height: 42,
-        borderRadius: 22,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '90%',
-        marginBottom: 20,
-        marginTop: 10,
+    toLoginText: {
+        marginVertical: 18,
+        color: '#292929',
+        fontSize: 15,
+        fontFamily: 'Inter-Medium',
     },
-    registerText: {
-        color: '#242424',
-        fontSize: 18,
-        fontFamily: 'Inter-SemiBold',
+    loginTxt: {
+        color: '#626478',
+        fontFamily: 'Inter-Medium',
+    },
+
+    errorBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#ffe0e0',
+        width: '90%',
+        height: 50,
+        marginTop: 30,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+    },
+    errorMsg: {
+        color: '#af0000',
+        fontSize: 14,
+        fontFamily: 'Inter-Medium',
+        marginLeft: 10,
     },
 });
 
