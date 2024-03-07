@@ -6,35 +6,64 @@ import {
     SafeAreaView,
     TouchableOpacity,
     ActivityIndicator,
+    Alert,
 } from 'react-native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
-import DropDownPicker from 'react-native-dropdown-picker';
 import { useDispatch, useSelector } from 'react-redux';
-import { auth } from '../../../services/firebase';
-import { updateVisibility } from '../../../services/redux/userSlice';
-
-import CustomStatusBar from '../../UI/StatusBar';
-import InfoBox from '../../UI/InfoBox';
-
 import { useTheme } from '../../../hooks/useThemeContext';
 import useGlobalStyles from '../../../hooks/useGlobalStyles';
+import { updateVisibility } from '../../../services/redux/userSlice';
+import { auth } from '../../../services/firebase';
+import CustomStatusBar from '../../UI/StatusBar';
+import InfoBox from '../../UI/InfoBox';
+import Spacer from '../../UI/Spacer';
 
 /** The settings screen to manage app & account settings */
-const Settings = ({ navigation, is_public, userId }) => {
+const Settings = ({ navigation, route }) => {
+    const { userId, is_public } = route.params;
     const { theme, themeMode, setThemeMode, themeType } = useTheme();
     const global = useGlobalStyles();
     const dispatch = useDispatch();
     const isLoading = useSelector((state) => state.user.isLoading);
 
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [selectedPrivacy, setSelectedPrivacy] = useState(is_public);
+    const [selectedPrivacy, setSelectedPrivacy] = useState(null);
+
+    useEffect(() => {
+        setSelectedPrivacy(is_public);
+    }, [userId]);
 
     useEffect(() => {
         // update visibility
         if (userId && selectedPrivacy !== is_public) {
-            dispatch(updateVisibility({ userId, updated: selectedPrivacy }));
+            // confirm before making status public
+            if (selectedPrivacy === true) {
+                Alert.alert(
+                    'Public Account',
+                    'By setting your account to public, your posts will be visible to other users on the community feed.',
+                    [
+                        {
+                            text: 'Cancel',
+                            onPress: () => setSelectedPrivacy(is_public),
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'Confirm',
+                            onPress: () =>
+                                dispatch(
+                                    updateVisibility({
+                                        userId,
+                                        updated: selectedPrivacy,
+                                    }),
+                                ),
+                        },
+                    ],
+                    { cancelable: false },
+                );
+            } else {
+                dispatch(updateVisibility({ userId, updated: selectedPrivacy }));
+            }
         }
-    }, [userId, selectedPrivacy]);
+    }, [selectedPrivacy]);
 
     // signout user using firebase
     const handleSignout = async () => {
@@ -87,7 +116,7 @@ const Settings = ({ navigation, is_public, userId }) => {
                     ))}
                 </View>
 
-                <View style={{ height: 20 }} />
+                <Spacer height={20} />
 
                 {/* privacy */}
                 <View style={[styles.themeBox, { borderColor: theme.textLight }]}>
@@ -96,39 +125,30 @@ const Settings = ({ navigation, is_public, userId }) => {
                     </Text>
 
                     <View style={styles.option}>
-                        <InfoBox
-                            title="Account Privacy"
-                            text="By setting your account to public, users in the community will be able to see your posts."
-                            iconColor={theme.text}
-                            bgColor={themeType === 'light' ? '#FDF3EC' : '#d0d0d0'}
-                        />
-                        <Text style={[global.text, styles.optionText]}>
-                            Privacy Status
-                        </Text>
-
+                        <View style={global.row}>
+                            <InfoBox
+                                title="Account Privacy"
+                                text="By setting your account to 'public', your posts will be visible to other users on the community feed."
+                                iconColor={theme.text}
+                                bgColor={themeType === 'light' ? '#ebebeb' : '#bcbcbc'}
+                            />
+                            <Text style={[global.text, styles.optionText]}>Public</Text>
+                        </View>
                         {isLoading ? (
                             <ActivityIndicator size="small" color={theme.textLight} />
                         ) : (
-                            // TODO fix dropdown picker or use toggle w alert
-                            <DropDownPicker
-                                items={[
-                                    { label: 'Public', value: true },
-                                    { label: 'Private', value: false },
-                                ]}
-                                defaultValue={selectedPrivacy}
-                                placeholder={is_public ? 'Public' : 'Private'}
-                                containerStyle={{ width: 100 }}
-                                style={{ backgroundColor: theme.navActive }}
-                                itemStyle={{ justifyContent: 'flex-start' }}
-                                open={dropdownOpen}
-                                setOpen={setDropdownOpen}
-                                setValue={setSelectedPrivacy}
+                            // checkbox to toggle privacy status
+                            <FontAwesome
+                                name={selectedPrivacy ? 'check-square-o' : 'square-o'}
+                                size={22}
+                                color={theme.text}
+                                onPress={() => setSelectedPrivacy(!selectedPrivacy)}
                             />
                         )}
                     </View>
                 </View>
 
-                <View style={{ height: 60 }} />
+                <Spacer height={60} />
 
                 <TouchableOpacity
                     style={[styles.pageButtons, { borderBottomColor: theme.textLight }]}
@@ -152,7 +172,6 @@ const Settings = ({ navigation, is_public, userId }) => {
                         Sign Out
                     </Text>
                 </TouchableOpacity>
-
                 <CustomStatusBar />
             </View>
         </SafeAreaView>
@@ -205,7 +224,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontFamily: 'Inter-SemiBold',
     },
-
     pageButtons: {
         flexDirection: 'row',
         justifyContent: 'center',

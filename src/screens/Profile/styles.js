@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Inter-Regular',
         marginLeft: 5,
     },
-
     horizontalLine: {
         width: '98%',
         height: 1,

@@ -3,6 +3,8 @@ import { Ionicons } from '@expo/vector-icons';
 
 /**
  * A custom checkbox component
+ * @param {boolean} checked - the state of the checkbox
+ * @param {function} setChecked - function to set the state of the checkbox
  */
 const MyCheckbox = ({ checked, setChecked }) => {
     return (

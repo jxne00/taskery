@@ -1,5 +1,5 @@
 /**
- * convert milliseconds to dd MMM yyyy format
+ * Convert milliseconds to dd MMM yyyy format
  * @param {number} milliseconds date in milliseconds
  */
 const toDateDisplay = (milliseconds) => {
@@ -11,7 +11,7 @@ const toDateDisplay = (milliseconds) => {
 };
 
 /**
- * convert seconds to hours, minutes, and seconds
+ * Convert seconds to hours, minutes, and seconds
  * @param {number} totalSeconds total seconds
  */
 const secondsToHMS = (totalSeconds) => {
