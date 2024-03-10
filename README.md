@@ -1,51 +1,29 @@
-<h1 align="center"> taskery 👥 </h1>
+<h1 align="center"> Taskery </h1>
 
-A task manager mobile app that brings together task management and social interaction, fuelling productivity through peer motivation and social accountability.
-
--   🛠️ Developed using React Native, managed by Expo.
--   🛠️ Authentication handled using Firebase, while Firestore is used for data storage.
--   🛠️ Redux Toolkit for state management.
-
-## Features
-
--   **Task Management**: Easily create and manage your tasks, with additional options like categorization, supplementry notes, images, and subtasks if needed.
-
--   **Community**: Share completed tasks, achievments, and takeaways. Leave comments for fellow task conquerors.
-
--   **Personalisation**: Adapt the app to your own needs through a variety of sorting and filtering options.
-
--   **Productivity Sessions**: Elevate your focus with timer-based sessions and a range of background noise choices such as white noise and ambience sound.
+A task manager mobile application that optimises productivity by integrating task management with a blog-like community timeline.
 
 ## Getting Started
 
-Open the link for your device to view the app.
+Open the link below or scan the QR code for your device to view the app on Expo Go.
 
--   For iOS: _-TBC-_
--   For Android: _-TBC-_
+-   Link: exp://u.expo.dev/update/f74b5490-daf6-4792-a19d-046d7a122486
 
-_Note: The Expo Go app has to be installed on your physical device or else the links above will not work._
-
-### Login
-
-To login to the app, you can create an account through the "Register" screen, or use the following credentials:
-
-```
-Email: user@demo.com
-Password: password
-```
+<p align="center">
+  <img src="https://github.com/jxne00/taskery/tree/master/src/assets/qrlinks.png" alt="QR Code for opening the app on Expo Go" width="600">
+</p>
 
 ## To run locally
 
-1. Clone the repository.
+1. Clone this repo: `git clone https://github.com/jxne00/taskery.git`.
 
-2. Install dependencies with `npm install`.
+2. Install dependencies: `npm install`.
 
-3. Run the app with `npx expo start`.
+3. Run the app: `npx expo start`.
 
-4. Scan the QR code generated to view the app (ensure ExpoGo app is downloaded).
+4. Scan the QR code generated to view the app (ensure Expo Go app is downloaded).
 
-5. The tests can be run using `npm run test`.
+5. Tests can be executed using `npm run test`.
 
 ## Firestore security rules
 
-To ensure data security, several security rules are in place within Cloud Firestore. Those rules can be found [here](src/services/firebase/rules.md).
+To ensure data security, several security rules are in place within Cloud Firestore and Firebase Storage. Those rules can be found [here](src/services/firebase/rules.md).
