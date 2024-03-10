@@ -75,7 +75,6 @@ const CalendarView = ({ navigation }) => {
                 <Text style={themed.textRegular}>Back</Text>
             </TouchableOpacity>
 
-            {/* TODO: show tasks on click of a date */}
             <Calendar
                 style={{
                     marginTop: 20,

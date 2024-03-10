@@ -40,15 +40,6 @@ const selectTasksForMonth = createSelector([selectAllTasks], (tasks) => {
     });
 });
 
-// TODO selectTasksByTag - for tasks with a given tag
-
-// TODO selectTasksByCateory - for tasks in a category
-
-// TODO selectTasksByCompletion - completed, incomplete, overdue
-
-// TODO selectTasksBySearch - search by title, description, tag, category, or all
-
-// TODO selectTasksBySort - sort by deadline, title, category, tag, or none
 const selectSortedTasks = createSelector(
     [(state, tasks) => tasks, (state, tasks, sortOrder) => sortOrder],
     (tasks, sortOrder) => {
