@@ -8,7 +8,23 @@ Open the link below or scan the QR code for your device to view the app on Expo 
 
 -   Link: exp://u.expo.dev/update/f74b5490-daf6-4792-a19d-046d7a122486
 
-<img src="https://github.com/jxne00/taskery/blob/master/src/assets/qrlinks.png" alt="QR Code for opening the app on Expo Go" width="800">
+<img src="https://github.com/jxne00/taskery/blob/master/src/assets/demos/qrlinks.png" alt="QR Code for opening the app on Expo Go" width="800">
+
+## Demo
+
+### Task management
+
+<img src="https://github.com/jxne00/taskery/blob/master/src/assets/demos/home.png" alt="Screenshots of homescreen" width="800">
+
+<img src="https://github.com/jxne00/taskery/blob/master/src/assets/demos/home2.png" alt="Screenshots of homescreen(2)" width="800">
+
+### Community timeline
+
+<img src="https://github.com/jxne00/taskery/blob/master/src/assets/demos/community.png" alt="Screenshots of community components" width="800">
+
+### Profile
+
+<img src="https://github.com/jxne00/taskery/blob/master/src/assets/demos/profile.png" alt="Screenshots of profile components" width="800">
 
 ## To run locally
 
