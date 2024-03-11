@@ -6,7 +6,7 @@ A task manager mobile application that optimises productivity by integrating tas
 
 Open the link below or scan the QR code for your device to view the app on Expo Go.
 
--   Link: exp://u.expo.dev/update/f74b5490-daf6-4792-a19d-046d7a122486
+-   Link: exp://u.expo.dev/update/ad31da8d-0309-4e97-b8bf-c76281635fef
 
 <img src="https://github.com/jxne00/taskery/blob/master/src/assets/demos/qrlinks.png" alt="QR Code for opening the app on Expo Go" width="800">
 
