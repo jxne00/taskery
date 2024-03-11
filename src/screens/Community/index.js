@@ -25,8 +25,6 @@ import useFetchUser from '../../hooks/useFetchUser';
 import { useTheme } from '../../hooks/useThemeContext';
 import useThemeStyles from '../../hooks/useThemeStyles';
 import styles from './styles';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
-import { limit } from 'firebase/firestore';
 
 /**
  * The community screen that displays posts shared by other uses
