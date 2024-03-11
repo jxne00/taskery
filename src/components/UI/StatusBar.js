@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useTheme } from '../../hooks/useThemeContext';
 
 /**
- * custom status bar styled based on theme
+ * A custom status bar component that changes according to theme
  */
 const CustomStatusBar = () => {
     const { themeType } = useTheme();

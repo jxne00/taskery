@@ -4,10 +4,10 @@ import isBetween from 'dayjs/plugin/isBetween';
 
 dayjs.extend(isBetween);
 
-/** selector for all tasks */
+/** Selector for all tasks */
 const selectAllTasks = (state) => state.tasks.data;
 
-/** selector for tasks due today */
+/** Selector for tasks due today */
 const selectTasksForToday = createSelector([selectAllTasks], (tasks) => {
     const startOfDay = dayjs().startOf('day');
     const endOfDay = dayjs().endOf('day');
@@ -18,7 +18,7 @@ const selectTasksForToday = createSelector([selectAllTasks], (tasks) => {
     });
 });
 
-/** selector for tasks due this week */
+/** Selector for tasks due this week */
 const selectTasksForWeek = createSelector([selectAllTasks], (tasks) => {
     const startOfWeek = dayjs().startOf('week');
     const endOfWeek = dayjs().endOf('week');
@@ -29,7 +29,7 @@ const selectTasksForWeek = createSelector([selectAllTasks], (tasks) => {
     });
 });
 
-/** selector for tasks due this month */
+/** Selector for tasks due this month */
 const selectTasksForMonth = createSelector([selectAllTasks], (tasks) => {
     const monthStart = dayjs().startOf('month');
     const monthEnd = dayjs().endOf('month');
@@ -40,6 +40,7 @@ const selectTasksForMonth = createSelector([selectAllTasks], (tasks) => {
     });
 });
 
+/** Selector for sorted tasks */
 const selectSortedTasks = createSelector(
     [(state, tasks) => tasks, (state, tasks, sortOrder) => sortOrder],
     (tasks, sortOrder) => {
@@ -54,6 +55,7 @@ const selectSortedTasks = createSelector(
     },
 );
 
+/** Selector for filtering tasks by completion */
 const filterByCompletion = createSelector(
     [(state, tasks) => tasks, (state, tasks, showCompleted) => showCompleted],
     (tasks, showCompleted) => {

@@ -46,10 +46,7 @@ const Onboarding = ({ navigation }) => {
                     if (url) {
                         db.collection('users')
                             .doc(userId)
-                            .set({
-                                name,
-                                avatar_path: url,
-                            })
+                            .set({ name, avatar_path: url })
                             .then(() => {
                                 setIsLoading(false);
                                 // go to home screen on success
@@ -58,9 +55,7 @@ const Onboarding = ({ navigation }) => {
                     } else {
                         db.collection('users')
                             .doc(userId)
-                            .set({
-                                name,
-                            })
+                            .set({ name, is_public: false })
                             .then(() => {
                                 setIsLoading(false);
                                 // go to home screen on success

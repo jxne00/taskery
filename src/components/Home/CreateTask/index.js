@@ -25,10 +25,10 @@ import styles from './styles';
 
 /**
  * A modal to input details of a new task or edit an existing task.
- * @param modalVisible visibility of modal
- * @param setShowTaskModal modal visibility setter
- * @param editTask details of task to be edited (only on edit, optional)
- * @param setEditTask setter for editTask (only on edit, optional)
+ * @param {boolean} modalVisible - whether the modal is visible
+ * @param {function} setShowTaskModal - modal visibility setter
+ * @param {object} editTask - details of task to be edited (only on edit, optional)
+ * @param {function} setEditTask - setter for editTask (only on edit, optional)
  */
 const CreateTask = (props) => {
     const { modalVisible, setShowTaskModal, editTask, setEditTask } = props;

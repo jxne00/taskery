@@ -3,7 +3,7 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import 'firebase/compat/storage';
 
-// configure firebase
+// firebase configurations
 const firebaseConfig = {
     apiKey: 'AIzaSyDIKiRFSjZWwAne2f4l6djZah7UhbK42IA',
     authDomain: 'taskery-6f430.firebaseapp.com',
@@ -17,13 +17,13 @@ const firebaseConfig = {
 // initialize firebase app
 firebase.apps.length === 0 ? firebase.initializeApp(firebaseConfig) : firebase.app();
 
-/** firebase auth */
+/** Firebase authentication */
 const auth = firebase.auth();
 
-/** firebase firestore */
+/** Firebase firestore */
 const db = firebase.firestore();
 
-/** firebase storage */
+/** Firebase storage */
 const storage = firebase.storage();
 
 export { auth, db, storage };

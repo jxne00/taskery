@@ -2,8 +2,8 @@ import { View } from 'react-native';
 
 /**
  * A custom spacer component
- * @param height height of spacer
- * @param width  width of spacer
+ * @param {number} height height of spacer
+ * @param {string} width width of spacer
  */
 const Spacer = ({ height, width }) => {
     width = width || '100%';

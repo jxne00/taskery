@@ -2,6 +2,18 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
+/**
+ * A component for adding tags to a task.
+ * @param {string} tag - current tag input
+ * @param {function} setTag - function to set the tag input
+ * @param {array} tags - list of added tags
+ * @param {array} presetColors - list of preset colors for tags
+ * @param {string} selectedColor - selected color for the tag
+ * @param {function} setSelectedColor - function to set the selected color
+ * @param {function} addTag - function to add a tag to the list
+ * @param {function} removeTag - function to remove a tag from the list
+ * @param {object} theme - theme object
+ */
 const TagComponent = (props) => {
     const {
         tag,
@@ -94,7 +106,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         fontFamily: 'Inter-Medium',
     },
-
     colorContainer: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
@@ -108,19 +119,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginHorizontal: 10,
     },
-
     tag: {
         padding: 10,
         borderRadius: 5,
         marginRight: 10,
     },
-
     row: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 10,
     },
-
     Xicon: {
         marginRight: 12,
     },

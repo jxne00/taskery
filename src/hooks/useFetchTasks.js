@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-
-import { fetchTasks } from '../services/redux/taskSlice';
 import { auth } from '../services/firebase';
-
+import { fetchTasks } from '../services/redux/taskSlice';
 import {
     selectAllTasks,
     selectTasksForToday,
@@ -15,7 +13,6 @@ import {
 
 /**
  * Custom hook for fetching tasks from redux store
- *
  * @param {string} chosenTimeFrame - today, week, month, all
  * @param {string} sortOrder - date, priority, title
  * @param {boolean} showCompleted - show or hide completed tasks

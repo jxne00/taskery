@@ -12,7 +12,9 @@ import {
 } from 'firebase/firestore';
 import { toTimestamp } from '../firebase/helper';
 
-/** fetch all public posts from firestore */
+/**
+ * Async thunk to fetch all public posts from firestore
+ */
 export const fetchAllPosts = createAsyncThunk('posts/fetchAllPosts', async () => {
     try {
         // get all posts that are public
@@ -53,12 +55,14 @@ export const fetchAllPosts = createAsyncThunk('posts/fetchAllPosts', async () =>
 
         return posts;
     } catch (err) {
-        console.log(err);
         alert(err);
     }
 });
 
-/** fetch all posts by a user */
+/**
+ * Async thunk to fetch all posts of a user from firestore
+ * @param {string} userId - ID of the user
+ */
 export const fetchUserPosts = createAsyncThunk(
     'posts/fetchUserPosts',
     async (userId) => {
@@ -101,13 +105,15 @@ export const fetchUserPosts = createAsyncThunk(
 
             return posts;
         } catch (err) {
-            console.log(err);
             alert(err);
         }
     },
 );
 
-/** add a new post to firestore */
+/**
+ * Async thunk to add a new post to firestore
+ * @param {object} post - post data
+ */
 export const addPost = createAsyncThunk('posts/addPost', async (post) => {
     if (!post.userId) {
         alert('Please log in to add a task!');
@@ -125,18 +131,19 @@ export const addPost = createAsyncThunk('posts/addPost', async (post) => {
         const docRef = await db.collection('posts').add(dataForStore);
         return { ...post, id: docRef.id };
     } catch (err) {
-        console.log(err);
         alert(err);
     }
 });
 
-/** toggle like */
+/**
+ * Async thunk to add or remove like from a post
+ * @param {string} postId - ID of the post
+ * @param {string} userId - ID of the user
+ */
 export const toggleLike = createAsyncThunk(
     'posts/toggleLike',
     async ({ postId, userId }) => {
         try {
-            console.log('posts/toggleLike: postId, userId', postId, userId);
-
             const postRef = doc(db, 'posts', postId);
             const snapshot = await getDoc(postRef);
 
@@ -172,25 +179,29 @@ export const toggleLike = createAsyncThunk(
 
             return { postId, likes };
         } catch (err) {
-            console.log('(posts/toggleLike)', err);
             alert(err);
         }
     },
 );
 
-/** delete a post */
+/**
+ * Async thunk to delete a post from firestore
+ * @param {string} postId - ID of the post to delete
+ */
 export const deletePost = createAsyncThunk('posts/deletePost', async (postId) => {
     try {
         // delete post from firestore
         await db.collection('posts').doc(postId).delete();
         return postId;
     } catch (err) {
-        console.log(err);
         alert(err);
     }
 });
 
-/** add new comment to a post */
+/**
+ * Async thunk to add a new comment to a post
+ * @param {object} comment - comment data
+ */
 export const addComment = createAsyncThunk('posts/addComment', async (comment) => {
     try {
         // create a copy for firestore update
@@ -208,12 +219,15 @@ export const addComment = createAsyncThunk('posts/addComment', async (comment) =
 
         return { ...comment, id: commentRef.id };
     } catch (err) {
-        console.log(err);
         alert(err);
     }
 });
 
-/** delete a comment */
+/**
+ * Async thunk to delete a comment from a post
+ * @param {string} postId - ID of the post
+ * @param {string} commentId - ID of the comment to delete
+ */
 export const deleteComment = createAsyncThunk(
     'posts/deleteComment',
     async ({ postId, commentId }) => {
@@ -228,12 +242,14 @@ export const deleteComment = createAsyncThunk(
 
             return { postId, id: commentId };
         } catch (err) {
-            console.log('posts/deleteComment', err);
             alert(err);
         }
     },
 );
 
+/**
+ * Redux slice for posts
+ */
 const postsSlice = createSlice({
     name: 'posts',
     initialState: {

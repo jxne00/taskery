@@ -1,7 +1,9 @@
 import { StyleSheet } from 'react-native';
 import { useTheme } from './useThemeContext';
 
-/** common styles styled based on theme */
+/**
+ * A custom hook to use common styles styled based on theme
+ */
 const useThemeStyles = () => {
     const { theme, themeType } = useTheme();
 

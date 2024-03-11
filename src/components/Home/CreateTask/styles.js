@@ -13,7 +13,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 10,
     },
-
     header: {
         fontSize: 26,
         fontFamily: 'Inter-Bold',
@@ -46,8 +45,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: 'Inter-Regular',
     },
-
-    // ======= button styles =======
+    // button styles
     createBtn: {
         backgroundColor: '#84345a',
         padding: 10,
@@ -63,9 +61,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontFamily: 'Inter-SemiBold',
     },
-
-    // ======= subtask styles =======
-
+    // subtask styles
     addSubtask: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -79,7 +75,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: 'Inter-Regular',
     },
-
     subtaskInput: {
         borderBottomWidth: 1,
         padding: 10,
@@ -87,15 +82,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: 'Inter-Regular',
     },
-
-    // ======= category styles =======
+    //  category styles
     categoryText: {
         fontSize: 16,
         fontFamily: 'Inter-Medium',
         marginLeft: 20,
     },
-
-    // ======= loading styles =======
+    //  loading styles
     loadingOverlay: {
         ...StyleSheet.absoluteFillObject,
         backgroundColor: 'rgba(0, 0, 0, 0.6)',

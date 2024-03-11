@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, SafeAreaView, Image, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../hooks/useThemeContext';
@@ -11,7 +11,7 @@ import { auth } from '../../services/firebase';
 import styles from './styles';
 
 /**
- * The profile screen displaying user's profile info and posts.
+ * The profile screen displaying user's profile information
  */
 const Profile = ({ navigation }) => {
     const { theme } = useTheme();
@@ -26,9 +26,16 @@ const Profile = ({ navigation }) => {
     // get user's tasks
     const { tasks, tasksLoading, tasksError } = useFetchTasks('all', 'asc', true);
 
-    const totalTasks = tasks.length;
-    const completedTasks = tasks.filter((task) => task.completed).length;
-    const completionRate = ((completedTasks / totalTasks) * 100).toFixed(2);
+    // calculate total tasks and completion rate
+    let totalTasks = 0;
+    let completedTasks = 0;
+    let completionRate = 0;
+
+    if (tasks) {
+        totalTasks = tasks.length;
+        completedTasks = tasks.filter((task) => task.is_complete).length;
+        completionRate = Math.round((completedTasks / totalTasks) * 100);
+    }
 
     return (
         <SafeAreaView style={themed.container}>
@@ -147,7 +154,7 @@ const Profile = ({ navigation }) => {
                             <Text style={[themed.textSemibold, { fontSize: 18 }]}>
                                 Total Tasks Created
                             </Text>
-                            <Text style={themed.textRegular}>
+                            <Text style={[themed.textRegular, { fontSize: 18 }]}>
                                 {totalTasks > 0 ? totalTasks : '0'}
                             </Text>
                         </View>
@@ -163,8 +170,9 @@ const Profile = ({ navigation }) => {
                             <Text style={[themed.textSemibold, { fontSize: 18 }]}>
                                 Completed
                             </Text>
-                            <Text style={themed.textRegular}>
-                                {completionRate > 0 ? completionRate : '0%'}
+                            <Text style={[themed.textRegular, { fontSize: 18 }]}>
+                                {completedTasks} (
+                                {completionRate > 0 ? completionRate : '0'}%)
                             </Text>
                         </View>
                     </View>

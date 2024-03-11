@@ -4,10 +4,10 @@ import { Ionicons } from '@expo/vector-icons';
 
 /**
  * An info icon that shows a modal with text when clicked
- * @param title title of the popup
- * @param text text to display in the popup
- * @param iconColor color of the info icon
- * @param bgColor background color of the popup
+ * @param {string} title - title of the popup
+ * @param {string} text - text to display in the popup
+ * @param {string} iconColor - color of the info icon
+ * @param {string} bgColor - background color of the popup
  */
 const InfoBox = ({ title, text, iconColor, bgColor }) => {
     const [modalVisible, setModalVisible] = useState(false);

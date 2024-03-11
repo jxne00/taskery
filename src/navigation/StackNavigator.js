@@ -1,16 +1,13 @@
 import { SafeAreaView } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { MenuProvider } from 'react-native-popup-menu';
-
 import { useTheme } from '../hooks/useThemeContext';
 import CustomStatusBar from '../components/UI/StatusBar';
-
 // auth screens
 import Login from '../screens/Login';
 import Register from '../screens/Register';
 import Onboarding from '../components/Onboarding';
-
-// main screens
+// main screens and components
 import Home from '../screens/Home';
 import CalendarView from '../components/Home/Calendar';
 import Profile from '../screens/Profile';
@@ -27,7 +24,8 @@ const StackP = createStackNavigator();
 const StackC = createStackNavigator();
 
 /**
- * Navigation stack for auth screens (Login, Register, Onboarding)
+ * Navigation stack for auth screen components.
+ * Includes: Login, Register, Onboarding
  */
 const AuthStack = () => {
     return (
@@ -44,7 +42,10 @@ const AuthStack = () => {
     );
 };
 
-/** Navigation stack for home screen */
+/**
+ * Navigation stack for home screen components.
+ * Includes: Home, Calendar
+ */
 const HomeStack = () => {
     const { theme } = useTheme();
 
@@ -66,7 +67,10 @@ const HomeStack = () => {
     );
 };
 
-/** Navigation stack for community screen */
+/**
+ * Navigation stack for community screen components.
+ * Includes: Community, CreatePost, PostDetail
+ */
 const CommunityStack = () => {
     return (
         <StackC.Navigator
@@ -81,7 +85,10 @@ const CommunityStack = () => {
     );
 };
 
-/** Navigation stack for profile screen */
+/**
+ * Navigation stack for profile screen components.
+ * Includes: Profile, EditProfile, Settings, About
+ */
 const ProfileStack = () => {
     return (
         <StackP.Navigator

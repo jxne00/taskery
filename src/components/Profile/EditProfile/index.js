@@ -10,14 +10,18 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch } from 'react-redux';
-
+import { updateProfile } from '../../../services/redux/userSlice';
 import { useTheme } from '../../../hooks/useThemeContext';
 import useThemeStyles from '../../../hooks/useThemeStyles';
 import CustomStatusBar from '../../UI/StatusBar';
 import Spacer from '../../UI/Spacer';
 import SetAvatar from '../../../components/SetAvatar';
-import { updateProfile } from '../../../services/redux/userSlice';
 
+/**
+ * A screen for editing user profile
+ * @param {object} user - user object
+ * @param {string} userId - user id
+ */
 const EditProfile = ({ route, navigation }) => {
     const { theme } = useTheme();
     const themed = useThemeStyles();

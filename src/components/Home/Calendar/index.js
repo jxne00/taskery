@@ -1,19 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    Modal,
-    SafeAreaView,
-    TouchableOpacity,
-} from 'react-native';
+import { Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
-
 import { useTheme } from '../../../hooks/useThemeContext';
 import useThemeStyles from '../../../hooks/useThemeStyles';
 
+/**
+ * A calendar component with marked dates for tasks
+ */
 const CalendarView = ({ navigation }) => {
     const themed = useThemeStyles();
     const { theme, themeType } = useTheme();
@@ -30,12 +25,12 @@ const CalendarView = ({ navigation }) => {
         overdue: { key: 'overdue', color: 'orange' },
     };
 
+    /** Retrieve marked dates to show on the calendar */
     const getMarkedDates = () => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
         const markedDates = {};
-
         tasks.forEach((task) => {
             const taskDeadline = new Date(task.deadline);
             const dateString = taskDeadline.toISOString().split('T')[0]; // in YYYY-MM-DD

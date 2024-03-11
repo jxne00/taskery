@@ -12,7 +12,7 @@ import CreateTask from '../../components/Home/CreateTask';
 import styles from './styles';
 
 /**
- * The home screen which displays a list tasks
+ * The home screen for the app to view and manage tasks
  */
 const Home = ({ navigation }) => {
     const { theme, themeType } = useTheme();

@@ -8,10 +8,10 @@ import styles from './styles';
 
 /**
  * A modal to display task details
- * @param task - task object
- * @param showDetails - determines if modal is shown
- * @param setShowDetails - function to set modal visibility
- * @param handleEdit - function to handle editing of task
+ * @param {object} task - the task to display
+ * @param {boolean} showDetails - whether the modal is visible
+ * @param {function} setShowDetails - function to close the modal
+ * @param {function} handleEdit - function to open the edit page
  */
 const TaskDetail = ({ task, showDetails, setShowDetails, handleEdit }) => {
     const { theme } = useTheme();

@@ -17,8 +17,13 @@ import { auth } from '../../../services/firebase';
 import CustomStatusBar from '../../UI/StatusBar';
 import InfoBox from '../../UI/InfoBox';
 import Spacer from '../../UI/Spacer';
+import styles from './styles';
 
-/** The settings screen to manage app & account settings */
+/**
+ * The settings screen to manage app and account settings
+ * @param {string} userId - user id
+ * @param {boolean} is_public - user's current visibility status
+ */
 const Settings = ({ navigation, route }) => {
     const { userId, is_public } = route.params;
     const { theme, themeMode, setThemeMode, themeType } = useTheme();
@@ -177,62 +182,5 @@ const Settings = ({ navigation, route }) => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    title: {
-        fontSize: 24,
-        textAlign: 'center',
-        marginBottom: 20,
-        fontFamily: 'Inter-Bold',
-    },
-    backBtn: {
-        margin: 12,
-    },
-    themeBox: {
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        marginHorizontal: 14,
-    },
-    themeTitle: {
-        fontSize: 18,
-        marginBottom: 10,
-        textDecorationLine: 'underline',
-        fontFamily: 'Inter-Bold',
-    },
-    option: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 4,
-    },
-    optionText: {
-        fontSize: 16,
-        fontFamily: 'Inter-Medium',
-    },
-    signOutBtn: {
-        width: '80%',
-        alignSelf: 'center',
-        alignItems: 'center',
-        borderRadius: 20,
-        marginTop: 'auto',
-        marginBottom: 20,
-    },
-    signOutTxt: {
-        padding: 10,
-        fontSize: 18,
-        fontFamily: 'Inter-SemiBold',
-    },
-    pageButtons: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignSelf: 'center',
-        marginVertical: 10,
-        borderBottomWidth: 1,
-        width: '80%',
-        paddingVertical: 10,
-    },
-});
 
 export default Settings;

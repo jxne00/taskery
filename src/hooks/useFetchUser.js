@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchUser } from '../services/redux/userSlice';
 import { auth } from '../services/firebase';
 
-/** Custom hook to fetches user data from redux store */
+/** A custom hook to fetch user data from redux store */
 const useFetchUser = () => {
     const dispatch = useDispatch();
 

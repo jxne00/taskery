@@ -15,6 +15,10 @@ import { auth } from '../../services/firebase';
 import ErrorMessage from '../../components/UI/ErrorMsg';
 import styles from './styles';
 
+/**
+ * The login screen component that allows users to login to
+ * with an email and password.
+ */
 const Login = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

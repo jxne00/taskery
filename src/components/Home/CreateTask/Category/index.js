@@ -1,5 +1,13 @@
 import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 
+/**
+ * A modal to select a category for a task
+ * @param {boolean} showCategoryModal - whether the modal is visible
+ * @param {function} setShowCategoryModal - function to close the modal
+ * @param {string} selectedCategory - selected category
+ * @param {function} setSelectedCategory - function to set the selected category
+ * @param {object} theme - theme object
+ */
 const CategoryModal = (props) => {
     const {
         showCategoryModal,

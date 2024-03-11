@@ -2,15 +2,20 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import MyCheckbox from '../../UI/Checkbox';
 
+/**
+ * A modal for setting different filter options for the task list
+ * @param {boolean} visible - whether the modal is visible
+ * @param {function} onClose - function to close the modal
+ * @param {array} currentVals - current values of the filter options
+ * @param {function} setCurrentVals - function to update the filter options
+ */
 const FilterOptionModal = ({ visible, onClose, currentVals, setCurrentVals }) => {
     const [showStatus, setShowStatus] = useState(currentVals[0].value);
     const [showDescription, setShowDescription] = useState(currentVals[1].value);
     const [showDeadline, setShowDeadline] = useState(currentVals[2].value);
     const [showTags, setShowTags] = useState(currentVals[3].value);
 
-    /**
-     * Update filter options and close the modal
-     */
+    /** Update filter options and close the modal */
     const applyChanges = () => {
         const updatedVals = [
             { label: 'Show Status', value: showStatus },
@@ -22,6 +27,7 @@ const FilterOptionModal = ({ visible, onClose, currentVals, setCurrentVals }) =>
         onClose();
     };
 
+    /** Create a checkbox for each filter option */
     const optionContainer = (label, checked, setChecked) => {
         return (
             <View style={styles.checkboxRow}>
@@ -81,7 +87,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Inter-Bold',
         color: '#fff',
     },
-
     // checkbox styles
     checkboxRow: {
         flexDirection: 'row',
@@ -95,7 +100,6 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontFamily: 'Inter-Medium',
     },
-
     button: {
         padding: 10,
         margin: 10,

@@ -1,6 +1,12 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
+/**
+ * A component to set completion status of a task.
+ * @param {boolean} isCompleted - completion status
+ * @param {function} setIsCompleted - function to set completion status
+ * @param {object} theme - theme object
+ */
 const CompletionComponent = ({ isCompleted, setIsCompleted, theme }) => {
     return (
         <View style={styles.completionRow}>

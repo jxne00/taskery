@@ -56,7 +56,6 @@ const styles = StyleSheet.create({
     icon: {
         marginRight: 10,
     },
-
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -75,7 +74,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
     },
-
     // task status button
     taskStatusBtn: {
         flexDirection: 'row',

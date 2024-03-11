@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from './useThemeContext';
 
-/** hook to hide the bottom tab bar when a screen is focused */
+/** Custom hook to hide the bottom tab bar when a screen is focused */
 const useHideTabBar = () => {
     const navigation = useNavigation();
     const { theme } = useTheme();

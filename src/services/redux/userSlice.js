@@ -2,7 +2,10 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { db } from '../firebase';
 import { storeAvatar } from '../firebase/helper';
 
-/** fetch user's profile data from firestore */
+/**
+ * Async thunk to fetch user's profile data
+ * @param {string} userId - ID of current user
+ */
 const fetchUser = createAsyncThunk(
     'user/fetchUser',
     async (userId, { rejectWithValue }) => {
@@ -20,7 +23,11 @@ const fetchUser = createAsyncThunk(
     },
 );
 
-/** update user's visibility */
+/**
+ * Async thunk to update user's profile visibility
+ * @param {string} userId - ID of current user
+ * @param {boolean} updated - updated visibility
+ */
 const updateVisibility = createAsyncThunk(
     'user/updateVisibility',
     async ({ userId, updated }, { rejectWithValue }) => {
@@ -33,7 +40,12 @@ const updateVisibility = createAsyncThunk(
     },
 );
 
-/** update user's profile details */
+/**
+ * Async thunk to update user's profile
+ * @param {string} userId - ID of current user
+ * @param {string} name - updated name
+ * @param {object} avatar - updated avatar
+ */
 const updateProfile = createAsyncThunk(
     'user/updateProfile',
     async ({ userId, name, avatar }, { rejectWithValue }) => {
@@ -54,7 +66,7 @@ const updateProfile = createAsyncThunk(
     },
 );
 
-/** handle async state for all async thunks */
+/** Handle async state for reducers */
 const handleAsyncState = {
     pending: (state) => {
         state.isLoading = true;
@@ -70,7 +82,7 @@ const handleAsyncState = {
     },
 };
 
-/** redux slice for user */
+/** Redux slice for user */
 const userSlice = createSlice({
     name: 'user',
     initialState: {

@@ -14,8 +14,10 @@ import { storage } from '../../services/firebase';
 import styles from './styles';
 
 /**
- * An avatar image that shows a modal when clicked.
- * Choose from default avatars or upload from device.
+ * A modal to set user's avatar
+ * @param {string} chosenAvatar - user's current avatar
+ * @param {function} setChosenAvatar - function to set the chosen avatar
+ * @param {object} theme - theme object
  */
 const SetAvatar = ({ chosenAvatar, setChosenAvatar, theme }) => {
     const [avatarUrls, setAvatarUrls] = useState([]);
@@ -46,10 +48,12 @@ const SetAvatar = ({ chosenAvatar, setChosenAvatar, theme }) => {
         });
     }, []);
 
+    /** activate the loading state for avatar images */
     const handleLoadStart = (index) => {
         setLoadingStates((prevState) => ({ ...prevState, [index]: true }));
     };
 
+    /** end the loading state for avatar images */
     const handleLoadEnd = (index) => {
         setLoadingStates((prevState) => ({ ...prevState, [index]: false }));
     };

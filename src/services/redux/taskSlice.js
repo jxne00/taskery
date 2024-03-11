@@ -2,7 +2,10 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { db } from '../firebase';
 import { toTimestamp } from '../firebase/helper';
 
-/** fetch user's tasks from firestore */
+/**
+ * Async thunk to fetch tasks from firestore
+ * @param {string} userId - ID of current user
+ */
 export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async (userId) => {
     try {
         const tasksRef = db.collection('users').doc(userId).collection('tasks');
@@ -22,7 +25,11 @@ export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async (userId) =>
     }
 });
 
-/** add a new task to firestore */
+/**
+ * Async thunk to add new task to firestore
+ * @param {string} userId - ID of current user
+ * @param {object} taskDetails - details of the task
+ */
 export const addTask = createAsyncThunk(
     'tasks/addTask',
     async ({ userId, taskDetails }) => {
@@ -53,7 +60,12 @@ export const addTask = createAsyncThunk(
     },
 );
 
-/** update existing task in firestore */
+/**
+ * Async thunk to update task in firestore
+ * @param {string} userId - ID of current user
+ * @param {string} taskId - ID of the task
+ * @param {object} taskDetails - updated details of the task
+ */
 export const updateTask = createAsyncThunk(
     'tasks/updateTask',
     async ({ userId, taskId, taskDetails }) => {
@@ -73,7 +85,6 @@ export const updateTask = createAsyncThunk(
                 .collection('tasks')
                 .doc(taskId)
                 .update(dataForStore);
-            console.log('\n---->', taskId, 'updated');
             return { ...taskDetails, id: taskId };
         } catch (err) {
             alert(err.message);
@@ -81,7 +92,11 @@ export const updateTask = createAsyncThunk(
     },
 );
 
-/** delete task from firestore */
+/**
+ * Async thunk to delete task from firestore
+ * @param {string} userId - ID of current user
+ * @param {string} taskId - ID of the task
+ */
 export const deleteTask = createAsyncThunk(
     'tasks/deleteTask',
     async ({ userId, taskId }) => {
@@ -99,7 +114,12 @@ export const deleteTask = createAsyncThunk(
     },
 );
 
-/** toggle completion status of a task */
+/**
+ * Async thunk to toggle completion status of task in firestore
+ * @param {string} userId - ID of current user
+ * @param {string} taskId - ID of the task
+ * @param {boolean} is_complete - current completion status
+ */
 export const toggleCompletion = createAsyncThunk(
     'tasks/toggleCompletion',
     async ({ userId, taskId, is_complete }) => {
@@ -121,7 +141,7 @@ export const toggleCompletion = createAsyncThunk(
     },
 );
 
-/** redux slice for tasks */
+/** Redux slice for tasks */
 const tasksSlice = createSlice({
     name: 'tasks',
     initialState: {

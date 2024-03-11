@@ -7,7 +7,9 @@ import BottomTabNav from './BottomTabNav';
 
 const Stack = createStackNavigator();
 
-/** the main navigator of the app */
+/**
+ * The main navigator for the app containing auth and home stacks
+ */
 const AppNavigator = () => {
     return (
         <NavigationContainer>

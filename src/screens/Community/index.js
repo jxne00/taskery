@@ -25,8 +25,12 @@ import useFetchUser from '../../hooks/useFetchUser';
 import { useTheme } from '../../hooks/useThemeContext';
 import useThemeStyles from '../../hooks/useThemeStyles';
 import styles from './styles';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { limit } from 'firebase/firestore';
 
-/** The community screen that shows posts shared by other uses */
+/**
+ * The community screen that displays posts shared by other uses
+ */
 const Community = ({ navigation }) => {
     const themed = useThemeStyles();
     const { theme } = useTheme();
@@ -62,6 +66,9 @@ const Community = ({ navigation }) => {
         dispatch(fetchAllPosts());
         setRefreshing(false);
     };
+
+    const getAllPosts = allPosts.filter((post) => post.userId !== user.id) || [];
+    const getMyPosts = allPosts.filter((post) => post.userId === user.id) || [];
 
     const handleLike = (postId, userId) => {
         setUpdatingLikes(postId);
@@ -141,6 +148,21 @@ const Community = ({ navigation }) => {
             userHasLiked = item.likes.includes(user.id);
         }
 
+        /** Restricts content length to 100 characters */
+        const checkLength = (content) => {
+            const limit = 100;
+            if (content.length > limit) {
+                return (
+                    <Text>
+                        {content.substring(0, limit)}
+                        <Text style={{ color: theme.textLight }}>... read more</Text>
+                    </Text>
+                );
+            } else {
+                return content;
+            }
+        };
+
         return (
             <View style={[styles.postContainer, { borderColor: theme.textLight }]}>
                 {/* go to details page on press */}
@@ -155,7 +177,7 @@ const Community = ({ navigation }) => {
 
                     {item.content && (
                         <Text style={[themed.textRegular, styles.content]}>
-                            {item.content}
+                            {checkLength(item.content)}
                         </Text>
                     )}
                 </TouchableOpacity>
@@ -456,17 +478,23 @@ const Community = ({ navigation }) => {
                     />
                 ) : (
                     <FlatList
-                        data={
-                            currentView === 'allPosts'
-                                ? allPosts.filter((post) => post.userId !== user.id)
-                                : allPosts.filter((post) => post.userId === user.id)
-                        }
+                        data={currentView === 'allPosts' ? getAllPosts : getMyPosts}
                         renderItem={renderPost}
                         keyExtractor={(item) => item.id}
                         refreshing={refreshing}
                         onRefresh={handleRefresh}
                         ListEmptyComponent={
-                            <Text style={themed.textRegular}>No posts found</Text>
+                            <Text
+                                style={[
+                                    themed.textRegular,
+                                    {
+                                        textAlign: 'center',
+                                        marginTop: 20,
+                                        color: theme.textLight,
+                                    },
+                                ]}>
+                                No posts found
+                            </Text>
                         }
                     />
                 )}

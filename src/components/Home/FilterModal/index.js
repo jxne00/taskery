@@ -4,6 +4,10 @@ import MyCheckbox from '../../UI/Checkbox';
 
 /**
  * A model with filter options to show/hide certain fields in task list
+ * @param {boolean} visible - modal visibility
+ * @param {function} onClose - function to close the modal
+ * @param {array} currentVals - current filter options
+ * @param {function} setCurrentVals - function to update filter options
  */
 const FilterModal = ({ visible, onClose, currentVals, setCurrentVals }) => {
     const [showStatus, setShowStatus] = useState(currentVals[0].value);
@@ -11,9 +15,7 @@ const FilterModal = ({ visible, onClose, currentVals, setCurrentVals }) => {
     const [showDeadline, setShowDeadline] = useState(currentVals[2].value);
     const [showTags, setShowTags] = useState(currentVals[3].value);
 
-    /**
-     * Update filter options and close the modal
-     */
+    /** Update filter options and close the modal */
     const applyChanges = () => {
         const updatedVals = [
             { label: 'Show Status', value: showStatus },
@@ -25,6 +27,7 @@ const FilterModal = ({ visible, onClose, currentVals, setCurrentVals }) => {
         onClose();
     };
 
+    /** Checkbox for each filter option */
     const optionContainer = (label, checked, setChecked) => {
         return (
             <View style={styles.checkboxRow}>
@@ -84,7 +87,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Inter-Bold',
         color: '#fff',
     },
-
     // checkbox styles
     checkboxRow: {
         flexDirection: 'row',
@@ -98,7 +100,6 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontFamily: 'Inter-Medium',
     },
-
     button: {
         padding: 10,
         margin: 10,

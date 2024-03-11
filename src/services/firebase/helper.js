@@ -1,11 +1,9 @@
-// helper fuctions for firebase related stuff
-
 import firebase from 'firebase/compat/app';
 import { storage } from './index';
 
 /**
- * convert milliseconds to firebase timestamp type
- * @param milliseconds time in milliseconds
+ * Converts milliseconds to firebase timestamp object
+ * @param {number} milliseconds - time in milliseconds
  */
 const toTimestamp = (milliseconds) => {
     const date = new Date(milliseconds);
@@ -13,9 +11,9 @@ const toTimestamp = (milliseconds) => {
 };
 
 /**
- * store user's avatar image to firebase storage
- * @param userId firebase uid of the user
- * @param image image to store
+ * Stores the user avatar in firebase storage and returns the download url
+ * @param {string} userId - ID of current user
+ * @param {string} image - uri of the image to store
  */
 const storeAvatar = async (userId, image) => {
     // store in storage path 'usersAvatar/{userId}'

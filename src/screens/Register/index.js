@@ -14,7 +14,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { auth } from '../../services/firebase';
 import styles from './styles';
 
-/** The registration screen to create new user account */
+/**
+ * The registration screen component that allows users to create
+ * a new account with an email and password.
+ */
 const Register = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

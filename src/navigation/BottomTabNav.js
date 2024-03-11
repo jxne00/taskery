@@ -2,12 +2,14 @@ import { Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../hooks/useThemeContext';
-
 import { HomeStack, CommunityStack, ProfileStack } from './StackNavigator';
 
 const Tab = createBottomTabNavigator();
 
-/** bottom tab navigator of main screens */
+/**
+ * The bottom tab navigator for the app
+ * containing home, community and profile tabs
+ */
 const BottomTabNav = () => {
     const { theme } = useTheme();
 

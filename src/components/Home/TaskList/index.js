@@ -23,8 +23,8 @@ import TaskDetail from '../TaskDetail';
 
 /**
  * A flatlist of tasks with its details
- * @param tasklist - list of tasks
- * @param handleEdit - handle editing of task
+ * @param {array} tasklist - list of tasks
+ * @param {function} handleEdit - function to handle task edit
  */
 const TaskList = ({ tasklist, handleEdit, filters }) => {
     const { theme } = useTheme();
