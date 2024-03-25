@@ -27,7 +27,6 @@ export const fetchAllPosts = createAsyncThunk('posts/fetchAllPosts', async () =>
         const snapshot = await getDocs(postsQuery);
 
         const posts = [];
-
         snapshot.forEach((doc) => {
             const data = doc.data();
             // convert firestore timestamp to milliseconds
@@ -49,10 +48,8 @@ export const fetchAllPosts = createAsyncThunk('posts/fetchAllPosts', async () =>
 
                 comments.push({ ...data, id: doc.id });
             });
-
             post.comments = comments;
         }
-
         return posts;
     } catch (err) {
         alert(err);
